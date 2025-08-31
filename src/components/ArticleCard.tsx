@@ -8,13 +8,23 @@ interface ArticleCardProps {
   date: string;
   imageUrl: string;
   featured?: boolean;
+  url?: string;
 }
 
-const ArticleCard = ({ title, excerpt, category, date, imageUrl, featured = false }: ArticleCardProps) => {
+const ArticleCard = ({ title, excerpt, category, date, imageUrl, featured = false, url }: ArticleCardProps) => {
+  const handleClick = () => {
+    if (url && url !== "#") {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   return (
-    <Card className={`${
-      featured ? 'md:col-span-2 lg:col-span-3' : ''
-    } bg-gradient-card border-card-border hover:border-primary/50 transition-all duration-300 hover-lift overflow-hidden group cursor-pointer`}>
+    <Card 
+      className={`${
+        featured ? 'md:col-span-2 lg:col-span-3' : ''
+      } bg-gradient-card border-card-border hover:border-primary/50 transition-all duration-300 hover-lift overflow-hidden group cursor-pointer`}
+      onClick={handleClick}
+    >
       
       {/* Image Container */}
       <div className={`relative overflow-hidden ${featured ? 'h-80' : 'h-48'}`}>

@@ -1,91 +1,123 @@
 import ArticleCard from "./ArticleCard";
+import LiveNewsIndicator from "./LiveNewsIndicator";
+import { useNews } from "@/hooks/useNews";
+import { Skeleton } from "@/components/ui/skeleton";
 import aiArticle from "@/assets/ai-article.jpg";
 import startupArticle from "@/assets/startup-article.jpg";
 import securityArticle from "@/assets/security-article.jpg";
 import gadgetArticle from "@/assets/gadget-article.jpg";
 
 const MainFeed = () => {
-  const articles = [
+  const { data: newsArticles, isLoading, isError } = useNews();
+  
+  // Fallback articles with our generated images
+  const fallbackArticles = [
     {
+      id: "fallback-1",
       title: "Revolutionary AI Breakthrough in Quantum Neural Networks",
-      excerpt: "Scientists at the University of Cape Town have developed a groundbreaking quantum-AI hybrid that could reshape machine learning as we know it. This Afro-futuristic approach combines traditional computing with quantum mechanics.",
+      description: "Scientists at the University of Cape Town have developed a groundbreaking quantum-AI hybrid that could reshape machine learning as we know it. This Afro-futuristic approach combines traditional computing with quantum mechanics.",
       category: "AI",
-      date: "2 hours ago",
-      imageUrl: aiArticle,
-      featured: true
+      publishedAt: new Date().toISOString(),
+      urlToImage: aiArticle,
+      url: "#",
+      source: { id: "roots", name: "RootsTech" }
     },
     {
+      id: "fallback-2", 
       title: "Nigerian Startup Raises $50M for Solar-Powered Smart Cities",
-      excerpt: "Lagos-based tech company unveils plans to build Africa's first fully solar-powered smart city infrastructure.",
+      description: "Lagos-based tech company unveils plans to build Africa's first fully solar-powered smart city infrastructure.",
       category: "Startups",
-      date: "4 hours ago",
-      imageUrl: startupArticle
+      publishedAt: new Date(Date.now() - 14400000).toISOString(),
+      urlToImage: startupArticle,
+      url: "#",
+      source: { id: "roots", name: "RootsTech" }
     },
     {
-      title: "Cybersecurity Threats in the Metaverse Era",
-      excerpt: "As virtual worlds become more integrated with our daily lives, new security challenges emerge.",
+      id: "fallback-3",
+      title: "Cybersecurity Threats in the Metaverse Era", 
+      description: "As virtual worlds become more integrated with our daily lives, new security challenges emerge.",
       category: "Security",
-      date: "6 hours ago",
-      imageUrl: securityArticle
+      publishedAt: new Date(Date.now() - 21600000).toISOString(),
+      urlToImage: securityArticle,
+      url: "#",
+      source: { id: "roots", name: "RootsTech" }
     },
     {
+      id: "fallback-4",
       title: "Revolutionary Holographic Display Technology",
-      excerpt: "South African engineers develop first consumer-grade holographic displays for everyday use.",
-      category: "Gadgets",
-      date: "8 hours ago",
-      imageUrl: gadgetArticle
-    },
-    {
-      title: "Cultural Preservation Through Digital Archives",
-      excerpt: "How blockchain technology is helping preserve African cultural heritage for future generations.",
-      category: "Culture",
-      date: "12 hours ago",
-      imageUrl: gadgetArticle
-    },
-    {
-      title: "Quantum Computing Breakthrough in Johannesburg",
-      excerpt: "Local university achieves quantum supremacy milestone with new cooling technology.",
-      category: "AI",
-      date: "1 day ago",
-      imageUrl: aiArticle
-    },
-    {
-      title: "Sustainable Tech Solutions for Climate Change",
-      excerpt: "African innovators lead the way in developing eco-friendly technology solutions.",
-      category: "Startups",
-      date: "1 day ago",
-      imageUrl: startupArticle
-    },
-    {
-      title: "Next-Gen Wearable Technology from Kenya",
-      excerpt: "Nairobi startup unveils smart jewelry that monitors health and environmental data.",
-      category: "Gadgets",
-      date: "2 days ago",
-      imageUrl: securityArticle
+      description: "South African engineers develop first consumer-grade holographic displays for everyday use.",
+      category: "Gadgets", 
+      publishedAt: new Date(Date.now() - 28800000).toISOString(),
+      urlToImage: gadgetArticle,
+      url: "#",
+      source: { id: "roots", name: "RootsTech" }
     }
   ];
 
-  const featuredArticle = articles[0];
-  const regularArticles = articles.slice(1);
+  // Use real news data if available, otherwise use fallback
+  const articles = newsArticles && newsArticles.length > 0 ? newsArticles : fallbackArticles;
+  
+  // Format articles for our ArticleCard component
+  const formatArticle = (article: any) => ({
+    title: article.title,
+    excerpt: article.description || "Click to read more about this exciting development in technology.",
+    category: article.category || "Tech",
+    date: new Date(article.publishedAt).toLocaleString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      day: 'numeric',
+      month: 'short'
+    }),
+    imageUrl: article.urlToImage || gadgetArticle,
+    url: article.url || "#"
+  });
+
+  const featuredArticle = articles.length > 0 ? formatArticle(articles[0]) : null;
+  const regularArticles = articles.slice(1, 9).map(formatArticle);
+
+  if (isLoading) {
+    return (
+      <main className="space-y-8">
+        <LiveNewsIndicator />
+        <div className="space-y-4">
+          <Skeleton className="h-8 w-64" />
+          <Skeleton className="h-96 w-full" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="space-y-3">
+              <Skeleton className="h-48 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
+          ))}
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="space-y-8">
+      <LiveNewsIndicator />
+      
       {/* Featured Article */}
-      <section>
-        <h2 className="font-orbitron text-2xl font-bold mb-6 text-glow-primary">
-          FEATURED STORY
-        </h2>
-        <ArticleCard {...featuredArticle} />
-      </section>
+      {featuredArticle && (
+        <section>
+          <h2 className="font-orbitron text-2xl font-bold mb-6 text-glow-primary">
+            {isError ? 'FEATURED STORY' : 'BREAKING NEWS'}
+          </h2>
+          <ArticleCard {...featuredArticle} featured={true} />
+        </section>
+      )}
 
       {/* Latest News Grid */}
       <section>
         <h2 className="font-orbitron text-2xl font-bold mb-6 text-glow-accent">
-          LATEST DISCOVERIES
+          {isError ? 'LATEST DISCOVERIES' : 'LIVE TECH FEED'}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
           {regularArticles.map((article, index) => (
-            <ArticleCard key={index} {...article} />
+            <ArticleCard key={`article-${index}`} {...article} />
           ))}
         </div>
       </section>

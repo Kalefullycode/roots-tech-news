@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Search, Menu, X } from "lucide-react";
+import { Search, Menu, X, Rss } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,10 +14,16 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <h1 className="font-orbitron text-2xl font-bold text-glow-primary">
-              Roots<span className="text-accent">Tech</span>News
-            </h1>
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
+              <Rss className="h-6 w-6 text-accent glow-accent" />
+              <h1 className="font-orbitron text-2xl font-bold text-glow-primary">
+                Roots<span className="text-accent">Tech</span>News
+              </h1>
+            </div>
+            <Badge className="bg-secondary/20 text-secondary border-secondary font-orbitron text-xs animate-pulse">
+              LIVE
+            </Badge>
           </div>
 
           {/* Navigation - Desktop */}

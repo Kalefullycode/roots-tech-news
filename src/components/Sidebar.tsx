@@ -2,31 +2,43 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { TrendingUp, Mail, Play } from "lucide-react";
+import { useTrendingNews } from "@/hooks/useNews";
 
 const Sidebar = () => {
-  const trendingArticles = [
+  const { data: trendingArticles, isLoading: isTrendingLoading } = useTrendingNews();
+
+  const fallbackTrending = [
     {
       title: "AI Revolution in African Tech Startups",
-      image: "/placeholder.svg",
-      category: "AI"
+      urlToImage: "/placeholder.svg",
+      category: "AI",
+      url: "#"
     },
     {
       title: "Quantum Computing Breakthrough",
-      image: "/placeholder.svg",
-      category: "Science"
+      urlToImage: "/placeholder.svg", 
+      category: "Science",
+      url: "#"
     },
     {
       title: "Cybersecurity in the Metaverse",
-      image: "/placeholder.svg",
-      category: "Security"
+      urlToImage: "/placeholder.svg",
+      category: "Security", 
+      url: "#"
     },
     {
       title: "Green Tech Innovations from Nigeria",
-      image: "/placeholder.svg",
-      category: "Startups"
+      urlToImage: "/placeholder.svg",
+      category: "Startups",
+      url: "#"
     }
   ];
+
+  const trending = trendingArticles && trendingArticles.length > 0 
+    ? trendingArticles.slice(0, 4) 
+    : fallbackTrending;
 
   return (
     <aside className="space-y-6">
@@ -39,27 +51,48 @@ const Sidebar = () => {
           </h3>
         </div>
         
-        <div className="space-y-4">
-          {trendingArticles.map((article, index) => (
-            <div key={index} className="flex gap-3 cursor-pointer group">
-              <div className="w-16 h-16 bg-muted rounded-lg overflow-hidden flex-shrink-0">
-                <img 
-                  src={article.image} 
-                  alt={article.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
+        {isTrendingLoading ? (
+          <div className="space-y-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="flex gap-3">
+                <Skeleton className="w-16 h-16 rounded-lg" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-3 w-16" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-3 w-3/4" />
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <Badge className="text-xs mb-1 bg-primary/20 text-primary">
-                  {article.category}
-                </Badge>
-                <h4 className="font-roboto text-sm font-medium line-clamp-2 group-hover:text-primary transition-colors">
-                  {article.title}
-                </h4>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {trending.map((article, index) => (
+              <a 
+                key={index} 
+                href={article.url || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex gap-3 cursor-pointer group block"
+              >
+                <div className="w-16 h-16 bg-muted rounded-lg overflow-hidden flex-shrink-0">
+                  <img 
+                    src={article.urlToImage || "/placeholder.svg"} 
+                    alt={article.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <Badge className="text-xs mb-1 bg-primary/20 text-primary">
+                    {article.category}
+                  </Badge>
+                  <h4 className="font-roboto text-sm font-medium line-clamp-2 group-hover:text-primary transition-colors">
+                    {article.title}
+                  </h4>
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
       </Card>
 
       {/* Newsletter Signup */}
