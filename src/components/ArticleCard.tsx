@@ -22,16 +22,26 @@ const ArticleCard = ({ title, excerpt, category, date, imageUrl, featured = fals
     <Card 
       className={`${
         featured ? 'md:col-span-2 lg:col-span-3' : ''
-      } bg-gradient-card border-card-border hover:border-primary/50 transition-all duration-300 hover-lift overflow-hidden group cursor-pointer`}
+      } bg-gradient-card border-card-border hover:border-primary/50 transition-all duration-300 hover-lift overflow-hidden group cursor-pointer focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}
       onClick={handleClick}
+      role="article"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
+      aria-label={`Read article: ${title}`}
     >
       
       {/* Image Container */}
       <div className={`relative overflow-hidden ${featured ? 'h-80' : 'h-48'}`}>
         <img 
           src={imageUrl} 
-          alt={title}
+          alt={`${title} - ${category} article thumbnail`}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
         

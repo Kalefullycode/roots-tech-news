@@ -1,6 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Performance: Preload critical fonts */
+@font-face {
+  font-family: 'Orbitron';
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-display: swap;
+}
 
 /* RootsTechNews Afro-Futuristic Design System */
 
