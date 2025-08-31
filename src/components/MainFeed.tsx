@@ -2,10 +2,10 @@ import ArticleCard from "./ArticleCard";
 import LiveNewsIndicator from "./LiveNewsIndicator";
 import { useNews } from "@/hooks/useNews";
 import { Skeleton } from "@/components/ui/skeleton";
-import aiArticle from "@/assets/ai-article.jpg";
-import startupArticle from "@/assets/startup-article.jpg";
-import securityArticle from "@/assets/security-article.jpg";
-import gadgetArticle from "@/assets/gadget-article.jpg";
+import aiArticle from "@/assets/ai-article.webp";
+import startupArticle from "@/assets/startup-article.webp";
+import securityArticle from "@/assets/security-article.webp";
+import gadgetArticle from "@/assets/gadget-article.webp";
 
 const MainFeed = () => {
   const { data: newsArticles, isLoading, isError } = useNews();
