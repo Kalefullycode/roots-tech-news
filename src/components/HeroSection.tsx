@@ -7,12 +7,13 @@ const HeroSection = () => {
       className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-starfield"
       aria-label="Hero section with main headline and call-to-action buttons"
     >
-      {/* Background Image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60"
-        style={{ backgroundImage: `url(${heroBg})` }}
-        role="img"
-        aria-label="Afro-futuristic cosmic background with grid overlay"
+      {/* Background Image - Optimized for LCP */}
+      <img 
+        src={heroBg}
+        alt="Afro-futuristic cosmic background with grid overlay"
+        className="absolute inset-0 w-full h-full object-cover opacity-60"
+        fetchPriority="high"
+        loading="eager"
       />
       
       {/* Gradient Overlay */}
