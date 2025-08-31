@@ -25,7 +25,7 @@ const RSS_FEEDS = {
 };
 
 // NewsAPI configuration (you'll need to get a free API key)
-const NEWS_API_KEY = process.env.VITE_NEWS_API_KEY || 'demo';
+const NEWS_API_KEY = import.meta.env.VITE_NEWS_API_KEY || 'demo';
 const NEWS_API_BASE_URL = 'https://newsapi.org/v2';
 
 // RSS to JSON proxy service (free service)
