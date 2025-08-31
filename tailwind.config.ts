@@ -83,6 +83,16 @@ export default {
 						height: 'var(--radix-accordion-content-height)'
 					}
 				},
+				'pulse-safe': {
+					'0%, 100%': {
+						opacity: '1',
+						transform: 'scale3d(1, 1, 1)'
+					},
+					'50%': {
+						opacity: '.5',
+						transform: 'scale3d(1, 1, 1)'
+					}
+				},
 				'accordion-up': {
 					from: {
 						height: 'var(--radix-accordion-content-height)'
@@ -94,7 +104,8 @@ export default {
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-safe': 'pulse-safe 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
 			}
 		}
 	},

@@ -56,10 +56,10 @@ const HeroSection = () => {
       </div>
       
       {/* Floating Elements - Decorative */}
-      <div className="absolute top-20 left-10 w-4 h-4 bg-accent rounded-full animate-pulse opacity-60" aria-hidden="true" />
-      <div className="absolute top-40 right-20 w-3 h-3 bg-neon-blue rounded-full animate-pulse opacity-60" aria-hidden="true" />
-      <div className="absolute bottom-20 left-20 w-5 h-5 bg-cyber-pink rounded-full animate-pulse opacity-60" aria-hidden="true" />
-      <div className="absolute bottom-40 right-10 w-2 h-2 bg-secondary rounded-full animate-pulse opacity-60" aria-hidden="true" />
+      <div className="absolute top-20 left-10 w-4 h-4 bg-accent rounded-full animate-pulse-safe opacity-60" aria-hidden="true" />
+      <div className="absolute top-40 right-20 w-3 h-3 bg-neon-blue rounded-full animate-pulse-safe opacity-60" aria-hidden="true" />
+      <div className="absolute bottom-20 left-20 w-5 h-5 bg-cyber-pink rounded-full animate-pulse-safe opacity-60" aria-hidden="true" />
+      <div className="absolute bottom-40 right-10 w-2 h-2 bg-secondary rounded-full animate-pulse-safe opacity-60" aria-hidden="true" />
     </section>
   );
 };

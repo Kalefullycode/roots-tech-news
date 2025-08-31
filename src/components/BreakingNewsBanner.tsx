@@ -13,7 +13,7 @@ const BreakingNewsBanner = () => {
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-foreground animate-pulse" />
+            <AlertTriangle className="h-5 w-5 text-foreground animate-pulse-safe" />
             <Badge className="bg-foreground text-destructive font-orbitron font-bold">
               BREAKING
             </Badge>

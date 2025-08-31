@@ -109,8 +109,8 @@ const Footer = () => {
       </div>
 
       {/* Floating Neon Elements */}
-      <div className="absolute bottom-10 left-10 w-3 h-3 bg-neon-blue rounded-full animate-pulse opacity-40" />
-      <div className="absolute bottom-20 right-20 w-2 h-2 bg-cyber-pink rounded-full animate-pulse opacity-40" />
+      <div className="absolute bottom-10 left-10 w-3 h-3 bg-neon-blue rounded-full animate-pulse-safe opacity-40" />
+      <div className="absolute bottom-20 right-20 w-2 h-2 bg-cyber-pink rounded-full animate-pulse-safe opacity-40" />
     </footer>
   );
 };

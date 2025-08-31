@@ -21,7 +21,7 @@ const Header = () => {
                 Roots<span className="text-accent">Tech</span>News
               </h1>
             </div>
-            <Badge className="bg-secondary/20 text-secondary border-secondary font-orbitron text-xs animate-pulse">
+            <Badge className="bg-secondary/20 text-secondary border-secondary font-orbitron text-xs animate-pulse-safe">
               LIVE
             </Badge>
           </div>
