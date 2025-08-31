@@ -1,10 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, Suspense, lazy } from "react";
 import Header from "@/components/Header";
 import BreakingNewsBanner from "@/components/BreakingNewsBanner";
 import HeroSection from "@/components/HeroSection";
 import MainFeed from "@/components/MainFeed";
-import Sidebar from "@/components/Sidebar";
-import Footer from "@/components/Footer";
+
+// Lazy load below-the-fold components for better performance
+const Sidebar = lazy(() => import("@/components/Sidebar"));
+const Footer = lazy(() => import("@/components/Footer"));
 
 const Index = () => {
   useEffect(() => {
@@ -67,12 +69,16 @@ const Index = () => {
           
           {/* Sidebar */}
           <aside className="lg:col-span-1" aria-label="Trending news and newsletter signup">
-            <Sidebar />
+            <Suspense fallback={<div className="h-32 bg-muted animate-pulse rounded-lg" />}>
+              <Sidebar />
+            </Suspense>
           </aside>
         </div>
       </main>
       
-      <Footer />
+      <Suspense fallback={<div className="h-32 bg-muted animate-pulse" />}>
+        <Footer />
+      </Suspense>
     </div>
   );
 };
