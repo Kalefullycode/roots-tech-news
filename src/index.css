@@ -49,6 +49,7 @@
     --card: 0 0% 5%;
     --card-foreground: 0 0% 95%;
     --card-border: 270 30% 15%;
+    --card-modern: linear-gradient(145deg, hsl(0 0% 6%), hsl(0 0% 4%));
 
     /* Popover & Overlays */
     --popover: 0 0% 8%;
@@ -77,6 +78,7 @@
     /* Shadows & Glows */
     --shadow-neon: 0 0 20px hsl(var(--primary) / 0.5);
     --shadow-card: 0 10px 30px hsl(0 0% 0% / 0.5);
+    --shadow-card-elevated: 0 20px 40px hsl(0 0% 0% / 0.3), 0 0 0 1px hsl(var(--primary) / 0.1);
     --shadow-accent: 0 0 30px hsl(var(--accent) / 0.4);
 
     /* Animations */
@@ -139,6 +141,16 @@
 
   .bg-gradient-accent {
     background: var(--gradient-accent);
+  }
+
+  /* Modern Card Background */
+  .bg-card-modern {
+    background: var(--card-modern);
+  }
+
+  /* Enhanced Shadow */
+  .shadow-card-elevated {
+    box-shadow: var(--shadow-card-elevated);
   }
 
   /* Holographic Grid Effect - Hardware accelerated */

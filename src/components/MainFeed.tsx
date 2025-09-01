@@ -97,13 +97,13 @@ const MainFeed = () => {
   }
 
   return (
-    <main className="space-y-8">
+    <main className="space-y-10">
       <LiveNewsIndicator />
       
       {/* Featured Article */}
       {featuredArticle && (
-        <section>
-          <h2 className="font-orbitron text-2xl font-bold mb-6 text-glow-primary">
+        <section className="space-y-6">
+          <h2 className="font-orbitron text-2xl font-bold text-glow-primary">
             {isError ? 'FEATURED STORY' : 'BREAKING NEWS'}
           </h2>
           <ArticleCard {...featuredArticle} featured={true} />
@@ -111,11 +111,11 @@ const MainFeed = () => {
       )}
 
       {/* Latest News Grid */}
-      <section>
-        <h2 className="font-orbitron text-2xl font-bold mb-6 text-glow-accent">
+      <section className="space-y-6">
+        <h2 className="font-orbitron text-2xl font-bold text-glow-accent">
           {isError ? 'LATEST DISCOVERIES' : 'LIVE TECH FEED'}
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
           {regularArticles.map((article, index) => (
             <ArticleCard key={`article-${index}`} {...article} />
           ))}
