@@ -10,10 +10,13 @@ const HeroSection = () => {
       {/* Background Image - Optimized for LCP */}
       <img 
         src={heroBg}
+        srcSet={`${heroBg} 1x`}
+        sizes="100vw"
         alt="Afro-futuristic cosmic background with grid overlay"
         className="absolute inset-0 w-full h-full object-cover opacity-60"
         fetchPriority="high"
         loading="eager"
+        decoding="async"
       />
       
       {/* Gradient Overlay */}

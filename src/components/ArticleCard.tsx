@@ -39,9 +39,12 @@ const ArticleCard = ({ title, excerpt, category, date, imageUrl, featured = fals
       <div className={`relative overflow-hidden ${featured ? 'h-80' : 'h-52'} rounded-t-lg`}>
         <img 
           src={imageUrl} 
+          srcSet={`${imageUrl} 1x`}
+          sizes={featured ? "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" : "(max-width: 768px) 100vw, 50vw"}
           alt={`${title} - ${category} article thumbnail`}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
         
