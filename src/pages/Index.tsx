@@ -1,10 +1,10 @@
 import { useEffect, Suspense, lazy } from "react";
-import Header from "@/components/Header";
 import BreakingNewsBanner from "@/components/BreakingNewsBanner";
 import HeroSection from "@/components/HeroSection";
-import MainFeed from "@/components/MainFeed";
 
-// Lazy load below-the-fold components for better performance
+// Lazy load below-the-fold and non-critical components for better performance
+const Header = lazy(() => import("@/components/Header"));
+const MainFeed = lazy(() => import("@/components/MainFeed"));
 const Sidebar = lazy(() => import("@/components/Sidebar"));
 const Footer = lazy(() => import("@/components/Footer"));
 
@@ -57,14 +57,18 @@ const Index = () => {
       </a>
       
       <BreakingNewsBanner />
-      <Header />
+      <Suspense fallback={<div className="h-16 bg-background border-b border-border animate-pulse" />}>
+        <Header />
+      </Suspense>
       <HeroSection />
       
       <main id="main-content" className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
           <section className="lg:col-span-3" aria-label="Latest tech news and articles">
-            <MainFeed />
+            <Suspense fallback={<div className="space-y-6"><div className="h-8 bg-muted animate-pulse rounded" /><div className="h-96 bg-muted animate-pulse rounded-lg" /><div className="grid grid-cols-1 md:grid-cols-2 gap-6"><div className="h-48 bg-muted animate-pulse rounded-lg" /><div className="h-48 bg-muted animate-pulse rounded-lg" /></div></div>}>
+              <MainFeed />
+            </Suspense>
           </section>
           
           {/* Sidebar */}
