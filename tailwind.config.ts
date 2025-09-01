@@ -86,11 +86,11 @@ export default {
 				'pulse-safe': {
 					'0%, 100%': {
 						opacity: '1',
-						transform: 'scale3d(1, 1, 1)'
+						transform: 'translate3d(0, 0, 0) scale3d(1, 1, 1)'
 					},
 					'50%': {
 						opacity: '.5',
-						transform: 'scale3d(1, 1, 1)'
+						transform: 'translate3d(0, 0, 0) scale3d(1, 1, 1)'
 					}
 				},
 				'accordion-up': {

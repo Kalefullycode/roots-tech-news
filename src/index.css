@@ -113,6 +113,8 @@
   .glow-primary {
     box-shadow: var(--shadow-neon);
     transition: var(--transition-glow);
+    will-change: auto;
+    transform: translate3d(0, 0, 0);
   }
 
   .glow-primary:hover {
@@ -123,6 +125,8 @@
   .glow-accent {
     box-shadow: var(--shadow-accent);
     transition: var(--transition-glow);
+    will-change: auto;
+    transform: translate3d(0, 0, 0);
   }
 
   .glow-accent:hover {
@@ -192,6 +196,8 @@
   /* Hover Animations - Hardware accelerated transforms */
   .hover-lift {
     transition: var(--transition-smooth);
+    will-change: auto;
+    transform: translate3d(0, 0, 0);
   }
 
   .hover-lift:hover {
