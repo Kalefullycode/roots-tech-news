@@ -1,4 +1,4 @@
-import Parser from 'rss-parser';
+
 import { NewsArticle } from './NewsService';
 
 interface RSSFeed {
@@ -8,17 +8,8 @@ interface RSSFeed {
 }
 
 class RSSService {
-  private parser: Parser;
   private cache = new Map<string, { data: NewsArticle[]; timestamp: number }>();
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-
-  constructor() {
-    this.parser = new Parser({
-      customFields: {
-        item: ['media:content', 'enclosure']
-      }
-    });
-  }
 
   private readonly RSS_FEEDS: RSSFeed[] = [
     { url: 'https://techcrunch.com/feed/', name: 'TechCrunch', category: 'Startups' },
@@ -43,31 +34,56 @@ class RSSService {
     return match ? match[1] : null;
   }
 
-  private mapRSSItemToArticle(item: any, sourceName: string, category: string): NewsArticle {
-    let imageUrl = '';
-    
-    // Try various image sources
-    if (item.enclosure?.url && this.isValidImageUrl(item.enclosure.url)) {
-      imageUrl = item.enclosure.url;
-    } else if (item['media:content']?.url && this.isValidImageUrl(item['media:content'].url)) {
-      imageUrl = item['media:content'].url;
-    } else if (item.content) {
-      const extractedImage = this.extractImageFromContent(item.content);
-      if (extractedImage && this.isValidImageUrl(extractedImage)) {
-        imageUrl = extractedImage;
-      }
+  private parseRSSXML(xmlText: string, sourceName: string, category: string): NewsArticle[] {
+    try {
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+      const items = xmlDoc.querySelectorAll('item');
+      
+      const articles: NewsArticle[] = [];
+      
+      items.forEach((item, index) => {
+        if (index >= 10) return; // Limit to 10 items
+        
+        const title = item.querySelector('title')?.textContent || 'Untitled';
+        const link = item.querySelector('link')?.textContent || '#';
+        const description = item.querySelector('description')?.textContent || 'No description available';
+        const pubDate = item.querySelector('pubDate')?.textContent || new Date().toISOString();
+        
+        // Try to find image from various sources
+        let imageUrl = '';
+        const enclosure = item.querySelector('enclosure');
+        if (enclosure) {
+          const enclosureUrl = enclosure.getAttribute('url');
+          if (enclosureUrl && this.isValidImageUrl(enclosureUrl)) {
+            imageUrl = enclosureUrl;
+          }
+        }
+        
+        if (!imageUrl && description) {
+          const extractedImage = this.extractImageFromContent(description);
+          if (extractedImage && this.isValidImageUrl(extractedImage)) {
+            imageUrl = extractedImage;
+          }
+        }
+        
+        articles.push({
+          id: link || Math.random().toString(36),
+          title,
+          description: description.replace(/<[^>]*>/g, '').substring(0, 200),
+          url: link,
+          urlToImage: imageUrl,
+          publishedAt: pubDate,
+          source: { id: sourceName.toLowerCase(), name: sourceName },
+          category
+        });
+      });
+      
+      return articles;
+    } catch (error) {
+      console.warn('Failed to parse RSS XML:', error);
+      return [];
     }
-
-    return {
-      id: item.guid || item.link || Math.random().toString(36),
-      title: item.title || 'Untitled',
-      description: item.contentSnippet || item.content?.replace(/<[^>]*>/g, '').substring(0, 200) || 'No description available',
-      url: item.link || '#',
-      urlToImage: imageUrl,
-      publishedAt: item.pubDate || new Date().toISOString(),
-      source: { id: sourceName.toLowerCase(), name: sourceName },
-      category
-    };
   }
 
   async fetchFromRSS(feedUrl: string, sourceName: string, category: string): Promise<NewsArticle[]> {
@@ -79,10 +95,16 @@ class RSSService {
     }
 
     try {
-      const feed = await this.parser.parseURL(feedUrl);
-      const articles = feed.items.slice(0, 10).map(item => 
-        this.mapRSSItemToArticle(item, sourceName, category)
-      );
+      // Use CORS proxy for RSS feeds
+      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}`;
+      const response = await fetch(proxyUrl);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      const articles = this.parseRSSXML(data.contents, sourceName, category);
       
       this.cache.set(cacheKey, { data: articles, timestamp: Date.now() });
       return articles;
