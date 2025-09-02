@@ -30,4 +30,10 @@ export default defineConfig(({ mode }) => ({
     },
     assetsInlineLimit: 0, // Don't inline assets to ensure proper caching
   },
+  // Ensure proper cache headers for production
+  preview: {
+    headers: {
+      'Cache-Control': 'public, max-age=31536000, immutable',
+    },
+  },
 }));

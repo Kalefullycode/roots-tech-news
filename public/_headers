@@ -36,3 +36,7 @@
 # Root HTML
 /
   Cache-Control: public, max-age=3600
+
+# Specific file patterns for better coverage
+/placeholder.svg
+  Cache-Control: public, max-age=31536000, immutable
