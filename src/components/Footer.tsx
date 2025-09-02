@@ -10,20 +10,20 @@ import {
 
 const Footer = () => {
   const categories = [
-    { name: "AI", href: "#ai" },
-    { name: "Startups", href: "#startups" },
-    { name: "Culture", href: "#culture" },
-    { name: "Gadgets", href: "#gadgets" },
-    { name: "Security", href: "#security" }
+    { name: "AI", href: "/?category=ai" },
+    { name: "Startups", href: "/?category=startups" },
+    { name: "Culture", href: "/?category=culture" },
+    { name: "Gadgets", href: "/?category=gadgets" },
+    { name: "Security", href: "/?category=security" }
   ];
 
   const socialLinks = [
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Youtube, href: "#", label: "YouTube" },
-    { icon: Github, href: "#", label: "GitHub" },
-    { icon: Rss, href: "#", label: "RSS Feed" }
+    { icon: Twitter, href: "https://twitter.com/rootstechnews", label: "Follow RootsTechNews on Twitter" },
+    { icon: Instagram, href: "https://instagram.com/rootstechnews", label: "Follow RootsTechNews on Instagram" },
+    { icon: Linkedin, href: "https://linkedin.com/company/rootstechnews", label: "Connect with RootsTechNews on LinkedIn" },
+    { icon: Youtube, href: "https://youtube.com/@rootstechnews", label: "Subscribe to RootsTechNews on YouTube" },
+    { icon: Github, href: "https://github.com/rootstechnews", label: "View RootsTechNews source code on GitHub" },
+    { icon: Rss, href: "/rss.xml", label: "Subscribe to RSS feed" }
   ];
 
   return (
@@ -78,7 +78,12 @@ const Footer = () => {
                   asChild
                   className="hover:bg-primary/20 hover:text-primary transition-all duration-300 glow-primary"
                 >
-                  <a href={social.href} aria-label={social.label}>
+                  <a 
+                    href={social.href} 
+                    aria-label={social.label}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <social.icon className="h-5 w-5" />
                   </a>
                 </Button>
@@ -94,13 +99,28 @@ const Footer = () => {
               © 2024 RootsTechNews. All rights reserved. Built with love and innovation.
             </p>
             <div className="flex items-center gap-6 text-sm">
-              <a href="#privacy" className="text-muted-foreground hover:text-primary transition-colors">
+              <a 
+                href="/privacy" 
+                className="text-muted-foreground hover:text-primary transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Privacy Policy
               </a>
-              <a href="#terms" className="text-muted-foreground hover:text-primary transition-colors">
+              <a 
+                href="/terms" 
+                className="text-muted-foreground hover:text-primary transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Terms of Service
               </a>
-              <a href="#contact" className="text-muted-foreground hover:text-primary transition-colors">
+              <a 
+                href="/contact" 
+                className="text-muted-foreground hover:text-primary transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Contact
               </a>
             </div>

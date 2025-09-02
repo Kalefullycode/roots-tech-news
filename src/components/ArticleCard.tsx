@@ -13,8 +13,16 @@ interface ArticleCardProps {
 
 const ArticleCard = ({ title, excerpt, category, date, imageUrl, featured = false, url }: ArticleCardProps) => {
   const handleClick = () => {
-    if (url && url !== "#") {
-      window.open(url, '_blank', 'noopener,noreferrer');
+    if (url && url !== "#" && url !== "") {
+      // Check if it's a valid external URL
+      try {
+        const urlObj = new URL(url);
+        if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
+          window.open(url, '_blank', 'noopener,noreferrer');
+        }
+      } catch (error) {
+        console.warn('Invalid URL:', url);
+      }
     }
   };
 

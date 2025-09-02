@@ -7,7 +7,22 @@ import { Badge } from "@/components/ui/badge";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const categories = ["AI", "Startups", "Culture", "Gadgets", "Security"];
+  const categories = [
+    { name: "AI", url: "/?category=ai" },
+    { name: "Startups", url: "/?category=startups" },
+    { name: "Culture", url: "/?category=culture" },
+    { name: "Gadgets", url: "/?category=gadgets" },
+    { name: "Security", url: "/?category=security" }
+  ];
+
+  const handleCategoryClick = (categoryName: string) => {
+    // Scroll to main content and apply filter
+    const mainFeed = document.querySelector('main');
+    mainFeed?.scrollIntoView({ behavior: 'smooth' });
+    
+    // You could add category filtering logic here
+    console.log(`Filtering by category: ${categoryName}`);
+  };
 
   return (
     <header className="bg-background border-b border-border sticky top-0 z-50 backdrop-blur-md bg-background/90" role="banner">
@@ -29,13 +44,13 @@ const Header = () => {
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-8" role="navigation" aria-label="Main navigation">
             {categories.map((category) => (
-              <a
-                key={category}
-                href={`#${category.toLowerCase()}`}
-                className="font-roboto font-medium text-foreground hover:text-primary transition-colors duration-200 hover:text-glow-primary"
+              <button
+                key={category.name}
+                onClick={() => handleCategoryClick(category.name)}
+                className="font-roboto font-medium text-foreground hover:text-primary transition-colors duration-200 hover:text-glow-primary bg-transparent border-none cursor-pointer"
               >
-                {category}
-              </a>
+                {category.name}
+              </button>
             ))}
           </nav>
 
@@ -78,14 +93,16 @@ const Header = () => {
               </div>
               
               {categories.map((category) => (
-                <a
-                  key={category}
-                  href={`#${category.toLowerCase()}`}
-                  className="font-orbitron text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
-                  onClick={() => setIsMenuOpen(false)}
+                <button
+                  key={category.name}
+                  onClick={() => {
+                    handleCategoryClick(category.name);
+                    setIsMenuOpen(false);
+                  }}
+                  className="font-orbitron text-lg font-medium text-foreground hover:text-primary transition-colors py-2 text-left bg-transparent border-none cursor-pointer w-full"
                 >
-                  {category}
-                </a>
+                  {category.name}
+                </button>
               ))}
             </div>
           </div>
