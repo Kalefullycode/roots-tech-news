@@ -12,29 +12,37 @@ export const useNews = () => {
 };
 
 export const useNewsByCategory = (category: string) => {
-  return useQuery({
-    queryKey: ['news', category],
-    queryFn: async () => {
-      const allNews = await NewsService.fetchAggregatedNews();
-      return allNews.filter(article => 
-        article.category.toLowerCase() === category.toLowerCase()
-      );
-    },
+  const { data: allNews, ...queryState } = useQuery({
+    queryKey: ['news'],
+    queryFn: () => NewsService.fetchAggregatedNews(),
     staleTime: 5 * 60 * 1000,
+    refetchInterval: 10 * 60 * 1000,
     retry: 2,
   });
+
+  const filteredNews = allNews?.filter(article => 
+    article.category.toLowerCase() === category.toLowerCase()
+  ) || [];
+
+  return {
+    data: filteredNews,
+    ...queryState
+  };
 };
 
 export const useTrendingNews = () => {
-  return useQuery({
-    queryKey: ['trending-news'],
-    queryFn: async () => {
-      const allNews = await NewsService.fetchAggregatedNews();
-      // Return most recent 4 articles for trending
-      return allNews.slice(0, 4);
-    },
-    staleTime: 3 * 60 * 1000, // 3 minutes for trending
-    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
+  const { data: allNews, ...queryState } = useQuery({
+    queryKey: ['news'],
+    queryFn: () => NewsService.fetchAggregatedNews(),
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: 10 * 60 * 1000,
     retry: 2,
   });
+
+  const trendingNews = allNews?.slice(0, 4) || [];
+
+  return {
+    data: trendingNews,
+    ...queryState
+  };
 };
