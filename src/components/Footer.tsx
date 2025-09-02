@@ -41,7 +41,7 @@ const Footer = () => {
               Roots<span className="text-accent">Tech</span>News
             </h3>
             <p className="text-muted-foreground font-roboto mb-6 max-w-md">
-              Illuminating the future of technology through a Heritage-futuristic lens. 
+              Illuminating the future of technology through a futuristic lens. 
               Where innovation meets culture in the digital frontier.
             </p>
             <p className="font-orbitron font-bold text-accent text-lg text-glow-accent">

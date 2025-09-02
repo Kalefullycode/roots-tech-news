@@ -15,7 +15,7 @@ const MainFeed = () => {
     {
       id: "fallback-1",
       title: "Revolutionary AI Breakthrough in Quantum Neural Networks",
-      description: "Scientists at the University of Cape Town have developed a groundbreaking quantum-AI hybrid that could reshape machine learning as we know it. This Heritage-futuristic approach combines traditional computing with quantum mechanics.",
+      description: "Scientists at the University of Cape Town have developed a groundbreaking quantum-AI hybrid that could reshape machine learning as we know it. This futuristic approach combines traditional computing with quantum mechanics.",
       category: "AI",
       publishedAt: new Date().toISOString(),
       urlToImage: aiArticle,

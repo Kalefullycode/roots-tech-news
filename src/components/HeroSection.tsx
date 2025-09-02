@@ -12,7 +12,7 @@ const HeroSection = () => {
         src={heroBg}
         srcSet={`${heroBg} 1x`}
         sizes="100vw"
-        alt="Heritage-futuristic cosmic background with grid overlay"
+        alt="Futuristic cosmic background with grid overlay"
         className="absolute inset-0 w-full h-full object-cover opacity-60"
         fetchPriority="high"
         loading="eager"
@@ -36,7 +36,7 @@ const HeroSection = () => {
         </h1>
         
         <p className="font-roboto text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Discover tomorrow's technology today through a Heritage-futuristic lens. 
+          Discover tomorrow's technology today through a futuristic lens. 
           Where innovation meets culture in the digital frontier.
         </p>
         

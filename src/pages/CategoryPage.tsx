@@ -32,7 +32,7 @@ const CategoryPage = () => {
       },
       culture: {
         title: "Tech Culture",
-        description: "Dive into the intersection of technology, society, and Heritage-futuristic innovations.",
+        description: "Dive into the intersection of technology, society, and futuristic innovations.",
         color: "from-purple-500 to-pink-600",
         icon: "🌍",
         stats: { articles: 634, readers: "28K", trending: 8 },
