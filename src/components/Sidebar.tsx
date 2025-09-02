@@ -105,7 +105,7 @@ const Sidebar = () => {
         </div>
         
         <p className="text-sm text-muted-foreground mb-4 font-roboto">
-          Get the latest in Afro-futuristic technology delivered to your inbox.
+          Get the latest in Heritage-futuristic technology delivered to your inbox.
         </p>
         
         <div className="space-y-3">
