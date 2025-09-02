@@ -7,14 +7,17 @@ import {
   Youtube,
   Rss
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
+  const navigate = useNavigate();
+
   const categories = [
-    { name: "AI", href: "/?category=ai" },
-    { name: "Startups", href: "/?category=startups" },
-    { name: "Culture", href: "/?category=culture" },
-    { name: "Gadgets", href: "/?category=gadgets" },
-    { name: "Security", href: "/?category=security" }
+    { name: "AI", href: "/category/ai" },
+    { name: "Startups", href: "/category/startups" },
+    { name: "Culture", href: "/category/culture" },
+    { name: "Gadgets", href: "/category/gadgets" },
+    { name: "Security", href: "/category/security" }
   ];
 
   const socialLinks = [
@@ -53,13 +56,13 @@ const Footer = () => {
             </h4>
             <nav className="space-y-2">
               {categories.map((category) => (
-                <a
+                <button
                   key={category.name}
-                  href={category.href}
-                  className="block text-muted-foreground hover:text-primary transition-colors font-roboto"
+                  onClick={() => navigate(category.href)}
+                  className="block text-muted-foreground hover:text-primary transition-colors font-roboto bg-transparent border-none cursor-pointer text-left"
                 >
                   {category.name}
-                </a>
+                </button>
               ))}
             </nav>
           </div>
@@ -99,30 +102,24 @@ const Footer = () => {
               © 2024 RootsTechNews. All rights reserved. Built with love and innovation.
             </p>
             <div className="flex items-center gap-6 text-sm">
-              <a 
-                href="/privacy" 
-                className="text-muted-foreground hover:text-primary transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button 
+                onClick={() => navigate('/privacy')}
+                className="text-muted-foreground hover:text-primary transition-colors bg-transparent border-none cursor-pointer"
               >
                 Privacy Policy
-              </a>
-              <a 
-                href="/terms" 
-                className="text-muted-foreground hover:text-primary transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
+              </button>
+              <button 
+                onClick={() => navigate('/terms')}
+                className="text-muted-foreground hover:text-primary transition-colors bg-transparent border-none cursor-pointer"
               >
                 Terms of Service
-              </a>
-              <a 
-                href="/contact" 
-                className="text-muted-foreground hover:text-primary transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
+              </button>
+              <button 
+                onClick={() => navigate('/contact')}
+                className="text-muted-foreground hover:text-primary transition-colors bg-transparent border-none cursor-pointer"
               >
                 Contact
-              </a>
+              </button>
             </div>
           </div>
         </div>

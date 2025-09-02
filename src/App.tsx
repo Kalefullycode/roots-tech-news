@@ -8,6 +8,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import PreconnectHints from "@/components/PreconnectHints";
 import Index from "./pages/Index";
+import CategoryPage from "./pages/CategoryPage";
+import ContactPage from "./pages/ContactPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import TermsPage from "./pages/TermsPage";
 
 // Lazy load the 404 page since it's only needed when user hits an invalid route
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -34,6 +38,10 @@ const App: React.FC = () => {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/category/:category" element={<CategoryPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
               <Route 
                 path="*" 
                 element={

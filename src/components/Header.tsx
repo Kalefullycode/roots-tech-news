@@ -3,25 +3,26 @@ import { Search, Menu, X, Rss } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const categories = [
-    { name: "AI", url: "/?category=ai" },
-    { name: "Startups", url: "/?category=startups" },
-    { name: "Culture", url: "/?category=culture" },
-    { name: "Gadgets", url: "/?category=gadgets" },
-    { name: "Security", url: "/?category=security" }
+    { name: "AI", url: "/category/ai" },
+    { name: "Startups", url: "/category/startups" },
+    { name: "Culture", url: "/category/culture" },
+    { name: "Gadgets", url: "/category/gadgets" },
+    { name: "Security", url: "/category/security" }
   ];
 
-  const handleCategoryClick = (categoryName: string) => {
-    // Scroll to main content and apply filter
-    const mainFeed = document.querySelector('main');
-    mainFeed?.scrollIntoView({ behavior: 'smooth' });
-    
-    // You could add category filtering logic here
-    console.log(`Filtering by category: ${categoryName}`);
+  const handleCategoryClick = (categoryUrl: string) => {
+    navigate(categoryUrl);
+  };
+
+  const handleHomeClick = () => {
+    navigate('/');
   };
 
   return (
@@ -29,7 +30,7 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 cursor-pointer" onClick={handleHomeClick}>
             <div className="flex items-center space-x-2">
               <Rss className="h-6 w-6 text-accent glow-accent" />
               <h1 className="font-orbitron text-2xl font-bold text-glow-primary">
@@ -46,7 +47,7 @@ const Header = () => {
             {categories.map((category) => (
               <button
                 key={category.name}
-                onClick={() => handleCategoryClick(category.name)}
+                onClick={() => handleCategoryClick(category.url)}
                 className="font-roboto font-medium text-foreground hover:text-primary transition-colors duration-200 hover:text-glow-primary bg-transparent border-none cursor-pointer"
               >
                 {category.name}
@@ -96,7 +97,7 @@ const Header = () => {
                 <button
                   key={category.name}
                   onClick={() => {
-                    handleCategoryClick(category.name);
+                    handleCategoryClick(category.url);
                     setIsMenuOpen(false);
                   }}
                   className="font-orbitron text-lg font-medium text-foreground hover:text-primary transition-colors py-2 text-left bg-transparent border-none cursor-pointer w-full"

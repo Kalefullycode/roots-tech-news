@@ -5,6 +5,7 @@ import HeroSection from "@/components/HeroSection";
 // Lazy load below-the-fold and non-critical components for better performance
 const Header = lazy(() => import("@/components/Header"));
 const MainFeed = lazy(() => import("@/components/MainFeed"));
+const DailyAINews = lazy(() => import("@/components/DailyAINews"));
 const Sidebar = lazy(() => import("@/components/Sidebar"));
 const Footer = lazy(() => import("@/components/Footer"));
 
@@ -66,6 +67,13 @@ const Index = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
           <section className="lg:col-span-3" aria-label="Latest tech news and articles">
+            {/* Daily AI News Section */}
+            <Suspense fallback={<div className="h-32 bg-muted animate-pulse rounded-lg mb-8" />}>
+              <div className="mb-12">
+                <DailyAINews />
+              </div>
+            </Suspense>
+            
             <Suspense fallback={<div className="space-y-6"><div className="h-8 bg-muted animate-pulse rounded" /><div className="h-96 bg-muted animate-pulse rounded-lg" /><div className="grid grid-cols-1 md:grid-cols-2 gap-6"><div className="h-48 bg-muted animate-pulse rounded-lg" /><div className="h-48 bg-muted animate-pulse rounded-lg" /></div></div>}>
               <MainFeed />
             </Suspense>
