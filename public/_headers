@@ -29,14 +29,14 @@
 *.woff2
   Cache-Control: public, max-age=31536000, immutable
 
-# Cache HTML for 1 hour
+# Specific file patterns for better coverage
+/placeholder.svg
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache HTML for 1 hour (must come after static assets)
 /*.html
   Cache-Control: public, max-age=3600
 
 # Root HTML
 /
   Cache-Control: public, max-age=3600
-
-# Specific file patterns for better coverage
-/placeholder.svg
-  Cache-Control: public, max-age=31536000, immutable
