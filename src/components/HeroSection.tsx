@@ -46,8 +46,10 @@ const HeroSection = () => {
             className="bg-gradient-hero hover:glow-primary font-orbitron font-bold text-lg px-8 py-6 focus:ring-2 focus:ring-ring focus:ring-offset-2"
             aria-label="Explore future technology articles and news"
             onClick={() => {
-              const mainFeed = document.querySelector('main');
-              mainFeed?.scrollIntoView({ behavior: 'smooth' });
+              requestAnimationFrame(() => {
+                const mainFeed = document.querySelector('main');
+                mainFeed?.scrollIntoView({ behavior: 'smooth' });
+              });
             }}
           >
             EXPLORE THE FUTURE
@@ -58,8 +60,10 @@ const HeroSection = () => {
             className="border-neon font-orbitron font-bold text-lg px-8 py-6 hover:bg-primary/10 focus:ring-2 focus:ring-ring focus:ring-offset-2"
             aria-label="Stay connected with tech culture and community"
             onClick={() => {
-              const footer = document.querySelector('footer');
-              footer?.scrollIntoView({ behavior: 'smooth' });
+              requestAnimationFrame(() => {
+                const footer = document.querySelector('footer');
+                footer?.scrollIntoView({ behavior: 'smooth' });
+              });
             }}
           >
             STAY ROOTED
