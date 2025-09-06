@@ -60,7 +60,8 @@
     
     <!-- Preload critical bundled assets to break dependency chains -->
     <link rel="modulepreload" href="assets/index-BWAj1gHi.js" fetchpriority="high" />
-    <link rel="preload" href="assets/index-Cf4NFmxd.css" as="style" fetchpriority="high" />
+    <link rel="preload" href="assets/index-Cf4NFmxd.css" as="style" fetchpriority="high" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="assets/index-Cf4NFmxd.css" /></noscript>
     
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
