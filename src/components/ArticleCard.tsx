@@ -47,8 +47,8 @@ const ArticleCard = ({ title, excerpt, category, date, imageUrl, featured = fals
       <div className={`relative overflow-hidden ${featured ? 'h-80' : 'h-52'} rounded-t-lg`}>
         <img 
           src={imageUrl} 
-          srcSet={`${imageUrl} 1x`}
-          sizes={featured ? "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" : "(max-width: 768px) 100vw, 50vw"}
+          srcSet={`${imageUrl} 800w`}
+          sizes={featured ? "(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 60vw" : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"}
           alt={`${title} - ${category} article thumbnail`}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
