@@ -1,8 +1,24 @@
-# Cache static assets for 1 year - broad pattern first
+# Cache all static assets for 1 year - most specific patterns first
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Cache images for 1 year  
+# Cache specific bundled assets
+/assets/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.png
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache image formats globally
 *.webp
   Cache-Control: public, max-age=31536000, immutable
 
@@ -15,35 +31,22 @@
 *.svg
   Cache-Control: public, max-age=31536000, immutable
 
-# Cache JS and CSS for 1 year
+# Cache JavaScript and CSS globally
 *.js
   Cache-Control: public, max-age=31536000, immutable
 
 *.css
   Cache-Control: public, max-age=31536000, immutable
 
-# Cache fonts for 1 year
+# Cache fonts
 *.woff
   Cache-Control: public, max-age=31536000, immutable
 
 *.woff2
   Cache-Control: public, max-age=31536000, immutable
 
-# Specific file patterns for better coverage
+# Cache placeholder specifically
 /placeholder.svg
-  Cache-Control: public, max-age=31536000, immutable
-
-# Cache bundled vendor and UI assets specifically
-/assets/vendor-*.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/assets/ui-*.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/assets/index-*.js
-  Cache-Control: public, max-age=31536000, immutable
-
-/assets/index-*.css
   Cache-Control: public, max-age=31536000, immutable
 
 # Cache HTML for 1 hour (must come after static assets)
