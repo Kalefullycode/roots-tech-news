@@ -1,5 +1,6 @@
 import { useEffect, Suspense, lazy } from "react";
-import BreakingNewsBanner from "@/components/BreakingNewsBanner";
+// Lazy load breaking news banner since it's not critical for first contentful paint
+const BreakingNewsBanner = lazy(() => import("@/components/BreakingNewsBanner"));
 import HeroSection from "@/components/HeroSection";
 
 // Lazy load below-the-fold and non-critical components for better performance
@@ -57,7 +58,9 @@ const Index = () => {
         Skip to main content
       </a>
       
-      <BreakingNewsBanner />
+      <Suspense fallback={<div className="h-12 bg-background animate-pulse" />}>
+        <BreakingNewsBanner />
+      </Suspense>
       <Suspense fallback={<div className="h-16 bg-background border-b border-border animate-pulse" />}>
         <Header />
       </Suspense>
