@@ -2,7 +2,7 @@
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Cache specific bundled assets
+# Cache specific bundled assets with hash names
 /assets/*.js
   Cache-Control: public, max-age=31536000, immutable
 
@@ -16,6 +16,9 @@
   Cache-Control: public, max-age=31536000, immutable
 
 /assets/*.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.svg
   Cache-Control: public, max-age=31536000, immutable
 
 # Cache image formats globally
@@ -47,6 +50,22 @@
 
 # Cache placeholder specifically
 /placeholder.svg
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache all files in public root with long names (likely hashed)
+/*-*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/*-*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+/*-*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/*-*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+
+/*-*.png
   Cache-Control: public, max-age=31536000, immutable
 
 # Cache HTML for 1 hour (must come after static assets)
