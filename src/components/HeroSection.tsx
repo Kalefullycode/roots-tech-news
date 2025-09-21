@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import heroBg from "@/assets/hero-bg.webp";
+import heroBg800 from "@/assets/hero-bg-800w.webp";
+import heroBg1200 from "@/assets/hero-bg-1200w.webp";
 
 const HeroSection = () => {
   return (
@@ -9,9 +11,9 @@ const HeroSection = () => {
     >
       {/* Background Image - Optimized for LCP */}
       <img 
-        src={heroBg}
-        srcSet={`${heroBg} 1920w`}
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1920px"
+        src={heroBg1200}
+        srcSet={`${heroBg800} 800w, ${heroBg1200} 1200w, ${heroBg} 1920w`}
+        sizes="(max-width: 768px) 800px, (max-width: 1200px) 1200px, 1920px"
         alt="Futuristic cosmic background with grid overlay"
         className="absolute inset-0 w-full h-full object-cover opacity-60"
         fetchPriority="high"

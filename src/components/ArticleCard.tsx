@@ -1,5 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import gadgetArticle512 from "@/assets/gadget-article-512w.webp";
+import gadgetArticle768 from "@/assets/gadget-article-768w.webp";
+import gadgetArticleOriginal from "@/assets/gadget-article.webp";
 
 interface ArticleCardProps {
   title: string;
@@ -46,9 +49,12 @@ const ArticleCard = ({ title, excerpt, category, date, imageUrl, featured = fals
       {/* Image Container */}
       <div className={`relative overflow-hidden ${featured ? 'h-80' : 'h-52'} rounded-t-lg`}>
         <img 
-          src={imageUrl} 
-          srcSet={`${imageUrl} 800w`}
-          sizes={featured ? "(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 60vw" : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"}
+          src={imageUrl.includes('gadget-article') ? gadgetArticle768 : imageUrl} 
+          srcSet={imageUrl.includes('gadget-article') 
+            ? `${gadgetArticle512} 512w, ${gadgetArticle768} 768w, ${gadgetArticleOriginal} 1024w`
+            : `${imageUrl} 400w, ${imageUrl} 800w`
+          }
+          sizes={featured ? "(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 800px" : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"}
           alt={`${title} - ${category} article thumbnail`}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
