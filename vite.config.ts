@@ -29,6 +29,10 @@ export default defineConfig(({ mode }) => ({
       },
     },
     assetsInlineLimit: 0, // Don't inline assets to ensure proper caching
+    modulePreload: {
+      polyfill: false, // Reduce bundle size by not including polyfill
+    },
+    cssCodeSplit: false, // Combine CSS into single file to reduce request chains
   },
   // Ensure proper cache headers for production
   preview: {
