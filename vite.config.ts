@@ -37,14 +37,7 @@ export default defineConfig(({ mode }) => ({
       polyfill: false, // Reduce bundle size by not including polyfill
     },
     cssCodeSplit: false, // Combine CSS into single file to reduce request chains
-    minify: 'terser', // Use terser for better dead code elimination
-    terserOptions: {
-      compress: {
-        drop_console: true, // Remove console.logs in production
-        drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info', 'console.debug'],
-      },
-    },
+    minify: true, // Use default esbuild minifier for dead code elimination
   },
   // Ensure proper cache headers for production
   preview: {
