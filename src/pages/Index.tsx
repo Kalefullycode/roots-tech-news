@@ -1,7 +1,8 @@
 import { useEffect, Suspense, lazy } from "react";
 // Lazy load breaking news banner since it's not critical for first contentful paint
 const BreakingNewsBanner = lazy(() => import("@/components/BreakingNewsBanner"));
-import HeroSection from "@/components/HeroSection";
+// Lazy load hero section to reduce initial bundle size
+const HeroSection = lazy(() => import("@/components/HeroSection"));
 
 // Lazy load below-the-fold and non-critical components for better performance
 const Header = lazy(() => import("@/components/Header"));
@@ -64,7 +65,9 @@ const Index = () => {
       <Suspense fallback={<div className="h-16 bg-background border-b border-border animate-pulse" />}>
         <Header />
       </Suspense>
-      <HeroSection />
+      <Suspense fallback={<div className="min-h-[70vh] bg-gradient-to-r from-background/80 via-background/40 to-background/80 animate-pulse" />}>
+        <HeroSection />
+      </Suspense>
       
       <main id="main-content" className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
