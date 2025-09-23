@@ -65,7 +65,19 @@ const Index = () => {
       <Suspense fallback={<div className="h-16 bg-background border-b border-border animate-pulse" />}>
         <Header />
       </Suspense>
-      <Suspense fallback={<div className="min-h-[70vh] bg-gradient-to-r from-background/80 via-background/40 to-background/80 animate-pulse" />}>
+      <Suspense fallback={
+        <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-starfield" aria-label="Loading hero section">
+          <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/40 to-background/80" />
+          <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
+            <div className="h-24 bg-muted/20 rounded-lg mb-6 animate-pulse-safe" />
+            <div className="h-16 bg-muted/10 rounded-lg mb-8 max-w-2xl mx-auto animate-pulse-safe" />
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="h-14 w-48 bg-muted/20 rounded-lg animate-pulse-safe" />
+              <div className="h-14 w-36 bg-muted/10 rounded-lg animate-pulse-safe" />
+            </div>
+          </div>
+        </section>
+      }>
         <HeroSection />
       </Suspense>
       
