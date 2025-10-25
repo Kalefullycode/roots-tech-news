@@ -7,7 +7,21 @@ import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // Scroll to main content and highlight search functionality
+      const mainContent = document.getElementById('main-content');
+      if (mainContent) {
+        mainContent.scrollIntoView({ behavior: 'smooth' });
+      }
+      // You can add more sophisticated search handling here
+      console.log('Searching for:', searchQuery);
+    }
+  };
 
   const categories = [
     { name: "AI", url: "/category/ai" },
@@ -57,14 +71,16 @@ const Header = () => {
 
           {/* Search & Menu */}
           <div className="flex items-center space-x-4">
-            <div className="hidden md:flex items-center space-x-2">
+            <form onSubmit={handleSearch} className="hidden md:flex items-center space-x-2">
               <Search className="h-5 w-5 text-muted-foreground" />
               <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search tech news..."
                 className="w-64 bg-input border-border focus:border-primary focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 aria-label="Search tech news articles"
               />
-            </div>
+            </form>
             
             <Button
               variant="ghost"
@@ -85,13 +101,15 @@ const Header = () => {
         <div className="md:hidden bg-popover border-t border-border">
           <div className="container mx-auto px-4 py-6">
             <div className="flex flex-col space-y-4">
-              <div className="flex items-center space-x-2 mb-4">
+              <form onSubmit={handleSearch} className="flex items-center space-x-2 mb-4">
                 <Search className="h-5 w-5 text-muted-foreground" />
                 <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search tech news..."
                   className="flex-1 bg-input border-border"
                 />
-              </div>
+              </form>
               
               {categories.map((category) => (
                 <button

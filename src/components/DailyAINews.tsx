@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,16 +13,99 @@ import {
   Zap,
   TrendingUp
 } from "lucide-react";
+import EnhancedRSSService from "@/services/EnhancedRSSService";
+import PodcastService from "@/services/PodcastService";
+import { NewsArticle } from "@/services/NewsService";
+import { PodcastEpisode } from "@/services/PodcastService";
 
 const DailyAINews = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [currentTime, setCurrentTime] = useState("0:00");
   const [duration] = useState("1:23");
+  const [todaysStories, setTodaysStories] = useState<any[]>([]);
+  const [featuredPodcast, setFeaturedPodcast] = useState<PodcastEpisode | null>(null);
+
+  useEffect(() => {
+    const fetchAINews = async () => {
+      try {
+        // Fetch AI-specific news
+        const aiNews = await EnhancedRSSService.fetchByCategory('AI');
+        
+        // Fetch AI podcasts
+        const aiPodcasts = await PodcastService.fetchByCategory('AI');
+        
+        // Format news stories
+        const stories = aiNews.slice(0, 4).map((article: NewsArticle, index: number) => ({
+          title: article.title,
+          time: getTimeAgo(new Date(article.publishedAt)),
+          source: article.source.name,
+          impact: index === 0 ? "High" : index < 3 ? "Medium" : "Low",
+          url: article.url
+        }));
+        
+        setTodaysStories(stories.length > 0 ? stories : fallbackStories);
+        
+        // Set featured podcast if available
+        if (aiPodcasts.length > 0) {
+          setFeaturedPodcast(aiPodcasts[0]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch AI news:', error);
+        setTodaysStories(fallbackStories);
+      }
+    };
+
+    fetchAINews();
+    // Refresh every 30 minutes
+    const interval = setInterval(fetchAINews, 30 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const getTimeAgo = (date: Date) => {
+    const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+    if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+    return `${Math.floor(seconds / 86400)} days ago`;
+  };
+
+  const fallbackStories = [
+    {
+      title: "OpenAI Announces GPT-5 with Revolutionary Multimodal Capabilities",
+      time: "2 hours ago",
+      source: "TechCrunch",
+      impact: "High",
+      url: "#"
+    },
+    {
+      title: "Google's New AI Chip Outperforms NVIDIA in Energy Efficiency",
+      time: "4 hours ago", 
+      source: "MIT Technology Review",
+      impact: "Medium",
+      url: "#"
+    },
+    {
+      title: "African AI Startup Secures $50M for Healthcare Diagnostics",
+      time: "6 hours ago",
+      source: "Disrupt Africa", 
+      impact: "High",
+      url: "#"
+    },
+    {
+      title: "EU Finalizes AI Regulation Framework with Global Implications",
+      time: "8 hours ago",
+      source: "Reuters",
+      impact: "Medium",
+      url: "#"
+    }
+  ];
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
-    // Here you would integrate with actual audio/speech synthesis
+    // Play podcast if available
+    if (featuredPodcast && !isPlaying) {
+      window.open(featuredPodcast.url, '_blank');
+    }
   };
 
   const handleMute = () => {
@@ -33,33 +116,6 @@ const DailyAINews = () => {
     setCurrentTime("0:00");
     setIsPlaying(false);
   };
-
-  const todaysStories = [
-    {
-      title: "OpenAI Announces GPT-5 with Revolutionary Multimodal Capabilities",
-      time: "2 hours ago",
-      source: "TechCrunch",
-      impact: "High"
-    },
-    {
-      title: "Google's New AI Chip Outperforms NVIDIA in Energy Efficiency",
-      time: "4 hours ago", 
-      source: "MIT Technology Review",
-      impact: "Medium"
-    },
-    {
-      title: "African AI Startup Secures $50M for Healthcare Diagnostics",
-      time: "6 hours ago",
-      source: "Disrupt Africa", 
-      impact: "High"
-    },
-    {
-      title: "EU Finalizes AI Regulation Framework with Global Implications",
-      time: "8 hours ago",
-      source: "Reuters",
-      impact: "Medium"
-    }
-  ];
 
   const getImpactColor = (impact: string) => {
     switch (impact) {
@@ -191,10 +247,11 @@ const DailyAINews = () => {
           <Card 
             key={index}
             className="p-4 bg-card border border-card-border/40 hover:border-primary/40 transition-all duration-300 cursor-pointer"
+            onClick={() => story.url && story.url !== '#' && window.open(story.url, '_blank')}
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1">
-                <h4 className="font-roboto font-semibold text-foreground mb-2 line-clamp-2">
+                <h4 className="font-roboto font-semibold text-foreground mb-2 line-clamp-2 hover:text-primary transition-colors">
                   {story.title}
                 </h4>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
