@@ -1,4 +1,5 @@
 import { NewsArticle } from './NewsService';
+import ContentFilter from './ContentFilter';
 
 interface RSSFeed {
   url: string;
@@ -171,7 +172,10 @@ class EnhancedRSSService {
       }
     });
 
-    return allArticles.sort((a, b) => 
+    // Filter out non-AI/tech content
+    const filteredArticles = ContentFilter.filterAndSort(allArticles);
+
+    return filteredArticles.sort((a, b) => 
       new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     );
   }
@@ -195,7 +199,10 @@ class EnhancedRSSService {
       }
     });
 
-    return allArticles.sort((a, b) => 
+    // Filter out non-AI/tech content
+    const filteredArticles = ContentFilter.filterAndSort(allArticles);
+
+    return filteredArticles.sort((a, b) => 
       new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     );
   }

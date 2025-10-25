@@ -1,3 +1,5 @@
+import ContentFilter from './ContentFilter';
+
 export interface PodcastEpisode {
   id: string;
   title: string;
@@ -119,7 +121,10 @@ class PodcastService {
       }
     });
 
-    return allEpisodes.sort((a, b) => 
+    // Filter out non-AI/tech content
+    const filteredEpisodes = ContentFilter.filterAndSort(allEpisodes);
+
+    return filteredEpisodes.sort((a, b) => 
       new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     );
   }

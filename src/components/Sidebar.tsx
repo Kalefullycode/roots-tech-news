@@ -15,9 +15,16 @@ const Sidebar = () => {
   useEffect(() => {
     const fetchFeaturedVideo = async () => {
       try {
-        const videos = await YouTubeService.fetchByCategory('AI');
-        if (videos.length > 0) {
-          setFeaturedVideo(videos[0]);
+        // Get the best AI/tech video available
+        const video = await YouTubeService.getFeaturedVideo();
+        if (video) {
+          setFeaturedVideo(video);
+        } else {
+          // Try AI category as fallback
+          const videos = await YouTubeService.fetchByCategory('AI');
+          if (videos.length > 0) {
+            setFeaturedVideo(videos[0]);
+          }
         }
       } catch (error) {
         console.error('Failed to fetch featured video:', error);
@@ -25,6 +32,10 @@ const Sidebar = () => {
     };
 
     fetchFeaturedVideo();
+    
+    // Refresh every 10 minutes
+    const interval = setInterval(fetchFeaturedVideo, 10 * 60 * 1000);
+    return () => clearInterval(interval);
   }, []);
 
   const fallbackTrending = [

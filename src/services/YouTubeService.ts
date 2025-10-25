@@ -1,3 +1,5 @@
+import ContentFilter from './ContentFilter';
+
 export interface YouTubeVideo {
   id: string;
   title: string;
@@ -109,9 +111,22 @@ class YouTubeService {
       }
     });
 
-    return allVideos.sort((a, b) => 
+    // Filter out non-AI/tech content
+    const filteredVideos = ContentFilter.filterAndSort(allVideos);
+
+    return filteredVideos.sort((a, b) => 
       new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     );
+  }
+
+  async getFeaturedVideo(): Promise<YouTubeVideo | null> {
+    try {
+      const videos = await this.fetchAllVideos();
+      return videos.length > 0 ? videos[0] : null;
+    } catch (error) {
+      console.error('Failed to fetch featured video:', error);
+      return null;
+    }
   }
 
   async fetchByCategory(category: string): Promise<YouTubeVideo[]> {
@@ -133,7 +148,10 @@ class YouTubeService {
       }
     });
 
-    return allVideos.sort((a, b) => 
+    // Filter out non-AI/tech content
+    const filteredVideos = ContentFilter.filterAndSort(allVideos);
+
+    return filteredVideos.sort((a, b) => 
       new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     );
   }
