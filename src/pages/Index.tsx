@@ -14,6 +14,7 @@ const Sidebar = lazy(() => import("@/components/Sidebar"));
 const YouTubeSection = lazy(() => import("@/components/YouTubeSection"));
 const PodcastSection = lazy(() => import("@/components/PodcastSection"));
 const AIToolsSection = lazy(() => import("@/components/AIToolsSection"));
+const AIToolsDirectoryFull = lazy(() => import("@/components/AIToolsDirectoryFull"));
 const BooksSection = lazy(() => import("@/components/BooksSection"));
 const Footer = lazy(() => import("@/components/Footer"));
 
@@ -106,26 +107,6 @@ const Index = () => {
             <Suspense fallback={<div className="space-y-6"><div className="h-8 bg-muted animate-pulse rounded" /><div className="h-96 bg-muted animate-pulse rounded-lg" /><div className="grid grid-cols-1 md:grid-cols-2 gap-6"><div className="h-48 bg-muted animate-pulse rounded-lg" /><div className="h-48 bg-muted animate-pulse rounded-lg" /></div></div>}>
               <MainFeed />
             </Suspense>
-
-            {/* YouTube Videos Section */}
-            <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg mb-8" />}>
-              <YouTubeSection />
-            </Suspense>
-
-            {/* AI Tools Section */}
-            <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg mb-8" />}>
-              <AIToolsSection />
-            </Suspense>
-
-            {/* Podcast Section */}
-            <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg mb-8" />}>
-              <PodcastSection />
-            </Suspense>
-
-            {/* Books Section */}
-            <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg mb-8" />}>
-              <BooksSection />
-            </Suspense>
           </section>
           
           {/* Sidebar */}
@@ -136,6 +117,35 @@ const Index = () => {
           </aside>
         </div>
       </main>
+
+      {/* Full Width Sections */}
+      <div className="w-full">
+        {/* AI Tools Directory - Full Section */}
+        <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
+          <AIToolsDirectoryFull />
+        </Suspense>
+
+        {/* YouTube Videos Section */}
+        <div className="container mx-auto px-4">
+          <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg mb-8" />}>
+            <YouTubeSection />
+          </Suspense>
+        </div>
+
+        {/* Podcast Section */}
+        <div className="container mx-auto px-4">
+          <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg mb-8" />}>
+            <PodcastSection />
+          </Suspense>
+        </div>
+
+        {/* Books Section */}
+        <div className="container mx-auto px-4">
+          <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg mb-8" />}>
+            <BooksSection />
+          </Suspense>
+        </div>
+      </div>
       
       <Suspense fallback={<div className="h-32 bg-muted animate-pulse" />}>
         <Footer />

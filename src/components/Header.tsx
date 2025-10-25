@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { Search, Menu, X, Rss } from "lucide-react";
+import { Search, Menu, X, Rss, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
+import { NAVIGATION_STRUCTURE } from "@/data/navigationStructure";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [mobileDropdown, setMobileDropdown] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -20,6 +23,22 @@ const Header = () => {
       }
       // You can add more sophisticated search handling here
       console.log('Searching for:', searchQuery);
+    }
+  };
+
+  const handleCategoryClick = (categoryUrl: string) => {
+    navigate(categoryUrl);
+  };
+
+  const handleSectionClick = (href: string) => {
+    setActiveDropdown(null);
+    setMobileDropdown(null);
+    setIsMenuOpen(false);
+    
+    // Smooth scroll to section
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -58,14 +77,47 @@ const Header = () => {
 
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-8" role="navigation" aria-label="Main navigation">
-            {categories.map((category) => (
-              <button
+            {NAVIGATION_STRUCTURE.map((category) => (
+              <div
                 key={category.name}
-                onClick={() => handleCategoryClick(category.url)}
-                className="font-roboto font-medium text-foreground hover:text-primary transition-colors duration-200 hover:text-glow-primary bg-transparent border-none cursor-pointer"
+                className="relative"
+                onMouseEnter={() => setActiveDropdown(category.name)}
+                onMouseLeave={() => setActiveDropdown(null)}
               >
-                {category.name}
-              </button>
+                <button
+                  onClick={() => handleCategoryClick(`/category/${category.name.toLowerCase()}`)}
+                  className="font-roboto font-medium text-foreground hover:text-primary transition-colors duration-200 hover:text-glow-primary bg-transparent border-none cursor-pointer flex items-center gap-1"
+                >
+                  {category.name}
+                  <ChevronDown 
+                    className={`h-4 w-4 transition-transform duration-200 ${
+                      activeDropdown === category.name ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+
+                {/* Dropdown Menu */}
+                {activeDropdown === category.name && (
+                  <div className="absolute top-full left-0 mt-2 w-80 bg-card border border-card-border rounded-lg shadow-2xl py-2 z-50 backdrop-blur-md">
+                    {category.sections.map((section) => (
+                      <button
+                        key={section.href}
+                        onClick={() => handleSectionClick(section.href)}
+                        className="w-full text-left block px-4 py-3 hover:bg-primary/10 transition-colors border-b border-border/30 last:border-0"
+                      >
+                        <div className="font-medium text-foreground text-sm">
+                          {section.title}
+                        </div>
+                        {section.description && (
+                          <div className="text-xs text-muted-foreground mt-0.5">
+                            {section.description}
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </nav>
 
@@ -111,17 +163,41 @@ const Header = () => {
                 />
               </form>
               
-              {categories.map((category) => (
-                <button
-                  key={category.name}
-                  onClick={() => {
-                    handleCategoryClick(category.url);
-                    setIsMenuOpen(false);
-                  }}
-                  className="font-orbitron text-lg font-medium text-foreground hover:text-primary transition-colors py-2 text-left bg-transparent border-none cursor-pointer w-full"
-                >
-                  {category.name}
-                </button>
+              {NAVIGATION_STRUCTURE.map((category) => (
+                <div key={category.name} className="mb-2">
+                  <button
+                    onClick={() => {
+                      if (mobileDropdown === category.name) {
+                        setMobileDropdown(null);
+                      } else {
+                        setMobileDropdown(category.name);
+                      }
+                    }}
+                    className="font-orbitron text-lg font-medium text-foreground hover:text-primary transition-colors py-2 text-left bg-transparent border-none cursor-pointer w-full flex items-center justify-between"
+                  >
+                    <span>{category.name}</span>
+                    <ChevronDown 
+                      className={`h-4 w-4 transition-transform ${
+                        mobileDropdown === category.name ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+                  
+                  {/* Mobile Dropdown */}
+                  {mobileDropdown === category.name && (
+                    <div className="ml-4 mt-2 space-y-2">
+                      {category.sections.map((section) => (
+                        <button
+                          key={section.href}
+                          onClick={() => handleSectionClick(section.href)}
+                          className="w-full text-left block px-3 py-2 text-sm text-muted-foreground hover:text-primary transition-colors bg-transparent border-none cursor-pointer"
+                        >
+                          {section.title}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </div>

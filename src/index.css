@@ -92,6 +92,15 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Offset for fixed header when scrolling to anchors */
+  section[id] {
+    scroll-margin-top: 100px;
+  }
+
   body {
     @apply bg-background text-foreground font-roboto;
     background-image: 
