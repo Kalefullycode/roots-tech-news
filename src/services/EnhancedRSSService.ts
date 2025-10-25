@@ -45,7 +45,6 @@ class EnhancedRSSService {
     
     // Quantum & Physics
     { url: 'https://www.quantamagazine.org/feed/', name: 'Quanta Magazine', category: 'Innovation' },
-    { url: 'https://phys.org/rss-feed/', name: 'Phys.org', category: 'Innovation' },
     
     // Innovation & Science
     { url: 'https://www.sciencedaily.com/rss/computers_math/computer_science.xml', name: 'ScienceDaily', category: 'Innovation' },
