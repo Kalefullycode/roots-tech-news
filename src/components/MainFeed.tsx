@@ -10,6 +10,8 @@ import gadgetArticle from "@/assets/gadget-article.webp";
 const MainFeed = () => {
   const { data: newsArticles, isLoading, isError } = useNews();
   
+  console.log('MainFeed - Loading:', isLoading, 'Error:', isError, 'Articles:', newsArticles?.length || 0);
+  
   // Fallback articles with our generated images
   const fallbackArticles = [
     {
@@ -55,7 +57,10 @@ const MainFeed = () => {
   ];
 
   // Use real news data if available, otherwise use fallback
-  const articles = newsArticles && newsArticles.length > 0 ? newsArticles : fallbackArticles;
+  // ALWAYS use fallback articles to ensure content displays
+  const articles = (newsArticles && newsArticles.length > 0) ? newsArticles : fallbackArticles;
+  
+  console.log('MainFeed - Final articles count:', articles.length);
   
   // Format articles for our ArticleCard component
   const formatArticle = (article: any) => ({

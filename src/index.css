@@ -18,9 +18,9 @@
 
 @layer base {
   :root {
-    /* Deep Black Background */
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
+    /* Dark Background with subtle depth */
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
 
     /* Electric Purple Theme */
     --primary: 270 76% 53%; /* Electric Purple #8A2BE2 */
@@ -46,10 +46,10 @@
     --cyber-pink-glow: 330 100% 80%;
 
     /* Cards & Surfaces */
-    --card: 0 0% 5%;
+    --card: 240 10% 8%;
     --card-foreground: 0 0% 95%;
-    --card-border: 270 30% 15%;
-    --card-modern: linear-gradient(145deg, hsl(0 0% 6%), hsl(0 0% 4%));
+    --card-border: 270 30% 18%;
+    --card-modern: linear-gradient(145deg, hsl(240 10% 9%), hsl(240 10% 7%));
 
     /* Popover & Overlays */
     --popover: 0 0% 8%;

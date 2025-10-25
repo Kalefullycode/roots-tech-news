@@ -1,5 +1,5 @@
 
-import RSSService from './RSSService';
+import EnhancedRSSService from './EnhancedRSSService';
 
 export interface NewsArticle {
   id: string;
@@ -16,11 +16,11 @@ export interface NewsArticle {
 }
 
 export class NewsService {
-  // Use the more efficient RSSService instead of making multiple API calls
+  // Use the more efficient EnhancedRSSService instead of making multiple API calls
   static async fetchAggregatedNews(): Promise<NewsArticle[]> {
     try {
       // Use the consolidated RSS service which handles caching and efficient requests
-      const articles = await RSSService.fetchAllRSSFeeds();
+      const articles = await EnhancedRSSService.fetchAllRSSFeeds();
       
       // If RSS service returns articles, use them
       if (articles && articles.length > 0) {

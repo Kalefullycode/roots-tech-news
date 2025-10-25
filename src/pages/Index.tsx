@@ -1,4 +1,6 @@
 import { useEffect, Suspense, lazy } from "react";
+import RealTimeNewsTicker from "@/components/RealTimeNewsTicker";
+
 // Lazy load breaking news banner since it's not critical for first contentful paint
 const BreakingNewsBanner = lazy(() => import("@/components/BreakingNewsBanner"));
 // Lazy load hero section to reduce initial bundle size
@@ -9,6 +11,10 @@ const Header = lazy(() => import("@/components/Header"));
 const MainFeed = lazy(() => import("@/components/MainFeed"));
 const DailyAINews = lazy(() => import("@/components/DailyAINews"));
 const Sidebar = lazy(() => import("@/components/Sidebar"));
+const YouTubeSection = lazy(() => import("@/components/YouTubeSection"));
+const PodcastSection = lazy(() => import("@/components/PodcastSection"));
+const AIToolsSection = lazy(() => import("@/components/AIToolsSection"));
+const BooksSection = lazy(() => import("@/components/BooksSection"));
 const Footer = lazy(() => import("@/components/Footer"));
 
 const Index = () => {
@@ -62,6 +68,10 @@ const Index = () => {
       <Suspense fallback={<div className="h-12 bg-background animate-pulse" />}>
         <BreakingNewsBanner />
       </Suspense>
+      
+      {/* Real-time News Ticker */}
+      <RealTimeNewsTicker />
+      
       <Suspense fallback={<div className="h-16 bg-background border-b border-border animate-pulse" />}>
         <Header />
       </Suspense>
@@ -92,8 +102,29 @@ const Index = () => {
               </div>
             </Suspense>
             
+            {/* Main News Feed */}
             <Suspense fallback={<div className="space-y-6"><div className="h-8 bg-muted animate-pulse rounded" /><div className="h-96 bg-muted animate-pulse rounded-lg" /><div className="grid grid-cols-1 md:grid-cols-2 gap-6"><div className="h-48 bg-muted animate-pulse rounded-lg" /><div className="h-48 bg-muted animate-pulse rounded-lg" /></div></div>}>
               <MainFeed />
+            </Suspense>
+
+            {/* YouTube Videos Section */}
+            <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg mb-8" />}>
+              <YouTubeSection />
+            </Suspense>
+
+            {/* AI Tools Section */}
+            <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg mb-8" />}>
+              <AIToolsSection />
+            </Suspense>
+
+            {/* Podcast Section */}
+            <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg mb-8" />}>
+              <PodcastSection />
+            </Suspense>
+
+            {/* Books Section */}
+            <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg mb-8" />}>
+              <BooksSection />
             </Suspense>
           </section>
           
