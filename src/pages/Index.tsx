@@ -11,7 +11,6 @@ const Header = lazy(() => import("@/components/Header"));
 const MainFeed = lazy(() => import("@/components/MainFeed"));
 const DailyAINews = lazy(() => import("@/components/DailyAINews"));
 const Sidebar = lazy(() => import("@/components/Sidebar"));
-const YouTubeSection = lazy(() => import("@/components/YouTubeSection"));
 const PodcastSection = lazy(() => import("@/components/PodcastSection"));
 const AIToolsSection = lazy(() => import("@/components/AIToolsSection"));
 const AIToolsDirectoryFull = lazy(() => import("@/components/AIToolsDirectoryFull"));
@@ -124,13 +123,6 @@ const Index = () => {
         <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
           <AIToolsDirectoryFull />
         </Suspense>
-
-        {/* YouTube Videos Section */}
-        <div className="container mx-auto px-4">
-          <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg mb-8" />}>
-            <YouTubeSection />
-          </Suspense>
-        </div>
 
         {/* Podcast Section */}
         <div className="container mx-auto px-4">

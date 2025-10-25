@@ -35,6 +35,12 @@ const Header = () => {
     setMobileDropdown(null);
     setIsMenuOpen(false);
     
+    // Check if it's a route navigation
+    if (href.startsWith('/')) {
+      navigate(href);
+      return;
+    }
+    
     // Smooth scroll to section
     const element = document.querySelector(href);
     if (element) {

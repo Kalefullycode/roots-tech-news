@@ -114,6 +114,11 @@ export const NAVIGATION_STRUCTURE: NavCategory[] = [
         description: 'News from the valley'
       },
       {
+        title: 'Tech Videos',
+        href: '/videos',
+        description: 'Latest YouTube content from top tech channels'
+      },
+      {
         title: 'Diversity & Inclusion',
         href: '#diversity',
         description: 'Building inclusive tech'
