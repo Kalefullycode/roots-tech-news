@@ -42,18 +42,6 @@ const Header = () => {
     }
   };
 
-  const categories = [
-    { name: "AI", url: "/category/ai" },
-    { name: "Startups", url: "/category/startups" },
-    { name: "Culture", url: "/category/culture" },
-    { name: "Gadgets", url: "/category/gadgets" },
-    { name: "Security", url: "/category/security" }
-  ];
-
-  const handleCategoryClick = (categoryUrl: string) => {
-    navigate(categoryUrl);
-  };
-
   const handleHomeClick = () => {
     navigate('/');
   };
