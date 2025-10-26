@@ -3,10 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TrendingUp, Mail, Play, ChevronLeft, ChevronRight, Pause } from "lucide-react";
+import { TrendingUp, Mail, Play, ChevronLeft, ChevronRight, Pause, Loader2, CheckCircle2 } from "lucide-react";
 import { useTrendingNews } from "@/hooks/useNews";
 import { useState, useEffect, useCallback } from "react";
 import YouTubeService, { YouTubeVideo } from "@/services/YouTubeService";
+import NewsletterService from "@/services/NewsletterService";
+import { useToast } from "@/hooks/use-toast";
 
 const Sidebar = () => {
   const { data: trendingArticles, isLoading: isTrendingLoading } = useTrendingNews();
@@ -14,6 +16,12 @@ const Sidebar = () => {
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isLoadingVideos, setIsLoadingVideos] = useState(true);
+  
+  // Newsletter state
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchAIVideos = async () => {
@@ -67,6 +75,44 @@ const Sidebar = () => {
 
   const toggleAutoPlay = () => {
     setIsAutoPlaying(!isAutoPlaying);
+  };
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email || isSubmitting || isSubscribed) return;
+
+    setIsSubmitting(true);
+
+    try {
+      const result = await NewsletterService.subscribe(email, 'sidebar');
+
+      if (result.success) {
+        setIsSubscribed(true);
+        setEmail("");
+        toast({
+          title: "🎉 Subscription Successful!",
+          description: result.message,
+          duration: 5000,
+        });
+      } else {
+        toast({
+          title: "❌ Subscription Failed",
+          description: result.message,
+          variant: "destructive",
+          duration: 5000,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "❌ Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const currentVideo = aiVideos[currentVideoIndex];
@@ -167,18 +213,42 @@ const Sidebar = () => {
         </div>
         
         <p className="text-sm text-muted-foreground mb-4 font-roboto">
-          Get the latest in futuristic technology delivered to your inbox.
+          Get the latest in futuristic technology delivered to your inbox weekly.
         </p>
         
-        <div className="space-y-3">
-          <Input 
-            placeholder="Enter your email" 
-            className="bg-input border-border focus:border-neon-blue"
-          />
-          <Button className="w-full bg-gradient-hero glow-primary font-orbitron font-bold">
-            SUBSCRIBE
-          </Button>
-        </div>
+        {isSubscribed ? (
+          <div className="text-center py-6">
+            <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto mb-3 animate-pulse" />
+            <p className="text-green-500 font-semibold mb-1">Successfully Subscribed!</p>
+            <p className="text-xs text-muted-foreground">Check your email for confirmation</p>
+          </div>
+        ) : (
+          <form onSubmit={handleNewsletterSubmit} className="space-y-3">
+            <Input 
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email" 
+              className="bg-input border-border focus:border-neon-blue"
+              disabled={isSubmitting}
+              required
+            />
+            <Button 
+              type="submit"
+              className="w-full bg-gradient-hero glow-primary font-orbitron font-bold"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  SUBSCRIBING...
+                </>
+              ) : (
+                'SUBSCRIBE'
+              )}
+            </Button>
+          </form>
+        )}
       </Card>
 
       {/* AI Video Rotation Module */}
