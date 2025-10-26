@@ -73,7 +73,7 @@ export class ContentFilter {
     );
     
     if (hasBlockedContent) {
-      console.log(`[ContentFilter] Blocked: "${item.title}" - Contains blocked keyword`);
+      // Uncomment for debugging: console.log(`[ContentFilter] Blocked: "${item.title}" - Contains blocked keyword`);
       return false;
     }
     
@@ -82,9 +82,7 @@ export class ContentFilter {
       text.includes(keyword.toLowerCase())
     );
     
-    if (!hasAITechContent) {
-      console.log(`[ContentFilter] Rejected: "${item.title}" - No AI/tech keywords found`);
-    }
+    // Uncomment for debugging: if (!hasAITechContent) console.log(`[ContentFilter] Rejected: "${item.title}" - No AI/tech keywords found`);
     
     return hasAITechContent;
   }

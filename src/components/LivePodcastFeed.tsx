@@ -174,13 +174,24 @@ const LivePodcastFeed = () => {
 
         {/* Podcast Episodes Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {episodes.map((episode, index) => (
-            <Card
-              key={index}
-              className="bg-card-modern border border-card-border/60 overflow-hidden hover:border-primary/50 transition-all hover-lift"
-            >
-              {/* Episode Header */}
-              <div className={`p-6 bg-gradient-to-br from-${episode.color}-600/10 to-${episode.color}-900/5`}>
+          {episodes.map((episode, index) => {
+            // Map colors to full Tailwind classes (required for build-time generation)
+            const colorClasses: Record<string, string> = {
+              purple: 'bg-gradient-to-br from-purple-600/10 to-purple-900/5',
+              blue: 'bg-gradient-to-br from-blue-600/10 to-blue-900/5',
+              green: 'bg-gradient-to-br from-green-600/10 to-green-900/5',
+              orange: 'bg-gradient-to-br from-orange-600/10 to-orange-900/5',
+              red: 'bg-gradient-to-br from-red-600/10 to-red-900/5',
+              cyan: 'bg-gradient-to-br from-cyan-600/10 to-cyan-900/5',
+            };
+            
+            return (
+              <Card
+                key={index}
+                className="bg-card-modern border border-card-border/60 overflow-hidden hover:border-primary/50 transition-all hover-lift"
+              >
+                {/* Episode Header */}
+                <div className={`p-6 ${colorClasses[episode.color] || 'bg-gradient-to-br from-primary-600/10 to-primary-900/5'}`}>
                 <div className="flex items-start gap-3 mb-4">
                   <div className="text-4xl">{episode.logo}</div>
                   <div className="flex-1 min-w-0">
@@ -235,7 +246,8 @@ const LivePodcastFeed = () => {
                 </Button>
               </div>
             </Card>
-          ))}
+            );
+          })}
         </div>
 
         {/* View More */}
