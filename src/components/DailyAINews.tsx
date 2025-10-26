@@ -11,7 +11,8 @@ import {
   Clock, 
   Globe,
   Zap,
-  TrendingUp
+  TrendingUp,
+  Mail
 } from "lucide-react";
 import EnhancedRSSService from "@/services/EnhancedRSSService";
 import PodcastService from "@/services/PodcastService";
@@ -276,11 +277,37 @@ const DailyAINews = () => {
 
       {/* Actions */}
       <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-border/30">
-        <Button className="flex-1 bg-gradient-hero hover:glow-primary">
+        <Button 
+          className="flex-1 bg-gradient-hero hover:glow-primary"
+          onClick={() => {
+            if (featuredPodcast) {
+              window.open(featuredPodcast.url, '_blank');
+            }
+          }}
+        >
           <Play className="h-4 w-4 mr-2" />
           Listen to Full Briefing
         </Button>
-        <Button variant="outline" className="flex-1 border-primary hover:bg-primary/10">
+        <Button 
+          variant="outline" 
+          className="flex-1 border-primary hover:bg-primary/10"
+          onClick={() => {
+            // Scroll to newsletter signup in sidebar
+            const sidebar = document.querySelector('aside');
+            if (sidebar) {
+              sidebar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              // Highlight newsletter form briefly
+              const newsletterCard = sidebar.querySelector('form')?.closest('.bg-gradient-card');
+              if (newsletterCard) {
+                newsletterCard.classList.add('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-background');
+                setTimeout(() => {
+                  newsletterCard.classList.remove('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-background');
+                }, 2000);
+              }
+            }
+          }}
+        >
+          <Mail className="h-4 w-4 mr-2" />
           Subscribe to Daily AI News
         </Button>
       </div>
