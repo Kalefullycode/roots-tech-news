@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import PreconnectHints from "@/components/PreconnectHints";
 import Index from "./pages/Index";
+// import EmergencyIndex from "./pages/EmergencyIndex"; // Uncomment to test
 
 // Lazy load non-critical pages to reduce initial bundle size
 const CategoryPage = lazy(() => import("./pages/CategoryPage"));
