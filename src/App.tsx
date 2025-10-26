@@ -14,6 +14,7 @@ import Index from "./pages/Index";
 const CategoryPage = lazy(() => import("./pages/CategoryPage"));
 const YouTubePage = lazy(() => import("./pages/YouTubePage"));
 const PodcastsPage = lazy(() => import("./pages/PodcastsPage"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
 const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
 const TermsPage = lazy(() => import("./pages/TermsPage"));
@@ -64,6 +65,14 @@ const App: React.FC = () => {
                 element={
                   <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><div className="text-muted-foreground">Loading...</div></div>}>
                     <PodcastsPage />
+                  </Suspense>
+                } 
+              />
+              <Route 
+                path="/about" 
+                element={
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><div className="text-muted-foreground">Loading...</div></div>}>
+                    <AboutPage />
                   </Suspense>
                 } 
               />
