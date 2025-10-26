@@ -72,6 +72,6 @@
 /*.html
   Cache-Control: public, max-age=3600
 
-# Root HTML
-/
+# Root path and index (SPA routing)
+/*
   Cache-Control: public, max-age=3600
