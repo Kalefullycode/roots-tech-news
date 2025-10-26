@@ -19,6 +19,11 @@ export const NAVIGATION_STRUCTURE: NavCategory[] = [
         description: 'Latest AI developments & breakthroughs'
       },
       {
+        title: 'AI Podcasts',
+        href: '/podcasts',
+        description: 'Latest episodes from top AI & tech podcasts'
+      },
+      {
         title: 'AI Tools Directory',
         href: '#ai-tools-directory',
         description: '50+ AI tools for every use case'

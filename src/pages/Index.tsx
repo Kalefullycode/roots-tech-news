@@ -11,7 +11,6 @@ const Header = lazy(() => import("@/components/Header"));
 const MainFeed = lazy(() => import("@/components/MainFeed"));
 const DailyAINews = lazy(() => import("@/components/DailyAINews"));
 const Sidebar = lazy(() => import("@/components/Sidebar"));
-const LivePodcastFeed = lazy(() => import("@/components/LivePodcastFeed"));
 const PodcastSection = lazy(() => import("@/components/PodcastSection"));
 const AIToolsSection = lazy(() => import("@/components/AIToolsSection"));
 const BooksSection = lazy(() => import("@/components/BooksSection"));
@@ -120,12 +119,8 @@ const Index = () => {
       {/* Full Width Sections */}
       <div className="w-full">
         {/* AI Tools Directory removed from main page - accessible via dropdown: AI → AI Tools Directory */}
+        {/* AI & Tech Podcasts removed from main page - accessible via dropdown: AI → AI Podcasts */}
         
-        {/* Live Podcast Feed - Real-time AI & Tech Podcasts */}
-        <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
-          <LivePodcastFeed />
-        </Suspense>
-
         {/* Books Section */}
         <div className="container mx-auto px-4">
           <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg mb-8" />}>
