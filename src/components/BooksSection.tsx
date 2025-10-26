@@ -13,7 +13,7 @@ const BooksSection = () => {
     : BOOKS.filter(book => book.category === selectedCategory);
 
   return (
-    <section className="mb-16">
+    <section id="books" className="mb-16 scroll-mt-24">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
           <BookOpen className="h-8 w-8 text-accent" />

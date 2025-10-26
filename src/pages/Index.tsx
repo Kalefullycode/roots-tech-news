@@ -118,10 +118,14 @@ const Index = () => {
 
       {/* Full Width Sections */}
       <div className="w-full">
-        {/* AI Tools Directory removed from main page - accessible via dropdown: AI → AI Tools Directory */}
-        {/* AI & Tech Podcasts removed from main page - accessible via dropdown: AI → AI Podcasts */}
+        {/* AI Tools Directory - Accessible via AI dropdown and on main page */}
+        <div id="ai-tools-section" className="container mx-auto px-4 mb-12 scroll-mt-24">
+          <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg mb-8" />}>
+            <AIToolsSection />
+          </Suspense>
+        </div>
         
-        {/* Books Section */}
+        {/* Books Section - Accessible via Culture dropdown and on main page */}
         <div className="container mx-auto px-4">
           <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg mb-8" />}>
             <BooksSection />

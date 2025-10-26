@@ -13,7 +13,7 @@ const AIToolsSection = () => {
     : AI_TOOLS.filter(tool => tool.category === selectedCategory);
 
   return (
-    <section className="mb-16">
+    <section id="ai-tools-directory" className="mb-16 scroll-mt-24">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
           <Sparkles className="h-8 w-8 text-primary" />

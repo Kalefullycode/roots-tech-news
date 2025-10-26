@@ -25,7 +25,7 @@ export const NAVIGATION_STRUCTURE: NavCategory[] = [
       },
       {
         title: 'AI Tools Directory',
-        href: '#ai-tools-directory',
+        href: '#ai-tools-section',
         description: '50+ AI tools for every use case'
       },
       {
@@ -147,6 +147,11 @@ export const NAVIGATION_STRUCTURE: NavCategory[] = [
         title: 'Books & Learning',
         href: '#books',
         description: 'Essential reading for tech professionals'
+      },
+      {
+        title: 'About Us',
+        href: '/about',
+        description: 'Learn about RootsTechNews mission'
       }
     ]
   },
@@ -205,7 +210,7 @@ export const NAVIGATION_STRUCTURE: NavCategory[] = [
       },
       {
         title: 'Data Privacy',
-        href: '#privacy',
+        href: '/privacy',
         description: 'GDPR, encryption, data protection'
       },
       {
