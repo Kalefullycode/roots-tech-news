@@ -1,16 +1,32 @@
 import ArticleCard from "./ArticleCard";
 import LiveNewsIndicator from "./LiveNewsIndicator";
-import { useNews } from "@/hooks/useNews";
+import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import aiArticle from "@/assets/ai-article.webp";
 import startupArticle from "@/assets/startup-article.webp";
 import securityArticle from "@/assets/security-article.webp";
 import gadgetArticle from "@/assets/gadget-article.webp";
 
+// Fetch articles from serverless function (eliminates CORS)
+async function fetchArticles() {
+  const response = await fetch('/.netlify/functions/fetch-rss');
+  if (!response.ok) throw new Error('Failed to fetch articles');
+  const data = await response.json();
+  return data.articles;
+}
+
 const MainFeed = () => {
-  const { data: newsArticles, isLoading, isError } = useNews();
+  // Use serverless function instead of direct RSS fetching
+  const { data: newsArticles, isLoading, isError } = useQuery({
+    queryKey: ['tech-articles'],
+    queryFn: fetchArticles,
+    refetchInterval: 300000, // Refresh every 5 minutes
+    staleTime: 60000,
+    retry: 2
+  });
   
   console.log('MainFeed - Loading:', isLoading, 'Error:', isError, 'Articles:', newsArticles?.length || 0);
+  console.log('MainFeed - Using serverless RSS function (no CORS issues)');
   
   // Fallback articles with our generated images
   const fallbackArticles = [
