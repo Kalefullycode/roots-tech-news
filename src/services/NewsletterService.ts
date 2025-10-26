@@ -11,7 +11,7 @@ interface NewsletterResponse {
 }
 
 export class NewsletterService {
-  private static readonly ENDPOINT = '/.netlify/functions/newsletter-signup';
+  private static readonly ENDPOINT = '/.netlify/functions/subscribe';
 
   /**
    * Subscribe to newsletter

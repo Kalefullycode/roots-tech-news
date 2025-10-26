@@ -7,6 +7,10 @@
   NODE_VERSION = "18"
   NPM_FLAGS = "--legacy-peer-deps"
 
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 # SPA Routing - Redirect all routes to index.html
 [[redirects]]
   from = "/videos"

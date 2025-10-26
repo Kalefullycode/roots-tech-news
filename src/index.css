@@ -97,9 +97,25 @@
   }
 
   /* Offset for fixed header when scrolling to anchors */
-  section[id] {
-    scroll-margin-top: 100px;
+section[id] {
+  scroll-margin-top: 100px;
+}
+
+/* Newsletter fadeIn animation */
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(-10px); 
   }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
 
   body {
     @apply bg-background text-foreground font-roboto;
