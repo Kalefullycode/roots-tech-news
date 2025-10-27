@@ -134,3 +134,4 @@ Visit [rootstechnews.com](https://rootstechnews.com)
 ---
 
 Built with ❤️ using React, TypeScript, and Vite
+
