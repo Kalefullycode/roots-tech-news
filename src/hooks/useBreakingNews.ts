@@ -121,22 +121,10 @@ export const useBreakingNews = () => {
       fetchBreakingNews();
     }, 60 * 60 * 1000); // Every hour
 
-    // Set up more frequent updates for breaking news (every 15 minutes)
-    const breakingInterval = setInterval(() => {
-      // Only refresh if we have breaking or urgent news
-      const hasUrgentNews = breakingNews.some(news => 
-        news.urgency === 'breaking' || news.urgency === 'urgent'
-      );
-      
-      if (hasUrgentNews) {
-        fetchBreakingNews();
-      }
-    }, 15 * 60 * 1000); // Every 15 minutes
-
     return () => {
       clearInterval(hourlyInterval);
-      clearInterval(breakingInterval);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Manual refresh function
