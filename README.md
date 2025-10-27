@@ -1,128 +1,136 @@
-# RootsTechNews - Performance Optimized Tech News Platform
+# Roots Tech News
 
-## 🚀 Performance Metrics
-- **LCP**: < 2.5s (Large Contentful Paint)
-- **CLS**: < 0.1 (Cumulative Layout Shift)
-- **Lighthouse Score**: ≥ 90 across all categories
+A modern AI & tech news aggregator with real-time updates, curated content, and comprehensive resources.
 
-## 🔧 Environment Setup
+## 🚀 Features
 
-### Required Environment Variables
-Create a `.env.local` file in the root directory:
+- **Real-time RSS Feed Aggregation** - News from major tech sources
+- **AI-Powered Daily Briefing** - Curated tech and AI updates
+- **Live Video Feed** - YouTube integration for latest tech content
+- **Newsletter System** - Powered by Resend.com
+- **Advanced Search** - Filter by category, source, and keywords
+- **Responsive Design** - Mobile-first with Tailwind CSS
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React 18, TypeScript, Vite
+- **Styling:** Tailwind CSS, shadcn/ui
+- **Backend:** Netlify Serverless Functions
+- **Deployment:** Netlify / Cloudflare Pages
+- **Email:** Resend.com API
+- **Data:** RSS-Parser, React Query
+
+## 📦 Getting Started
+
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+
+### Installation
 
 ```bash
-# RSS News API (Optional - fallback content available)
-VITE_NEWS_API_KEY=your-rss2json-api-key
+npm install
+```
+
+### Development
+
+```bash
+npm run dev
+```
+
+Visit `http://localhost:5173`
+
+### Build
+
+```bash
+npm run build
+```
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
+
+## 🌍 Environment Variables
+
+Create a `.env.local` file:
+
+```bash
+# Newsletter (Required for subscription feature)
+RESEND_API_KEY=your_resend_api_key
 
 # Analytics (Optional)
 VITE_GA_TRACKING_ID=GA-XXXXXXX
 ```
 
-### Development
+## 📁 Project Structure
+
+```
+roots-tech-news/
+├── docs/              # Documentation
+├── scripts/           # Deployment and utility scripts
+├── src/
+│   ├── components/    # React components
+│   ├── pages/         # Page components
+│   ├── services/      # API services
+│   ├── hooks/         # Custom React hooks
+│   └── types/         # TypeScript types
+├── public/            # Static assets
+└── netlify/           # Serverless functions
+    └── functions/
+```
+
+## 📚 Documentation
+
+- [Master Plan](docs/MASTER_PLAN.md) - Project roadmap and vision
+- [Features](docs/FEATURES.md) - Complete feature list
+- [Deployment Guide](docs/DEPLOYMENT.md) - Deployment instructions
+- [Newsletter Setup](docs/NEWSLETTER_SETUP.md) - Email integration guide
+
+## 🚀 Deployment
+
+### Netlify
+
 ```bash
-npm install
+./scripts/deploy.sh
+```
+
+Or push to `main` branch for automatic deployment.
+
+### Cloudflare Pages
+
+1. Connect your GitHub repository
+2. Build command: `npm run build`
+3. Publish directory: `dist`
+4. Environment variables: Add `RESEND_API_KEY`
+
+## 🧪 Testing
+
+```bash
+# Local development
 npm run dev
+
+# Production preview
+npm run build && npm run preview
 ```
 
-### Production Build
-```bash
-npm run build
-npm run preview
-```
+## 📝 License
 
-## 📝 Content Management
+MIT
 
-### Adding New Articles
-Create MDX files in `src/content/articles/` with this frontmatter:
+## 🤝 Contributing
 
-```yaml
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📧 Contact
+
+Visit [rootstechnews.com](https://rootstechnews.com)
+
 ---
-title: "Your Article Title"
-slug: "url-friendly-slug"
-excerpt: "Brief description for SEO and cards"
-date: "2025-08-31T21:47:00Z"
-author: "Author Name"
-category: "AI | Startups | Culture | Gadgets | Security"
-tags: ["tag1", "tag2"]
-heroImage: "/images/article-image.jpg"
-featured: true|false
----
-```
 
-### Image Optimization
-- Use WebP format when possible
-- Include descriptive alt text for accessibility
-- Optimize for responsive loading
-- Store in `public/images/` directory
-
-## ✨ Design System Lock
-
-### 🔒 **CRITICAL: Do Not Modify Visual Design**
-This site maintains pixel-perfect fidelity to the original design. When making changes:
-
-1. **Typography**: Use only Orbitron (headlines) and Roboto (body)
-2. **Colors**: Reference design tokens in `tailwind.config.ts`
-3. **Spacing**: Maintain exact padding/margins (±4px tolerance)
-4. **Corner Radii**: Keep `rounded-xl` for cards and banners
-5. **Glow Effects**: Use design system glow utilities only
-
-### Design Token Reference
-```css
-/* Primary Colors */
---electric-purple: #8A2BE2
---emerald-green: #50C878
---chrome-gold: #FFD700
---neon-blue: #1F51FF
---cyber-pink: #FF69B4
-```
-
-## ♿ Accessibility Features
-- Semantic HTML landmarks
-- ARIA labels and descriptions
-- Keyboard navigation support
-- Focus ring indicators
-- AA+ color contrast ratios
-- Screen reader optimizations
-
-## 🔍 SEO Implementation
-- Open Graph meta tags
-- Twitter Card support
-- JSON-LD structured data
-- Canonical URLs
-- Optimized meta descriptions
-- Semantic heading hierarchy
-
-## 🏗️ Architecture
-- **Framework**: React + Vite + TypeScript
-- **Styling**: Tailwind CSS with design tokens
-- **Components**: shadcn/ui + custom components
-- **Icons**: Lucide React
-- **Content**: MDX with frontmatter
-- **State**: React Query for news fetching
-
-## 📱 Responsive Breakpoints
-- **Mobile**: < 768px
-- **Tablet**: 768px - 1024px  
-- **Desktop**: > 1024px
-
-## 🔄 Content Updates
-To maintain design integrity while updating content:
-
-1. **Text Changes**: Edit MDX files directly
-2. **New Categories**: Add to category arrays in components
-3. **Images**: Follow naming conventions and include alt text
-4. **Breaking News**: Update `BreakingNewsBanner.tsx`
-
-## 🚫 What NOT to Change
-- Font families or weights
-- Color values outside design tokens  
-- Card dimensions or corner radii
-- Header/footer layout structure
-- Glow effect intensities
-- Spacing between major sections
-
-## 📊 Analytics Integration
-Includes Google Analytics 4 setup and performance monitoring for Core Web Vitals tracking.
-
-## 🌐 Deployment
-Optimized for Vercel deployment with automatic performance optimization and CDN integration.
+Built with ❤️ using React, TypeScript, and Vite
