@@ -31,7 +31,7 @@ const AboutPage = () => {
     { name: "Vite", purpose: "Lightning-fast builds" },
     { name: "Tailwind CSS", purpose: "Beautiful, responsive design" },
     { name: "React Query", purpose: "Smart data caching" },
-    { name: "Netlify Functions", purpose: "Serverless RSS fetching" },
+    { name: "Cloudflare Pages", purpose: "Serverless RSS fetching" },
     { name: "Resend", purpose: "Newsletter delivery" },
     { name: "RSS Parser", purpose: "Multi-source aggregation" }
   ];

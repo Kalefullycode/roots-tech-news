@@ -1,6 +1,6 @@
 /**
  * Newsletter Service
- * Handles newsletter subscription via Netlify serverless function
+ * Handles newsletter subscription via Cloudflare Pages Functions
  */
 
 interface NewsletterResponse {
@@ -11,7 +11,7 @@ interface NewsletterResponse {
 }
 
 export class NewsletterService {
-  private static readonly ENDPOINT = '/.netlify/functions/subscribe';
+  private static readonly ENDPOINT = '/functions/subscribe';
 
   /**
    * Subscribe to newsletter

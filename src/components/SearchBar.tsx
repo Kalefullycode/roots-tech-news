@@ -22,7 +22,7 @@ interface SearchFilters {
 
 // Fetch all articles for searching
 async function fetchAllArticles() {
-  const response = await fetch('/.netlify/functions/fetch-rss');
+  const response = await fetch('/functions/fetch-rss');
   if (!response.ok) throw new Error('Failed to fetch articles');
   const data = await response.json();
   return data.articles;
