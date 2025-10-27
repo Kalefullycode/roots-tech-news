@@ -26,7 +26,7 @@ export const NAVIGATION_STRUCTURE: NavCategory[] = [
       {
         title: 'AI Tools Directory',
         href: '#ai-tools-section',
-        description: '50+ AI tools for every use case'
+        description: '⚡ 50+ curated AI tools - ChatGPT, Claude, Midjourney & more'
       },
       {
         title: 'AI Leaders',
@@ -57,6 +57,11 @@ export const NAVIGATION_STRUCTURE: NavCategory[] = [
         title: 'AI in Business',
         href: '#ai-business',
         description: 'Enterprise adoption, ROI, strategies'
+      },
+      {
+        title: 'Make Money with AI',
+        href: '#make-money-ai',
+        description: 'AI monetization, business ideas, opportunities'
       }
     ]
   },
@@ -144,9 +149,9 @@ export const NAVIGATION_STRUCTURE: NavCategory[] = [
         description: 'Tech leaders in conversation'
       },
       {
-        title: 'Books & Learning',
-        href: '#books',
-        description: 'Essential reading for tech professionals'
+        title: 'Essential Tech Books',
+        href: '#books-section',
+        description: '📚 Must-read books on AI, coding, and innovation'
       },
       {
         title: 'About Us',

@@ -36,12 +36,13 @@ const DailyAINews = () => {
         // Fetch AI podcasts
         const aiPodcasts = await PodcastService.fetchByCategory('AI');
         
-        // Format news stories
+        // Format news stories with categories
         const stories = aiNews.slice(0, 4).map((article: NewsArticle, index: number) => ({
           title: article.title,
           time: getTimeAgo(new Date(article.publishedAt)),
           source: article.source.name,
           impact: index === 0 ? "High" : index < 3 ? "Medium" : "Low",
+          category: article.category || 'Tech',
           url: article.url
         }));
         
@@ -76,6 +77,7 @@ const DailyAINews = () => {
       time: "2 hours ago",
       source: "TechCrunch",
       impact: "High",
+      category: "AI Updates",
       url: "#"
     },
     {
@@ -83,6 +85,7 @@ const DailyAINews = () => {
       time: "4 hours ago", 
       source: "MIT Technology Review",
       impact: "Medium",
+      category: "Tech Hardware",
       url: "#"
     },
     {
@@ -90,13 +93,15 @@ const DailyAINews = () => {
       time: "6 hours ago",
       source: "Disrupt Africa", 
       impact: "High",
+      category: "Startups",
       url: "#"
     },
     {
-      title: "EU Finalizes AI Regulation Framework with Global Implications",
+      title: "Software Engineering Revolution: AI-Powered Code Review Reduces Bugs by 70%",
       time: "8 hours ago",
-      source: "Reuters",
+      source: "GitHub Blog",
       impact: "Medium",
+      category: "Software Engineering",
       url: "#"
     }
   ];
@@ -140,7 +145,10 @@ const DailyAINews = () => {
               Daily AI Briefing
             </h2>
             <p className="text-sm text-muted-foreground">
-              Your 60-second AI news update
+              Your 60-second AI news update • Updated hourly
+            </p>
+            <p className="text-xs text-primary/80 italic mt-1">
+              🤖 AI news aggregator - Curating global AI developments
             </p>
           </div>
         </div>
@@ -252,8 +260,16 @@ const DailyAINews = () => {
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge variant="secondary" className="text-xs">
+                    {story.category || 'Tech'}
+                  </Badge>
+                  <Badge className={getImpactColor(story.impact)}>
+                    {story.impact}
+                  </Badge>
+                </div>
                 <h4 className="font-roboto font-semibold text-foreground mb-2 line-clamp-2 hover:text-primary transition-colors">
-                  {story.title}
+                  #{index + 1} {story.title}
                 </h4>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <span>{story.source}</span>
@@ -262,13 +278,8 @@ const DailyAINews = () => {
                 </div>
               </div>
               
-              <div className="flex flex-col items-end gap-2">
-                <Badge className={getImpactColor(story.impact)}>
-                  {story.impact} Impact
-                </Badge>
-                <span className="text-xs text-muted-foreground">
-                  #{index + 1}
-                </span>
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
               </div>
             </div>
           </Card>
