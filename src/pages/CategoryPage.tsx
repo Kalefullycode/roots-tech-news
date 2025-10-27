@@ -10,15 +10,25 @@ import startupArticle from "@/assets/startup-article.webp";
 import securityArticle from "@/assets/security-article.webp";
 import gadgetArticle from "@/assets/gadget-article.webp";
 
+interface Article {
+  title: string;
+  description: string;
+  category: string;
+  source: string;
+  url: string;
+  image: string;
+  publishedAt: string;
+}
+
 // Fetch articles filtered by category
-async function fetchCategoryArticles(category: string) {
+async function fetchCategoryArticles(category: string): Promise<Article[]> {
   const response = await fetch('/.netlify/functions/fetch-rss');
   if (!response.ok) throw new Error('Failed to fetch articles');
   const data = await response.json();
   
   // Filter articles by category (AI, Tech, etc.)
   const categoryLower = category.toLowerCase();
-  return data.articles.filter((article: any) => {
+  return data.articles.filter((article: Article) => {
     const articleCategory = article.category.toLowerCase();
     return articleCategory.includes(categoryLower) || 
            article.title.toLowerCase().includes(categoryLower) ||
@@ -87,7 +97,7 @@ const CategoryPage = () => {
   const categoryData = getCategoryData(category || 'ai');
 
   // Format real articles for display
-  const formatArticle = (article: any) => ({
+  const formatArticle = (article: Article) => ({
     title: article.title,
     excerpt: article.description || "Click to read more about this exciting development in technology.",
     category: article.source,

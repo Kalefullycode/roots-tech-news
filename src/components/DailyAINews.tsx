@@ -24,7 +24,16 @@ const DailyAINews = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [currentTime, setCurrentTime] = useState("0:00");
   const [duration] = useState("1:23");
-  const [todaysStories, setTodaysStories] = useState<any[]>([]);
+  interface Story {
+    title: string;
+    time: string;
+    source: string;
+    impact: string;
+    category: string;
+    url: string;
+  }
+
+  const [todaysStories, setTodaysStories] = useState<Story[]>([]);
   const [featuredPodcast, setFeaturedPodcast] = useState<PodcastEpisode | null>(null);
 
   useEffect(() => {
@@ -62,7 +71,7 @@ const DailyAINews = () => {
     // Refresh every 30 minutes
     const interval = setInterval(fetchAINews, 30 * 60 * 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fallbackStories]);
 
   const getTimeAgo = (date: Date) => {
     const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);

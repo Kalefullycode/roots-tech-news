@@ -52,9 +52,19 @@ const SearchBar = ({
   });
 
   // Filter articles based on search query and filters
+  interface Article {
+    title: string;
+    description: string;
+    category: string;
+    source: string;
+    url: string;
+    image: string;
+    publishedAt: string;
+  }
+
   const searchResults = articles && query.trim().length > 2
-    ? articles
-        .filter((article: any) => {
+    ? (articles as Article[])
+        .filter((article) => {
           const searchText = `${article.title} ${article.description}`.toLowerCase();
           const matchesQuery = searchText.includes(query.toLowerCase());
           
@@ -72,11 +82,11 @@ const SearchBar = ({
 
   // Extract available categories and sources from articles
   const dynamicCategories = articles
-    ? Array.from(new Set(articles.map((a: any) => a.category))).slice(0, 10)
+    ? Array.from(new Set((articles as Article[]).map((a) => a.category))).slice(0, 10)
     : availableCategories;
   
   const dynamicSources = articles
-    ? Array.from(new Set(articles.map((a: any) => a.source))).slice(0, 10)
+    ? Array.from(new Set((articles as Article[]).map((a) => a.source))).slice(0, 10)
     : availableSources;
 
   useEffect(() => {
@@ -287,7 +297,7 @@ const SearchBar = ({
             </div>
           </div>
           
-          {searchResults.map((article: any, index: number) => (
+          {searchResults.map((article, index: number) => (
             <a
               key={index}
               href={article.url}
