@@ -80,13 +80,19 @@ class YouTubeService {
 
     try {
       const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
-      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
+      // Use our Cloudflare Pages Function RSS proxy
+      const proxyUrl = `/api/rss-proxy?url=${encodeURIComponent(rssUrl)}`;
       
-      const response = await fetch(proxyUrl);
+      const response = await fetch(proxyUrl, {
+        headers: {
+          'Accept': 'application/xml, application/atom+xml, text/xml',
+        }
+      });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       
-      const data = await response.json();
-      const videos = this.parseYouTubeRSS(data.contents, channelName, category);
+      // Get XML content directly (no JSON wrapper)
+      const xmlText = await response.text();
+      const videos = this.parseYouTubeRSS(xmlText, channelName, category);
       
       this.cache.set(cacheKey, { data: videos, timestamp: Date.now() });
       return videos;

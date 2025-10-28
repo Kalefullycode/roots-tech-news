@@ -90,13 +90,19 @@ class PodcastService {
     }
 
     try {
-      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}`;
-      const response = await fetch(proxyUrl);
+      // Use our Cloudflare Pages Function RSS proxy
+      const proxyUrl = `/api/rss-proxy?url=${encodeURIComponent(feedUrl)}`;
+      const response = await fetch(proxyUrl, {
+        headers: {
+          'Accept': 'application/xml, application/rss+xml, text/xml',
+        }
+      });
       
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       
-      const data = await response.json();
-      const episodes = this.parsePodcastRSS(data.contents, podcastName, category);
+      // Get XML content directly (no JSON wrapper)
+      const xmlText = await response.text();
+      const episodes = this.parsePodcastRSS(xmlText, podcastName, category);
       
       this.cache.set(cacheKey, { data: episodes, timestamp: Date.now() });
       return episodes;

@@ -1,0 +1,211 @@
+// Cloudflare Pages Function - RSS Proxy
+// Handles CORS issues when fetching RSS feeds from external sources
+
+interface Env {
+  // Add any environment variables here if needed
+}
+
+// Whitelist of allowed RSS feed domains for security
+const ALLOWED_DOMAINS = [
+  'techcrunch.com',
+  'feeds.arstechnica.com',
+  'theverge.com',
+  'technologyreview.com',
+  'techcabal.com',
+  'wired.com',
+  'engadget.com',
+  'venturebeat.com',
+  'readwrite.com',
+  'techafrique.com',
+  'disrupt-africa.com',
+  'africa.businessinsider.com',
+  'thenextweb.com',
+  'mashable.com',
+  'cnet.com',
+  'zdnet.com',
+  'axios.com',
+  'bloomberg.com',
+  'rss.app',
+  'feedburner.com',
+  'feeds.feedburner.com',
+  'youtube.com',
+  'www.youtube.com',
+  'towardsdatascience.com',
+  'machinelearningmastery.com',
+  'openai.com',
+  'blogs.nvidia.com',
+  'ai.googleblog.com',
+  'producthunt.com',
+  'ventureburn.com',
+  'krebsonsecurity.com',
+  'schneier.com',
+  'threatpost.com',
+  'quantamagazine.org',
+  'sciencedaily.com',
+  'newscientist.com',
+];
+
+// Check if URL is from an allowed domain
+function isAllowedDomain(url: string): boolean {
+  try {
+    const urlObj = new URL(url);
+    const hostname = urlObj.hostname.toLowerCase();
+    
+    return ALLOWED_DOMAINS.some(domain => 
+      hostname === domain || hostname.endsWith(`.${domain}`)
+    );
+  } catch (error) {
+    return false;
+  }
+}
+
+// Main request handler
+export async function onRequestGet(context: { request: Request; env: Env }) {
+  const { request } = context;
+  
+  // CORS headers
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Max-Age': '86400',
+  };
+
+  try {
+    // Parse URL and get the 'url' query parameter
+    const url = new URL(request.url);
+    const feedUrl = url.searchParams.get('url');
+
+    // Validate feed URL parameter
+    if (!feedUrl) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Missing required parameter: url',
+          usage: '/api/rss-proxy?url=https://example.com/feed.xml'
+        }), 
+        {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            ...corsHeaders,
+          },
+        }
+      );
+    }
+
+    // Decode URL if it's encoded
+    const decodedFeedUrl = decodeURIComponent(feedUrl);
+
+    // Security check: Validate domain
+    if (!isAllowedDomain(decodedFeedUrl)) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Domain not allowed',
+          message: 'This RSS feed domain is not in the allowed list for security reasons.',
+          allowedDomains: ALLOWED_DOMAINS
+        }), 
+        {
+          status: 403,
+          headers: {
+            'Content-Type': 'application/json',
+            ...corsHeaders,
+          },
+        }
+      );
+    }
+
+    console.log(`Fetching RSS feed: ${decodedFeedUrl}`);
+
+    // Fetch the RSS feed with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+    const response = await fetch(decodedFeedUrl, {
+      headers: {
+        'User-Agent': 'RootsTechNews-RSS-Proxy/1.0 (https://rootstechnews.com)',
+        'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+      },
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    // Check if fetch was successful
+    if (!response.ok) {
+      console.error(`Failed to fetch RSS feed: ${response.status} ${response.statusText}`);
+      return new Response(
+        JSON.stringify({ 
+          error: 'Failed to fetch RSS feed',
+          status: response.status,
+          statusText: response.statusText,
+          url: decodedFeedUrl
+        }), 
+        {
+          status: response.status,
+          headers: {
+            'Content-Type': 'application/json',
+            ...corsHeaders,
+          },
+        }
+      );
+    }
+
+    // Get the RSS content
+    const rssContent = await response.text();
+
+    // Determine content type
+    const contentType = response.headers.get('content-type') || 'application/xml';
+
+    // Return the RSS feed with CORS headers
+    return new Response(rssContent, {
+      status: 200,
+      headers: {
+        'Content-Type': contentType,
+        'Cache-Control': 'public, max-age=300', // Cache for 5 minutes
+        ...corsHeaders,
+      },
+    });
+
+  } catch (error: any) {
+    console.error('RSS Proxy Error:', error);
+
+    // Handle specific error types
+    let errorMessage = 'An error occurred while fetching the RSS feed';
+    let statusCode = 500;
+
+    if (error.name === 'AbortError') {
+      errorMessage = 'Request timeout - RSS feed took too long to respond';
+      statusCode = 504;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+
+    return new Response(
+      JSON.stringify({ 
+        error: errorMessage,
+        type: error.name || 'UnknownError'
+      }), 
+      {
+        status: statusCode,
+        headers: {
+          'Content-Type': 'application/json',
+          ...corsHeaders,
+        },
+      }
+    );
+  }
+}
+
+// Handle OPTIONS requests for CORS preflight
+export async function onRequestOptions() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '86400',
+    },
+  });
+}
+

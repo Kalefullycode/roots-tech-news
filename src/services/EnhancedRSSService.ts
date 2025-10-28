@@ -132,11 +132,12 @@ class EnhancedRSSService {
     }
 
     try {
-      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}`;
+      // Use our Cloudflare Pages Function RSS proxy (preferred)
+      const proxyUrl = `/api/rss-proxy?url=${encodeURIComponent(feedUrl)}`;
       const response = await fetch(proxyUrl, { 
         method: 'GET',
         headers: {
-          'Accept': 'application/json',
+          'Accept': 'application/xml, application/rss+xml, text/xml',
         }
       });
       
@@ -144,8 +145,9 @@ class EnhancedRSSService {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      const data = await response.json();
-      const articles = this.parseRSSXML(data.contents, sourceName, category);
+      // Get XML content directly (no JSON wrapper like allorigins)
+      const xmlText = await response.text();
+      const articles = this.parseRSSXML(xmlText, sourceName, category);
       
       this.cache.set(cacheKey, { data: articles, timestamp: Date.now() });
       return articles;

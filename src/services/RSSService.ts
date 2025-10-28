@@ -95,16 +95,21 @@ class RSSService {
     }
 
     try {
-      // Use CORS proxy for RSS feeds
-      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}`;
-      const response = await fetch(proxyUrl);
+      // Use our Cloudflare Pages Function RSS proxy
+      const proxyUrl = `/api/rss-proxy?url=${encodeURIComponent(feedUrl)}`;
+      const response = await fetch(proxyUrl, {
+        headers: {
+          'Accept': 'application/xml, application/rss+xml, text/xml',
+        }
+      });
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      const data = await response.json();
-      const articles = this.parseRSSXML(data.contents, sourceName, category);
+      // Get XML content directly (no JSON wrapper)
+      const xmlText = await response.text();
+      const articles = this.parseRSSXML(xmlText, sourceName, category);
       
       this.cache.set(cacheKey, { data: articles, timestamp: Date.now() });
       return articles;
