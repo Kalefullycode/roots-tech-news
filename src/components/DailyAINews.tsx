@@ -36,6 +36,42 @@ const DailyAINews = () => {
   const [todaysStories, setTodaysStories] = useState<Story[]>([]);
   const [featuredPodcast, setFeaturedPodcast] = useState<PodcastEpisode | null>(null);
 
+  // Define fallback stories before useEffect to avoid initialization errors
+  const fallbackStories = [
+    {
+      title: "OpenAI Announces GPT-5 with Revolutionary Multimodal Capabilities",
+      time: "2 hours ago",
+      source: "TechCrunch",
+      impact: "High",
+      category: "AI Updates",
+      url: "#"
+    },
+    {
+      title: "Google's New AI Chip Outperforms NVIDIA in Energy Efficiency",
+      time: "4 hours ago", 
+      source: "MIT Technology Review",
+      impact: "Medium",
+      category: "Tech Hardware",
+      url: "#"
+    },
+    {
+      title: "African AI Startup Secures $50M for Healthcare Diagnostics",
+      time: "6 hours ago",
+      source: "Disrupt Africa", 
+      impact: "High",
+      category: "Startups",
+      url: "#"
+    },
+    {
+      title: "Software Engineering Revolution: AI-Powered Code Review Reduces Bugs by 70%",
+      time: "8 hours ago",
+      source: "GitHub Blog",
+      impact: "Medium",
+      category: "Software Engineering",
+      url: "#"
+    }
+  ];
+
   useEffect(() => {
     const fetchAINews = async () => {
       try {
@@ -71,7 +107,7 @@ const DailyAINews = () => {
     // Refresh every 30 minutes
     const interval = setInterval(fetchAINews, 30 * 60 * 1000);
     return () => clearInterval(interval);
-  }, [fallbackStories]);
+  }, []); // Empty deps - fallbackStories is static and doesn't need to be a dependency
 
   const getTimeAgo = (date: Date) => {
     const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
@@ -79,41 +115,6 @@ const DailyAINews = () => {
     if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
     return `${Math.floor(seconds / 86400)} days ago`;
   };
-
-  const fallbackStories = [
-    {
-      title: "OpenAI Announces GPT-5 with Revolutionary Multimodal Capabilities",
-      time: "2 hours ago",
-      source: "TechCrunch",
-      impact: "High",
-      category: "AI Updates",
-      url: "#"
-    },
-    {
-      title: "Google's New AI Chip Outperforms NVIDIA in Energy Efficiency",
-      time: "4 hours ago", 
-      source: "MIT Technology Review",
-      impact: "Medium",
-      category: "Tech Hardware",
-      url: "#"
-    },
-    {
-      title: "African AI Startup Secures $50M for Healthcare Diagnostics",
-      time: "6 hours ago",
-      source: "Disrupt Africa", 
-      impact: "High",
-      category: "Startups",
-      url: "#"
-    },
-    {
-      title: "Software Engineering Revolution: AI-Powered Code Review Reduces Bugs by 70%",
-      time: "8 hours ago",
-      source: "GitHub Blog",
-      impact: "Medium",
-      category: "Software Engineering",
-      url: "#"
-    }
-  ];
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
