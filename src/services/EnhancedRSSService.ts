@@ -25,7 +25,7 @@ class EnhancedRSSService {
     { url: 'https://www.technologyreview.com/feed/', name: 'MIT Technology Review', category: 'AI' },
     { url: 'https://towardsdatascience.com/feed', name: 'Towards Data Science', category: 'AI' },
     { url: 'https://machinelearningmastery.com/feed/', name: 'Machine Learning Mastery', category: 'AI' },
-    { url: 'https://openai.com/blog/rss/', name: 'OpenAI Blog', category: 'AI' },
+    // { url: 'https://openai.com/blog/rss/', name: 'OpenAI Blog', category: 'AI' }, // RSS feed no longer available (404)
     { url: 'https://blogs.nvidia.com/feed/', name: 'NVIDIA Blog', category: 'AI' },
     { url: 'https://ai.googleblog.com/feeds/posts/default', name: 'Google AI Blog', category: 'AI' },
     
