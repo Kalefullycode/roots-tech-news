@@ -79,8 +79,14 @@ const LivePodcastFeed = () => {
       
       for (const podcast of AI_PODCASTS) {
         try {
+          // Use our Cloudflare Pages Function RSS proxy
           const response = await fetch(
-            `https://api.allorigins.win/raw?url=${encodeURIComponent(podcast.rssUrl)}`
+            `/api/rss-proxy?url=${encodeURIComponent(podcast.rssUrl)}`,
+            {
+              headers: {
+                'Accept': 'application/xml, application/rss+xml, text/xml',
+              }
+            }
           );
           
           if (response.ok) {
