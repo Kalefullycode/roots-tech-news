@@ -81,7 +81,34 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Loading indicator shown before JavaScript loads -->
+      <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); font-family: 'Orbitron', monospace; color: #00d9ff;">
+        <div style="text-align: center;">
+          <div style="font-size: 48px; margin-bottom: 20px; animation: pulse 2s ease-in-out infinite;">
+            🚀
+          </div>
+          <h1 style="font-size: 32px; font-weight: 700; margin: 0 0 10px 0; letter-spacing: 2px;">
+            RootsTechNews
+          </h1>
+          <p style="font-size: 14px; color: #00ff88; margin: 0; animation: pulse 1.5s ease-in-out infinite;">
+            Loading...
+          </p>
+          <div style="margin-top: 20px; font-size: 12px; color: #666;">
+            <p style="margin: 5px 0;">If this message persists:</p>
+            <p style="margin: 5px 0;">1. Check your browser console (F12)</p>
+            <p style="margin: 5px 0;">2. Try clearing your cache</p>
+            <p style="margin: 5px 0;">3. Ensure JavaScript is enabled</p>
+          </div>
+        </div>
+      </div>
+      <style>
+        @keyframes pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.6; transform: scale(1.05); }
+        }
+      </style>
+    </div>
     <script type="module" src="src/main.tsx"></script>
   </body>
 </html>

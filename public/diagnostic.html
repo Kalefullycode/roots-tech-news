@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostic Test - RootsTechNews</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff00;
+        }
+        .test { margin: 10px 0; }
+        .pass { color: #00ff00; }
+        .fail { color: #ff0000; }
+        .info { color: #ffff00; }
+    </style>
+</head>
+<body>
+    <h1>🔍 RootsTechNews Diagnostic Test</h1>
+    <div id="results"></div>
+    
+    <script>
+        const results = document.getElementById('results');
+        
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test ${type}`;
+            div.textContent = message;
+            results.appendChild(div);
+        }
+        
+        log('✅ HTML loaded successfully', 'pass');
+        log('✅ JavaScript executing', 'pass');
+        log('✅ DOM manipulation working', 'pass');
+        
+        // Test asset loading
+        log(`📍 Current URL: ${window.location.href}`, 'info');
+        log(`📍 Base URL: ${window.location.origin}`, 'info');
+        log(`📍 Protocol: ${window.location.protocol}`, 'info');
+        
+        // Test fetch capability
+        fetch('/index.html')
+            .then(res => {
+                if (res.ok) {
+                    log('✅ Can fetch /index.html', 'pass');
+                } else {
+                    log(`❌ Cannot fetch /index.html (${res.status})`, 'fail');
+                }
+            })
+            .catch(err => {
+                log(`❌ Fetch error: ${err.message}`, 'fail');
+            });
+        
+        // Check for console errors
+        window.onerror = function(msg, url, line, col, error) {
+            log(`❌ JS Error: ${msg} at ${url}:${line}:${col}`, 'fail');
+        };
+        
+        log('🔍 Check browser console (F12) for additional errors', 'info');
+        log('🔍 Check Network tab to see if assets are loading', 'info');
+    </script>
+</body>
+</html>
+
