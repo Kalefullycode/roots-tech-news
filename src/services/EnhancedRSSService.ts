@@ -25,14 +25,17 @@ class EnhancedRSSService {
     { url: 'https://www.technologyreview.com/feed/', name: 'MIT Technology Review', category: 'AI' },
     { url: 'https://towardsdatascience.com/feed', name: 'Towards Data Science', category: 'AI' },
     { url: 'https://machinelearningmastery.com/feed/', name: 'Machine Learning Mastery', category: 'AI' },
-    // { url: 'https://openai.com/blog/rss/', name: 'OpenAI Blog', category: 'AI' }, // RSS feed no longer available (404)
+    { url: 'https://openai.com/index/rss.xml', name: 'OpenAI Blog', category: 'AI' }, // ✅ Updated working feed
+    { url: 'https://www.anthropic.com/news/rss.xml', name: 'Anthropic News', category: 'AI' }, // ✅ Added
     { url: 'https://blogs.nvidia.com/feed/', name: 'NVIDIA Blog', category: 'AI' },
-    { url: 'https://ai.googleblog.com/feeds/posts/default', name: 'Google AI Blog', category: 'AI' },
+    { url: 'https://blog.research.google/feeds/posts/default', name: 'Google AI Blog', category: 'AI' }, // ✅ Updated URL
     
     // Startups & Business
-    { url: 'https://feeds.feedburner.com/venturebeat/SZYF', name: 'VentureBeat', category: 'Startups' },
+    { url: 'https://venturebeat.com/feed/', name: 'VentureBeat', category: 'Startups' }, // ✅ Updated to main feed
+    { url: 'https://techcrunch.com/category/artificial-intelligence/feed/', name: 'TechCrunch AI', category: 'AI' }, // ✅ Added AI category
     { url: 'https://techcrunch.com/startups/feed/', name: 'TechCrunch Startups', category: 'Startups' },
     { url: 'https://www.producthunt.com/feed', name: 'Product Hunt', category: 'Startups' },
+    { url: 'https://hnrss.org/frontpage', name: 'Hacker News', category: 'Tech' }, // ✅ Added
     
     // African Tech
     { url: 'https://disrupt-africa.com/feed/', name: 'Disrupt Africa', category: 'Culture' },
