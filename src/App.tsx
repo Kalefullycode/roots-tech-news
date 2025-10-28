@@ -7,7 +7,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import PreconnectHints from "@/components/PreconnectHints";
-import ErrorBoundary from "@/components/ErrorBoundary";
 import Index from "./pages/Index";
 // import EmergencyIndex from "./pages/EmergencyIndex"; // Uncomment to test
 
@@ -36,15 +35,14 @@ const queryClient = new QueryClient({
 
 const App: React.FC = () => {
   return (
-    <ErrorBoundary>
-      <HelmetProvider>
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <PreconnectHints />
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <PreconnectHints />
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
               <Route path="/" element={<Index />} />
               <Route 
                 path="/category/:category" 
@@ -110,12 +108,11 @@ const App: React.FC = () => {
                   </Suspense>
                 } 
               />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </QueryClientProvider>
-      </HelmetProvider>
-    </ErrorBoundary>
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 };
 
