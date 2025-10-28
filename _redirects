@@ -1,5 +1,10 @@
-# SPA Routing - Redirect all routes to index.html
+# SPA Routing - Cloudflare Pages compatible
+# Specific routes for major sections
 /videos /index.html 200
 /podcasts /index.html 200
-/* /index.html 200
+/about /index.html 200
+/contact /index.html 200
+/privacy /index.html 200
+/terms /index.html 200
+/category/* /index.html 200
 
