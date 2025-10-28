@@ -69,8 +69,45 @@ const AI_PODCASTS = [
   }
 ];
 
+// Fallback podcast episodes for when API calls fail
+const FALLBACK_EPISODES: PodcastEpisode[] = [
+  {
+    podcast: 'Lex Fridman Podcast',
+    host: 'Lex Fridman',
+    title: 'Welcome to RootsTechNews - AI & Tech Podcast Hub',
+    link: '#',
+    pubDate: new Date(),
+    description: 'We\'re experiencing temporary difficulties loading live podcast feeds. Check back soon for the latest AI and technology discussions.',
+    audioUrl: '',
+    logo: 'https://lexfridman.com/static/files/icons/apple-touch-icon.png',
+    color: 'blue'
+  },
+  {
+    podcast: 'AI Podcast',
+    host: 'NVIDIA',
+    title: 'Loading Latest Podcast Episodes',
+    link: '#',
+    pubDate: new Date(Date.now() - 86400000),
+    description: 'Our podcast aggregator is refreshing content from top AI and technology shows. Stay tuned for updates.',
+    audioUrl: '',
+    logo: 'https://blogs.nvidia.com/favicon.ico',
+    color: 'green'
+  },
+  {
+    podcast: 'Tech Cabal Podcast',
+    host: 'TechCabal',
+    title: 'African Tech Innovation Stories Coming Soon',
+    link: '#',
+    pubDate: new Date(Date.now() - 172800000),
+    description: 'Discover the latest innovations and startup stories from across the African tech ecosystem.',
+    audioUrl: '',
+    logo: 'https://techcabal.com/favicon.ico',
+    color: 'purple'
+  }
+];
+
 const LivePodcastFeed = () => {
-  const [episodes, setEpisodes] = useState<PodcastEpisode[]>([]);
+  const [episodes, setEpisodes] = useState<PodcastEpisode[]>(FALLBACK_EPISODES);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -122,7 +159,10 @@ const LivePodcastFeed = () => {
         }
       }
       
-      setEpisodes(fetchedEpisodes.sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime()).slice(0, 6));
+      // Only update if we got episodes, otherwise keep fallback
+      if (fetchedEpisodes.length > 0) {
+        setEpisodes(fetchedEpisodes.sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime()).slice(0, 6));
+      }
       setIsLoading(false);
     };
 

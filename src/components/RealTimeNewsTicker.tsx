@@ -4,8 +4,42 @@ import { Zap, Radio } from "lucide-react";
 import EnhancedRSSService from "@/services/EnhancedRSSService";
 import { NewsArticle } from "@/services/NewsService";
 
+// Fallback news items for when API calls fail
+const FALLBACK_NEWS: NewsArticle[] = [
+  {
+    id: 'ticker-fallback-1',
+    title: 'Welcome to RootsTechNews - Your Gateway to African Tech Innovation',
+    description: 'Exploring the intersection of technology and culture through an Afro-futuristic lens.',
+    url: '#',
+    urlToImage: '',
+    publishedAt: new Date().toISOString(),
+    source: { id: 'roots', name: 'RootsTechNews' },
+    category: 'Tech'
+  },
+  {
+    id: 'ticker-fallback-2',
+    title: 'Live Tech News Updates - Refreshing Every 5 Minutes',
+    description: 'Stay connected to the latest developments in AI, startups, and innovation.',
+    url: '#',
+    urlToImage: '',
+    publishedAt: new Date().toISOString(),
+    source: { id: 'roots', name: 'RootsTechNews' },
+    category: 'News'
+  },
+  {
+    id: 'ticker-fallback-3',
+    title: 'Experiencing Technical Difficulties - We\'ll Be Right Back',
+    description: 'Our team is working to restore full news feed functionality.',
+    url: '#',
+    urlToImage: '',
+    publishedAt: new Date().toISOString(),
+    source: { id: 'roots', name: 'RootsTechNews' },
+    category: 'Status'
+  }
+];
+
 const RealTimeNewsTicker = () => {
-  const [news, setNews] = useState<NewsArticle[]>([]);
+  const [news, setNews] = useState<NewsArticle[]>(FALLBACK_NEWS);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -13,9 +47,12 @@ const RealTimeNewsTicker = () => {
     const fetchNews = async () => {
       try {
         const articles = await EnhancedRSSService.fetchAllRSSFeeds();
-        setNews(articles.slice(0, 20)); // Get top 20 most recent
+        if (articles && articles.length > 0) {
+          setNews(articles.slice(0, 20)); // Get top 20 most recent
+        }
       } catch (error) {
         console.error("Failed to fetch ticker news:", error);
+        // Keep fallback news on error
       }
     };
 
@@ -38,8 +75,7 @@ const RealTimeNewsTicker = () => {
     return () => clearInterval(rotateInterval);
   }, [news.length]);
 
-  if (news.length === 0) return null;
-
+  // Always show ticker (initialized with fallback news)
   const currentNews = news[currentIndex];
 
   return (
