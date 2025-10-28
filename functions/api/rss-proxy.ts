@@ -120,10 +120,14 @@ export async function onRequestGet(context: { request: Request; env: Env }) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
+    // Use realistic browser headers to avoid 403 errors from some sites
     const response = await fetch(decodedFeedUrl, {
       headers: {
-        'User-Agent': 'RootsTechNews-RSS-Proxy/1.0 (https://rootstechnews.com)',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Cache-Control': 'no-cache',
+        'Referer': 'https://rootstechnews.com/',
       },
       signal: controller.signal,
     });
