@@ -36,6 +36,22 @@ const AI_PODCASTS = [
     color: 'blue'
   },
   {
+    name: 'The Cognitive Revolution',
+    host: 'Nathan Labenz',
+    description: 'AI developments & implications',
+    rssUrl: 'https://feeds.transistor.fm/the-cognitive-revolution',
+    logo: '🧠',
+    color: 'indigo'
+  },
+  {
+    name: 'Latent Space',
+    host: 'Swyx & Alessio',
+    description: 'AI engineering deep dives',
+    rssUrl: 'https://api.substack.com/feed/podcast/1084089.rss',
+    logo: '🚀',
+    color: 'violet'
+  },
+  {
     name: 'Practical AI',
     host: 'Chris Benson & Daniel Whitenack',
     description: 'AI engineering & implementation',

@@ -7,6 +7,7 @@ interface Env {
 
 // Whitelist of allowed RSS feed domains for security
 const ALLOWED_DOMAINS = [
+  // Tech News
   'techcrunch.com',
   'feeds.arstechnica.com',
   'theverge.com',
@@ -25,22 +26,48 @@ const ALLOWED_DOMAINS = [
   'zdnet.com',
   'axios.com',
   'bloomberg.com',
+  'hnrss.org',
+  
+  // RSS Aggregators
   'rss.app',
   'feedburner.com',
   'feeds.feedburner.com',
-  'youtube.com',
-  'www.youtube.com',
-  'towardsdatascience.com',
-  'machinelearningmastery.com',
+  
+  // AI Companies & Research
   'openai.com',
   'anthropic.com',
   'www.anthropic.com',
   'blogs.nvidia.com',
   'ai.googleblog.com',
   'blog.research.google',
+  'ai.meta.com', // ✅ Added Meta AI
+  'blogs.microsoft.com', // ✅ Added Microsoft AI
+  
+  // Academic & Research
+  'rss.arxiv.org', // ✅ Added arXiv (AI & ML research papers)
+  'arxiv.org',
+  
+  // AI News & Analysis
+  'artificialintelligence-news.com', // ✅ Added AI News
+  'www.artificialintelligence-news.com',
+  'towardsdatascience.com',
+  'machinelearningmastery.com',
+  
+  // Podcasts
+  'feeds.transistor.fm', // ✅ Added (Cognitive Revolution)
+  'api.substack.com', // ✅ Added (Latent Space & others)
+  'substack.com',
+  'changelog.com', // ✅ Added (Practical AI)
+  
+  // Video Platforms
+  'youtube.com',
+  'www.youtube.com',
+  
+  // Startups & Business
   'producthunt.com',
   'www.producthunt.com',
-  'hnrss.org',
+  
+  // Security & Science
   'ventureburn.com',
   'krebsonsecurity.com',
   'schneier.com',

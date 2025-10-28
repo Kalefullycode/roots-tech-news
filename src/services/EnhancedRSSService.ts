@@ -21,14 +21,23 @@ class EnhancedRSSService {
     { url: 'https://www.engadget.com/rss.xml', name: 'Engadget', category: 'Gadgets' },
     { url: 'https://www.cnet.com/rss/news/', name: 'CNET', category: 'Tech' },
     
-    // AI & Machine Learning
-    { url: 'https://www.technologyreview.com/feed/', name: 'MIT Technology Review', category: 'AI' },
-    { url: 'https://towardsdatascience.com/feed', name: 'Towards Data Science', category: 'AI' },
-    { url: 'https://machinelearningmastery.com/feed/', name: 'Machine Learning Mastery', category: 'AI' },
+    // AI & Machine Learning - Major Companies
     { url: 'https://openai.com/index/rss.xml', name: 'OpenAI Blog', category: 'AI' }, // ✅ Updated working feed
     { url: 'https://www.anthropic.com/news/rss.xml', name: 'Anthropic News', category: 'AI' }, // ✅ Added
-    { url: 'https://blogs.nvidia.com/feed/', name: 'NVIDIA Blog', category: 'AI' },
     { url: 'https://blog.research.google/feeds/posts/default', name: 'Google AI Blog', category: 'AI' }, // ✅ Updated URL
+    { url: 'https://ai.meta.com/blog/rss/', name: 'Meta AI', category: 'AI' }, // ✅ Added
+    { url: 'https://blogs.microsoft.com/ai/feed/', name: 'Microsoft AI', category: 'AI' }, // ✅ Added
+    { url: 'https://blogs.nvidia.com/feed/', name: 'NVIDIA Blog', category: 'AI' },
+    
+    // AI Research & Academic
+    { url: 'https://rss.arxiv.org/rss/cs.AI', name: 'arXiv AI', category: 'AI' }, // ✅ Added - AI research papers
+    { url: 'https://rss.arxiv.org/rss/cs.LG', name: 'arXiv Machine Learning', category: 'AI' }, // ✅ Added - ML research papers
+    
+    // AI News & Analysis
+    { url: 'https://www.technologyreview.com/feed/', name: 'MIT Technology Review', category: 'AI' },
+    { url: 'https://www.artificialintelligence-news.com/feed/', name: 'AI News', category: 'AI' }, // ✅ Added
+    { url: 'https://towardsdatascience.com/feed', name: 'Towards Data Science', category: 'AI' },
+    { url: 'https://machinelearningmastery.com/feed/', name: 'Machine Learning Mastery', category: 'AI' },
     
     // Startups & Business
     { url: 'https://venturebeat.com/feed/', name: 'VentureBeat', category: 'Startups' }, // ✅ Updated to main feed

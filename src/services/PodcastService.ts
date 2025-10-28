@@ -19,14 +19,24 @@ class PodcastService {
 
   // Popular Tech & Innovation Podcasts RSS feeds
   private readonly PODCASTS = [
+    // AI-Focused Podcasts
+    { url: 'https://lexfridman.com/feed/podcast/', name: 'Lex Fridman Podcast', category: 'AI' },
+    { url: 'https://twimlai.com/feed/podcast/', name: 'TWIML AI Podcast', category: 'AI' },
+    { url: 'https://feeds.transistor.fm/the-cognitive-revolution', name: 'The Cognitive Revolution', category: 'AI' }, // ✅ Added
+    { url: 'https://api.substack.com/feed/podcast/1084089.rss', name: 'Latent Space', category: 'AI' }, // ✅ Added
+    { url: 'https://changelog.com/practicalai/feed', name: 'Practical AI', category: 'AI' }, // ✅ Added
+    
+    // Tech News & Analysis
     { url: 'https://feeds.simplecast.com/54nAGcIl', name: 'The Vergecast', category: 'Tech' },
     { url: 'https://feeds.megaphone.fm/accidental-tech-podcast', name: 'Accidental Tech Podcast', category: 'Tech' },
     { url: 'https://feeds.twit.tv/twit.xml', name: 'This Week in Tech', category: 'Tech' },
-    { url: 'https://lexfridman.com/feed/podcast/', name: 'Lex Fridman Podcast', category: 'AI' },
-    { url: 'https://twimlai.com/feed/podcast/', name: 'TWIML AI Podcast', category: 'AI' },
+    
+    // Startups & Business
     { url: 'https://feeds.megaphone.fm/WWO3519750118', name: 'Pivot', category: 'Startups' },
     { url: 'https://feeds.simplecast.com/dHoohVNH', name: 'a16z Podcast', category: 'Startups' },
     { url: 'https://feeds.npr.org/510313/podcast.xml', name: 'How I Built This', category: 'Startups' },
+    
+    // Security
     { url: 'https://feeds.megaphone.fm/darknetdiaries', name: 'Darknet Diaries', category: 'Security' },
     { url: 'https://risky.biz/feeds/risky-business/', name: 'Risky Business', category: 'Security' },
   ];
