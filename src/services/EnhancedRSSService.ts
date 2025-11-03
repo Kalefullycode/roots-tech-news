@@ -1,5 +1,6 @@
 import { NewsArticle } from './NewsService';
 import ContentFilter from './ContentFilter';
+import { REAL_TIME_RSS_FEEDS } from '@/data/realTimeFeeds';
 
 interface RSSFeed {
   url: string;
@@ -11,58 +12,24 @@ class EnhancedRSSService {
   private cache = new Map<string, { data: NewsArticle[]; timestamp: number }>();
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-  // Comprehensive list of tech news RSS feeds
-  private readonly RSS_FEEDS: RSSFeed[] = [
-    // Major Tech News
-    { url: 'https://techcrunch.com/feed/', name: 'TechCrunch', category: 'Tech' },
-    { url: 'https://feeds.arstechnica.com/arstechnica/index', name: 'Ars Technica', category: 'Tech' },
-    { url: 'https://www.theverge.com/rss/index.xml', name: 'The Verge', category: 'Gadgets' },
-    { url: 'https://www.wired.com/feed/rss', name: 'WIRED', category: 'Tech' },
-    { url: 'https://www.engadget.com/rss.xml', name: 'Engadget', category: 'Gadgets' },
-    { url: 'https://www.cnet.com/rss/news/', name: 'CNET', category: 'Tech' },
-    
-    // AI & Machine Learning - Major Companies
-    { url: 'https://openai.com/index/rss.xml', name: 'OpenAI Blog', category: 'AI' }, // ✅ Updated working feed
-    { url: 'https://www.anthropic.com/news/rss.xml', name: 'Anthropic News', category: 'AI' }, // ✅ Added
-    { url: 'https://blog.research.google/feeds/posts/default', name: 'Google AI Blog', category: 'AI' }, // ✅ Updated URL
-    { url: 'https://ai.meta.com/blog/rss/', name: 'Meta AI', category: 'AI' }, // ✅ Added
-    { url: 'https://blogs.microsoft.com/ai/feed/', name: 'Microsoft AI', category: 'AI' }, // ✅ Added
-    { url: 'https://blogs.nvidia.com/feed/', name: 'NVIDIA Blog', category: 'AI' },
-    
-    // AI Research & Academic
-    { url: 'https://rss.arxiv.org/rss/cs.AI', name: 'arXiv AI', category: 'AI' }, // ✅ Added - AI research papers
-    { url: 'https://rss.arxiv.org/rss/cs.LG', name: 'arXiv Machine Learning', category: 'AI' }, // ✅ Added - ML research papers
-    
-    // AI News & Analysis
-    { url: 'https://www.technologyreview.com/feed/', name: 'MIT Technology Review', category: 'AI' },
-    { url: 'https://www.artificialintelligence-news.com/feed/', name: 'AI News', category: 'AI' }, // ✅ Added
-    { url: 'https://towardsdatascience.com/feed', name: 'Towards Data Science', category: 'AI' },
-    { url: 'https://machinelearningmastery.com/feed/', name: 'Machine Learning Mastery', category: 'AI' },
-    
-    // Startups & Business
-    { url: 'https://venturebeat.com/feed/', name: 'VentureBeat', category: 'Startups' }, // ✅ Updated to main feed
-    { url: 'https://techcrunch.com/category/artificial-intelligence/feed/', name: 'TechCrunch AI', category: 'AI' }, // ✅ Added AI category
-    { url: 'https://techcrunch.com/startups/feed/', name: 'TechCrunch Startups', category: 'Startups' },
-    { url: 'https://www.producthunt.com/feed', name: 'Product Hunt', category: 'Startups' },
-    { url: 'https://hnrss.org/frontpage', name: 'Hacker News', category: 'Tech' }, // ✅ Added
-    
-    // African Tech
-    { url: 'https://disrupt-africa.com/feed/', name: 'Disrupt Africa', category: 'Culture' },
-    { url: 'https://ventureburn.com/feed/', name: 'Ventureburn', category: 'Startups' },
-    { url: 'https://techcabal.com/feed/', name: 'TechCabal', category: 'Culture' },
-    
-    // Cybersecurity
-    { url: 'https://krebsonsecurity.com/feed/', name: 'Krebs on Security', category: 'Security' },
-    { url: 'https://www.schneier.com/feed/atom/', name: 'Schneier on Security', category: 'Security' },
-    { url: 'https://threatpost.com/feed/', name: 'Threatpost', category: 'Security' },
-    
-    // Quantum & Physics
-    { url: 'https://www.quantamagazine.org/feed/', name: 'Quanta Magazine', category: 'Innovation' },
-    
-    // Innovation & Science
-    { url: 'https://www.sciencedaily.com/rss/computers_math/computer_science.xml', name: 'ScienceDaily', category: 'Innovation' },
-    { url: 'https://www.newscientist.com/subject/technology/feed/', name: 'New Scientist', category: 'Innovation' },
-  ];
+  // Use real-time feeds data source
+  private readonly RSS_FEEDS: RSSFeed[] = REAL_TIME_RSS_FEEDS.map(feed => ({
+    url: feed.url,
+    name: feed.name,
+    category: this.mapCategory(feed.category)
+  }));
+
+  private mapCategory(category: string): string {
+    const map: Record<string, string> = {
+      'ai': 'AI',
+      'tech-news': 'Tech',
+      'research': 'AI',
+      'startups': 'Startups',
+      'security': 'Security',
+      'products': 'Startups'
+    };
+    return map[category] || category;
+  }
 
   private isValidImageUrl(url: string): boolean {
     if (!url) return false;
@@ -161,10 +128,15 @@ class EnhancedRSSService {
       const xmlText = await response.text();
       const articles = this.parseRSSXML(xmlText, sourceName, category);
       
-      this.cache.set(cacheKey, { data: articles, timestamp: Date.now() });
+      // Only cache successful results with articles
+      if (articles.length > 0) {
+        this.cache.set(cacheKey, { data: articles, timestamp: Date.now() });
+      }
       return articles;
     } catch (error) {
       console.warn(`Failed to fetch RSS from ${feedUrl}:`, error);
+      
+      // Return empty array - let the calling function handle fallbacks
       return [];
     }
   }
@@ -178,20 +150,34 @@ class EnhancedRSSService {
 
     const results = await Promise.allSettled(fetchPromises);
     
+    let successCount = 0;
+    let failureCount = 0;
+    
     results.forEach((result, index) => {
-      if (result.status === 'fulfilled') {
+      if (result.status === 'fulfilled' && result.value.length > 0) {
         allArticles.push(...result.value);
+        successCount++;
       } else {
-        console.warn(`Failed to fetch RSS feed: ${this.RSS_FEEDS[index].name}`);
+        failureCount++;
+        console.warn(`Failed to fetch RSS feed: ${this.RSS_FEEDS[index].name}`, 
+          result.status === 'rejected' ? result.reason : 'No articles returned');
       }
     });
 
-    // Filter out non-AI/tech content
-    const filteredArticles = ContentFilter.filterAndSort(allArticles);
+    console.log(`RSS Feed Summary: ${successCount} succeeded, ${failureCount} failed out of ${this.RSS_FEEDS.length} total feeds`);
 
-    return filteredArticles.sort((a, b) => 
-      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-    );
+    // If we have articles, filter and return them
+    if (allArticles.length > 0) {
+      // Filter out non-AI/tech content
+      const filteredArticles = ContentFilter.filterAndSort(allArticles);
+
+      return filteredArticles.sort((a, b) => 
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+      );
+    }
+
+    // Return empty array if no articles - components should have fallbacks
+    return [];
   }
 
   async fetchByCategory(category: string): Promise<NewsArticle[]> {

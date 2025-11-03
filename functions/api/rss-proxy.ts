@@ -40,6 +40,7 @@ const ALLOWED_DOMAINS = [
   'blogs.nvidia.com',
   'ai.googleblog.com',
   'blog.research.google',
+  'deepmind.com',
   'ai.meta.com', // ✅ Added Meta AI
   'blogs.microsoft.com', // ✅ Added Microsoft AI
   
@@ -54,14 +55,51 @@ const ALLOWED_DOMAINS = [
   'machinelearningmastery.com',
   
   // Podcasts
-  'feeds.transistor.fm', // ✅ Added (Cognitive Revolution)
-  'api.substack.com', // ✅ Added (Latent Space & others)
+  'feeds.transistor.fm', // Cognitive Revolution
+  'api.substack.com', // Latent Space & others
   'substack.com',
-  'changelog.com', // ✅ Added (Practical AI)
+  'changelog.com', // Practical AI & The Changelog
+  'lexfridman.com', // Lex Fridman Podcast
+  'twimlai.com', // TWIML AI Podcast
+  'feeds.simplecast.com', // The Vergecast, a16z, Code Switch, Masters of Scale
+  'feeds.megaphone.fm', // Accidental Tech, Pivot, Darknet Diaries, Hard Fork, CyberWire, Acquired
+  'feeds.twit.tv', // This Week in Tech
+  'feeds.npr.org', // How I Built This, Code Switch
+  'risky.biz', // Risky Business
+  'feeds.pacific-content.com', // Command Line Heroes
+  
+  // News & Culture
+  'afrotech.com', // AfroTech
+  'blackenterprise.com', // Black Enterprise
+  'urbangeekz.com', // UrbanGeekz
+  'essence.com', // Essence
+  'theguardian.com', // The Guardian
+  'rss.nytimes.com', // NYT
+  'reuters.com', // Reuters
+  
+  // Daily Tech News Sources
+  'techmeme.com', // Techmeme
+  '9to5mac.com', // 9to5Mac
+  '9to5google.com', // 9to5Google
+  'androidauthority.com', // Android Authority
+  'androidpolice.com', // Android Police
+  'geekwire.com', // GeekWire
+  'siliconangle.com', // SiliconANGLE
+  'theregister.com', // The Register
+  'marktechpost.com', // MarkTechPost
+  'syncedreview.com', // Synced AI
+  'news.crunchbase.com', // Crunchbase News
+  'techinasia.com', // Tech in Asia
+  'technode.com', // TechNode
+  'bleepingcomputer.com', // BleepingComputer
+  'darkreading.com', // Dark Reading
+  'therecord.media', // The Record
   
   // Video Platforms
   'youtube.com',
   'www.youtube.com',
+  'reddit.com',
+  'www.reddit.com',
   
   // Startups & Business
   'producthunt.com',
@@ -94,6 +132,17 @@ function isAllowedDomain(url: string): boolean {
 // Main request handler
 export async function onRequestGet(context: { request: Request; env: Env }) {
   const { request } = context;
+  
+  // Block AI crawlers at edge
+  try {
+    // Dynamically import to avoid circular issues if any
+    // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+    const { blockAICrawlers } = await import('../lib/bot-block');
+    const aiBlock = blockAICrawlers(request);
+    if (aiBlock) return aiBlock;
+  } catch (_) {
+    // No-op if util not available
+  }
   
   // CORS headers
   const corsHeaders = {

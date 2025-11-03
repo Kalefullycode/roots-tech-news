@@ -22,23 +22,33 @@ class PodcastService {
     // AI-Focused Podcasts
     { url: 'https://lexfridman.com/feed/podcast/', name: 'Lex Fridman Podcast', category: 'AI' },
     { url: 'https://twimlai.com/feed/podcast/', name: 'TWIML AI Podcast', category: 'AI' },
-    { url: 'https://feeds.transistor.fm/the-cognitive-revolution', name: 'The Cognitive Revolution', category: 'AI' }, // ✅ Added
-    { url: 'https://api.substack.com/feed/podcast/1084089.rss', name: 'Latent Space', category: 'AI' }, // ✅ Added
-    { url: 'https://changelog.com/practicalai/feed', name: 'Practical AI', category: 'AI' }, // ✅ Added
+    { url: 'https://feeds.transistor.fm/the-cognitive-revolution-how-ai-changes-everything', name: 'The Cognitive Revolution', category: 'AI' },
+    { url: 'https://api.substack.com/feed/podcast/1084089.rss', name: 'Latent Space', category: 'AI' },
+    { url: 'https://changelog.com/practicalai/feed', name: 'Practical AI', category: 'AI' },
+    { url: 'https://feeds.megaphone.fm/MLN2155636147', name: 'Hard Fork', category: 'AI' }, // NYT tech podcast
     
     // Tech News & Analysis
     { url: 'https://feeds.simplecast.com/54nAGcIl', name: 'The Vergecast', category: 'Tech' },
     { url: 'https://feeds.megaphone.fm/accidental-tech-podcast', name: 'Accidental Tech Podcast', category: 'Tech' },
     { url: 'https://feeds.twit.tv/twit.xml', name: 'This Week in Tech', category: 'Tech' },
+    { url: 'https://feeds.pacific-content.com/commandlineheroes', name: 'Command Line Heroes', category: 'Tech' },
+    { url: 'https://changelog.com/podcast/feed', name: 'The Changelog', category: 'Tech' },
     
     // Startups & Business
     { url: 'https://feeds.megaphone.fm/WWO3519750118', name: 'Pivot', category: 'Startups' },
     { url: 'https://feeds.simplecast.com/dHoohVNH', name: 'a16z Podcast', category: 'Startups' },
     { url: 'https://feeds.npr.org/510313/podcast.xml', name: 'How I Built This', category: 'Startups' },
+    { url: 'https://feeds.megaphone.fm/acquired', name: 'Acquired', category: 'Startups' },
+    { url: 'https://feeds.simplecast.com/JoGtLBBd', name: 'Masters of Scale', category: 'Startups' },
     
-    // Security
+    // Security & Privacy
     { url: 'https://feeds.megaphone.fm/darknetdiaries', name: 'Darknet Diaries', category: 'Security' },
     { url: 'https://risky.biz/feeds/risky-business/', name: 'Risky Business', category: 'Security' },
+    { url: 'https://feeds.megaphone.fm/cyberwire-daily-podcast', name: 'CyberWire Daily', category: 'Security' },
+    
+    // Diversity & Culture
+    { url: 'https://feeds.simplecast.com/wjQvV7j0', name: 'Code Switch', category: 'Culture' },
+    { url: 'https://feeds.megaphone.fm/business-wars', name: 'Business Wars', category: 'Startups' },
   ];
 
   private parsePodcastRSS(xmlText: string, podcastName: string, category: string): PodcastEpisode[] {
