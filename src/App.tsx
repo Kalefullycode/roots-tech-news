@@ -18,6 +18,9 @@ const AboutPage = lazy(() => import("./pages/AboutPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
 const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
 const TermsPage = lazy(() => import("./pages/TermsPage"));
+const ResourcesPage = lazy(() => import("./pages/ResourcesPage"));
+const BlogPage = lazy(() => import("./pages/BlogPage"));
+const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
 
 // Lazy load the 404 page since it's only needed when user hits an invalid route
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -97,6 +100,30 @@ const App: React.FC = () => {
                 element={
                   <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><div className="text-muted-foreground">Loading...</div></div>}>
                     <TermsPage />
+                  </Suspense>
+                } 
+              />
+              <Route 
+                path="/resources" 
+                element={
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><div className="text-muted-foreground">Loading...</div></div>}>
+                    <ResourcesPage />
+                  </Suspense>
+                } 
+              />
+              <Route 
+                path="/blog" 
+                element={
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><div className="text-muted-foreground">Loading...</div></div>}>
+                    <BlogPage />
+                  </Suspense>
+                } 
+              />
+              <Route 
+                path="/blog/:slug" 
+                element={
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><div className="text-muted-foreground">Loading...</div></div>}>
+                    <BlogPostPage />
                   </Suspense>
                 } 
               />
