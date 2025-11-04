@@ -34,7 +34,20 @@ interface Article {
   image: string;
 }
 
-function extractImage(item: any): string {
+interface RSSItem {
+  'media:content'?: { $?: { url?: string } };
+  'media:thumbnail'?: { $?: { url?: string } };
+  enclosure?: { url?: string };
+  'content:encoded'?: string;
+  guid?: string;
+  link?: string;
+  title?: string;
+  contentSnippet?: string;
+  content?: string;
+  pubDate?: string;
+}
+
+function extractImage(item: RSSItem): string {
   // Try multiple image extraction methods
   if (item['media:content']?.$?.url) return item['media:content'].$.url;
   if (item['media:thumbnail']?.$?.url) return item['media:thumbnail'].$.url;
@@ -46,7 +59,12 @@ function extractImage(item: any): string {
   return '/placeholder.svg';
 }
 
-export async function onRequestGet(context: any) {
+interface CloudflareContext {
+  request: Request;
+  env: Record<string, unknown>;
+}
+
+export async function onRequestGet(context: CloudflareContext) {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -106,11 +124,12 @@ export async function onRequestGet(context: any) {
       headers
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('RSS fetch error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return new Response(JSON.stringify({ 
       error: 'Failed to fetch RSS feeds',
-      message: error.message 
+      message: errorMessage
     }), {
       status: 500,
       headers

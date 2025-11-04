@@ -2,7 +2,8 @@
 // Handles CORS issues when fetching RSS feeds from external sources
 
 interface Env {
-  // Add any environment variables here if needed
+  RESEND_API_KEY?: string;
+  [key: string]: unknown;
 }
 
 // Whitelist of allowed RSS feed domains for security
@@ -135,8 +136,6 @@ export async function onRequestGet(context: { request: Request; env: Env }) {
   
   // Block AI crawlers at edge
   try {
-    // Dynamically import to avoid circular issues if any
-    // eslint-disable-next-line @typescript-eslint/consistent-type-imports
     const { blockAICrawlers } = await import('../lib/bot-block');
     const aiBlock = blockAICrawlers(request);
     if (aiBlock) return aiBlock;
@@ -251,24 +250,28 @@ export async function onRequestGet(context: { request: Request; env: Env }) {
       },
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('RSS Proxy Error:', error);
 
     // Handle specific error types
     let errorMessage = 'An error occurred while fetching the RSS feed';
     let statusCode = 500;
+    let errorName = 'UnknownError';
 
-    if (error.name === 'AbortError') {
-      errorMessage = 'Request timeout - RSS feed took too long to respond';
-      statusCode = 504;
-    } else if (error.message) {
-      errorMessage = error.message;
+    if (error instanceof Error) {
+      errorName = error.name;
+      if (error.name === 'AbortError') {
+        errorMessage = 'Request timeout - RSS feed took too long to respond';
+        statusCode = 504;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
     }
 
     return new Response(
       JSON.stringify({ 
         error: errorMessage,
-        type: error.name || 'UnknownError'
+        type: errorName
       }), 
       {
         status: statusCode,

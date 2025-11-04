@@ -79,7 +79,17 @@ const MainFeed = () => {
   console.log('MainFeed - Final articles count:', articles.length);
   
   // Format articles for our ArticleCard component
-  const formatArticle = (article: any) => ({
+  interface ArticleInput {
+    title: string;
+    description?: string;
+    category?: string;
+    publishedAt: string;
+    urlToImage?: string;
+    url?: string;
+    source?: { id?: string; name?: string };
+  }
+  
+  const formatArticle = (article: ArticleInput) => ({
     title: article.title,
     excerpt: article.description || "Click to read more about this exciting development in technology.",
     category: article.category || "Tech",

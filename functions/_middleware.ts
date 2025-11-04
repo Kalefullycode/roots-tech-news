@@ -1,6 +1,12 @@
 import { blockAICrawlers } from './middleware/bot-protection';
 
-export async function onRequest(context: any) {
+interface CloudflareContext {
+  request: Request;
+  env: Record<string, unknown>;
+  next: () => Response | Promise<Response>;
+}
+
+export async function onRequest(context: CloudflareContext) {
   const { request } = context;
   
   const blockResponse = blockAICrawlers(request);
@@ -10,6 +16,7 @@ export async function onRequest(context: any) {
   
   return context.next();
 }
+
 
 
 

@@ -3,7 +3,16 @@ import { Resend } from 'resend';
 
 const AUDIENCE_ID = '35eb466a-614c-46d8-830b-0ae8108177c8';
 
-export async function onRequestPost(context: any) {
+interface CloudflareContext {
+  request: Request;
+  env: {
+    RESEND_API_KEY?: string;
+    NODE_ENV?: string;
+    [key: string]: unknown;
+  };
+}
+
+export async function onRequestPost(context: CloudflareContext) {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -122,11 +131,12 @@ export async function onRequestPost(context: any) {
       headers
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Newsletter error:', error);
     
     // Handle duplicate email (already subscribed)
-    if (error.message?.includes('already exists') || error.message?.includes('Contact already exists')) {
+    const errorMessage = error instanceof Error ? error.message : '';
+    if (errorMessage.includes('already exists') || errorMessage.includes('Contact already exists')) {
       return new Response(JSON.stringify({ 
         error: 'This email is already subscribed!' 
       }), {
@@ -137,7 +147,7 @@ export async function onRequestPost(context: any) {
 
     return new Response(JSON.stringify({ 
       error: 'Failed to subscribe. Please try again.',
-      details: context.env.NODE_ENV === 'development' ? error.message : undefined
+      details: context.env.NODE_ENV === 'development' ? errorMessage : undefined
     }), {
       status: 500,
       headers

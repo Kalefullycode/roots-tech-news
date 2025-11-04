@@ -2,6 +2,7 @@ import RSSService from './RSSService';
 import VideoService from './VideoService';
 import NewsService from './NewsService';
 import { NewsArticle } from './NewsService';
+import { YouTubeVideo } from './YouTubeService';
 
 interface ScheduleConfig {
   rssUpdate: string; // Every 30 minutes
@@ -47,8 +48,8 @@ class ContentScheduler {
     try {
       const saved = localStorage.getItem(this.STORAGE_KEY);
       if (saved) {
-        const state = JSON.parse(saved);
-        state.jobs?.forEach((job: any) => {
+        const state = JSON.parse(saved) as { jobs?: ScheduledJob[] };
+        state.jobs?.forEach((job: ScheduledJob) => {
           this.jobs.set(job.id, {
             ...job,
             isRunning: false, // Reset running state on load
@@ -371,10 +372,14 @@ class ContentScheduler {
 
   getCachedContent(): {
     rss?: { data: NewsArticle[]; timestamp: number };
-    youtube?: { data: any[]; timestamp: number };
+    youtube?: { data: YouTubeVideo[]; timestamp: number };
     news?: { data: NewsArticle[]; timestamp: number };
   } {
-    const result: any = {};
+    const result: {
+      rss?: { data: NewsArticle[]; timestamp: number };
+      youtube?: { data: YouTubeVideo[]; timestamp: number };
+      news?: { data: NewsArticle[]; timestamp: number };
+    } = {};
     
     try {
       const rss = localStorage.getItem('cached_rss_articles');

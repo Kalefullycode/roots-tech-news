@@ -120,11 +120,12 @@ export const handler: Handler = async (event) => {
       })
     };
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Newsletter error:', error);
     
     // Handle duplicate email (already subscribed)
-    if (error.message?.includes('already exists') || error.message?.includes('Contact already exists')) {
+    const errorMessage = error instanceof Error ? error.message : '';
+    if (errorMessage.includes('already exists') || errorMessage.includes('Contact already exists')) {
       return {
         statusCode: 400,
         headers,
@@ -137,7 +138,7 @@ export const handler: Handler = async (event) => {
       headers,
       body: JSON.stringify({ 
         error: 'Failed to subscribe. Please try again.',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
       })
     };
   }
