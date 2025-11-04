@@ -18,6 +18,21 @@ This document outlines all required and optional environment variables for the R
 - **Security**: Mark as "Encrypted" in Cloudflare
 - **Used In**: `functions/subscribe.ts`
 
+### Optional Variables
+
+#### `VITE_YOUTUBE_API_KEY`
+- **Purpose**: YouTube Data API v3 key for enhanced video features (optional)
+- **Location**: For local development, add to `.env.local` file
+- **Note**: Currently, the app uses YouTube RSS feeds which don't require an API key. This is configured for future use.
+- **How to Get**:
+  1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+  2. Create a new project or select existing
+  3. Enable "YouTube Data API v3"
+  4. Create credentials → API Key
+  5. Copy the API key
+- **Format**: `AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`
+- **Used In**: `src/config/youtube.ts` (currently optional, for future YouTube API integration)
+
 ---
 
 ## Setting Environment Variables in Cloudflare Pages
@@ -43,14 +58,20 @@ After setting the variable, test the newsletter subscription:
 
 ## Local Development
 
-For local development, create a `.dev.vars` file in the project root:
+For local development, create a `.env.local` file in the project root:
 
 ```bash
-# .dev.vars (DO NOT COMMIT THIS FILE)
+# .env.local (DO NOT COMMIT THIS FILE)
+# Required for newsletter functionality
 RESEND_API_KEY=re_your_api_key_here
+
+# Optional - for future YouTube API features
+VITE_YOUTUBE_API_KEY=AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ```
 
-**Important**: Add `.dev.vars` to `.gitignore` to prevent committing secrets.
+**Important**: 
+- Add `.env.local` to `.gitignore` to prevent committing secrets
+- For Cloudflare Pages dev environment, use `.dev.vars` file
 
 ---
 

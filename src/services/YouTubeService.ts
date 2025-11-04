@@ -1,4 +1,5 @@
 import ContentFilter from './ContentFilter';
+import { YOUTUBE_CONFIG } from '@/config/youtube';
 
 export interface YouTubeVideo {
   id: string;
@@ -11,44 +12,30 @@ export interface YouTubeVideo {
   category: string;
 }
 
+interface YouTubeChannel {
+  id: string;
+  name: string;
+  category: string;
+}
+
 class YouTubeService {
   private cache = new Map<string, { data: YouTubeVideo[]; timestamp: number }>();
-  private readonly CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+  private readonly CACHE_DURATION = YOUTUBE_CONFIG.refreshInterval;
 
-  // Popular Tech YouTube Channels RSS feeds
-  private readonly YOUTUBE_CHANNELS = [
-    // Gadgets & Reviews
-    { id: 'UCBJycsmduvYEL83R_U4JriQ', name: 'Marques Brownlee', category: 'Gadgets' },
-    { id: 'UCXuqSBlHAE6Xw-yeJA0Tunw', name: 'Linus Tech Tips', category: 'Tech' },
-    { id: 'UCl2mFZoRqjw_ELax4Yisf6w', name: 'Unbox Therapy', category: 'Gadgets' },
-    { id: 'UCsTcErHg8oDvUnTzoqsYeNw', name: 'Mrwhosetheboss', category: 'Gadgets' },
-    
-    // AI & Machine Learning
-    { id: 'UCbfYPyITQ-7l4upoX8nvctg', name: 'Two Minute Papers', category: 'AI' },
-    { id: 'UCUHW94eEFW7hkUMVaZz4eDg', name: 'Lex Fridman', category: 'AI' },
-    { id: 'UC5zx8Owijmv-bbhAK6Z9apg', name: 'AI Explained', category: 'AI' },
-    { id: 'UCbfYPyITQ-7l4upoX8nvctg', name: 'Yannic Kilcher', category: 'AI' },
-    
-    // Tech News & Analysis
-    { id: 'UCOmcA3f_RrH6b9NmcNa4tdg', name: 'The Verge', category: 'Tech' },
-    { id: 'UCddiUEpeqJcYeBxX1IVBKvQ', name: 'CNET', category: 'Tech' },
-    { id: 'UC9-y-6csu5WGm29I7JiwpnA', name: 'Engadget', category: 'Tech' },
-    { id: 'UCpljFlcTMoeller-C-4ra6hw', name: 'TechLinked', category: 'Tech' },
-    
-    // Science & Innovation
-    { id: 'UCHnyfMqiRRG1u-2MsSQLbXA', name: 'Veritasium', category: 'Innovation' },
-    { id: 'UCsooa4yRKGN_zEE8iknghZA', name: 'TED-Ed', category: 'Innovation' },
-    { id: 'UC6107grRI4m0o2-emgoDnAA', name: 'SmarterEveryDay', category: 'Innovation' },
-    { id: 'UCR1IuLEqb6UEA_zQ81kwXfg', name: 'Real Engineering', category: 'Innovation' },
-    
-    // Programming & CS
-    { id: 'UCbmNph6atAoGfqLoCL_duAg', name: 'Computerphile', category: 'Tech' },
-    { id: 'UCV0qA-eDDICsRR9rPcnG7tw', name: 'Joma Tech', category: 'Tech' },
-    { id: 'UC8butISFwT-Wl7EV0hUK0BQ', name: 'freeCodeCamp', category: 'Tech' },
-    
-    // Startups & Business
-    { id: 'UCCjyq_K1Xwfg8Lndy7lKMpA', name: 'Y Combinator', category: 'Startups' },
-    { id: 'UCV_qLHbFo_E-_bBW1HdvJGg', name: 'Startup Stories', category: 'Startups' },
+  // Flatten all channels from config into a single array with categories
+  private readonly YOUTUBE_CHANNELS: YouTubeChannel[] = [
+    // AI News channels
+    ...YOUTUBE_CONFIG.channels.aiNews.map(ch => ({ ...ch, category: 'AI' })),
+    // Tech News channels
+    ...YOUTUBE_CONFIG.channels.techNews.map(ch => ({ ...ch, category: 'Tech' })),
+    // Podcast channels
+    ...YOUTUBE_CONFIG.channels.podcasts.map(ch => ({ ...ch, category: 'Podcasts' })),
+    // Tutorial channels
+    ...YOUTUBE_CONFIG.channels.tutorials.map(ch => ({ ...ch, category: 'Tutorials' })),
+    // Make Money with AI channels
+    ...YOUTUBE_CONFIG.channels.makeMoneyWithAI.map(ch => ({ ...ch, category: 'Business' })),
+    // AI vs Human channels
+    ...YOUTUBE_CONFIG.channels.aiVsHuman.map(ch => ({ ...ch, category: 'AI' })),
   ];
 
   private parseYouTubeRSS(xmlText: string, channelName: string, category: string): YouTubeVideo[] {
@@ -60,16 +47,16 @@ class YouTubeService {
       const videos: YouTubeVideo[] = [];
       
       entries.forEach((entry, index) => {
-        if (index >= 5) return; // Limit to 5 videos per channel
+        if (index >= YOUTUBE_CONFIG.maxResults) return; // Limit based on config
         
         const videoId = entry.querySelector('yt\\:videoId, videoId')?.textContent || '';
         const title = entry.querySelector('title')?.textContent || 'Untitled Video';
         const description = entry.querySelector('media\\:description, description')?.textContent || '';
         const published = entry.querySelector('published')?.textContent || new Date().toISOString();
         
-        // Get thumbnail
+        // Get thumbnail with quality from config
         const thumbnail = entry.querySelector('media\\:thumbnail')?.getAttribute('url') || 
-                         `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
+                         `https://i.ytimg.com/vi/${videoId}/${YOUTUBE_CONFIG.thumbnailQuality}.jpg`;
         
         if (videoId) {
           videos.push({
