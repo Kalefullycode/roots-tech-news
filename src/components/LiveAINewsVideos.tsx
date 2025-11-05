@@ -97,19 +97,19 @@ const LiveAINewsVideos = () => {
   };
 
   return (
-    <section className="py-16 bg-gradient-to-b from-transparent to-gray-900/50">
+    <section className="py-8">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <div className="flex items-center gap-3 mb-2">
               <Play className="w-8 h-8 text-red-500 fill-current" />
-              <h2 className="font-orbitron text-3xl font-bold text-white">LIVE AI NEWS</h2>
+              <h2 className="font-orbitron text-3xl font-bold text-glow-primary">LIVE AI NEWS</h2>
               <Badge className="bg-red-600 text-white border-red-500 animate-pulse px-3 py-1">
-                LIVE
+                🔴 LIVE
               </Badge>
             </div>
-            <p className="text-gray-400">
+            <p className="text-muted-foreground">
               Latest AI developments, tech news, podcasts, and tutorials from YouTube & Spotify
             </p>
           </div>
@@ -154,11 +154,11 @@ const LiveAINewsVideos = () => {
           ))}
         </div>
 
-        {/* Videos Grid */}
+        {/* Videos Grid - Horizontal Scroll */}
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {[...Array(6)].map((_, i) => (
-              <Card key={i} className="bg-card-modern border border-card-border/60 overflow-hidden">
+          <div className="flex gap-6 overflow-x-auto pb-4 mb-8 scrollbar-hide">
+            {[...Array(3)].map((_, i) => (
+              <Card key={i} className="bg-card-modern border border-card-border/60 overflow-hidden flex-shrink-0 w-[350px]">
                 <div className="aspect-video bg-secondary animate-pulse" />
                 <div className="p-4 space-y-2">
                   <div className="h-4 bg-secondary animate-pulse rounded" />
@@ -168,12 +168,12 @@ const LiveAINewsVideos = () => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div className="flex gap-6 overflow-x-auto pb-4 mb-8 scrollbar-hide">
             {filteredVideos.length > 0 ? (
-              filteredVideos.map((video) => (
+              filteredVideos.slice(0, 3).map((video) => (
                 <Card
                   key={video.id}
-                  className="bg-card-modern border border-card-border/60 overflow-hidden hover:border-red-600 transition-all cursor-pointer group"
+                  className="bg-card-modern border border-card-border/60 overflow-hidden hover:border-red-600 transition-all cursor-pointer group flex-shrink-0 w-[350px]"
                   onClick={() => window.open(video.url, '_blank')}
                 >
                   {/* Thumbnail */}
@@ -235,16 +235,16 @@ const LiveAINewsVideos = () => {
 
         {/* View All Button */}
         <div className="text-center">
-          <Button 
-            size="lg" 
-            className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white"
-            onClick={() => navigate('/videos')}
+          <a 
+            href="/videos"
+            className="inline-flex items-center text-primary hover:text-accent transition-colors font-roboto font-semibold"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/videos');
+            }}
           >
-            View All AI Videos
-            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </Button>
+            View All Videos →
+          </a>
         </div>
       </div>
     </section>

@@ -152,14 +152,11 @@ const DailyAINews = () => {
             <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
           </div>
           <div>
-            <h2 className="font-orbitron text-2xl font-bold text-glow-primary">
-              Daily AI Briefing
+            <h2 className="font-orbitron text-3xl font-bold text-glow-primary">
+              ⚡ Daily AI Briefing
             </h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground font-roboto">
               Your 60-second AI news update • Updated hourly
-            </p>
-            <p className="text-xs text-primary/80 italic mt-1">
-              🤖 AI news aggregator - Curating global AI developments
             </p>
           </div>
         </div>

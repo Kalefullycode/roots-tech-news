@@ -8,14 +8,13 @@ const HeroSection = lazy(() => import("@/components/HeroSection"));
 
 // Lazy load below-the-fold and non-critical components for better performance
 const Header = lazy(() => import("@/components/Header"));
-const MainFeed = lazy(() => import("@/components/MainFeed"));
+const TodaysTopStories = lazy(() => import("@/components/TodaysTopStories"));
+const FeaturedStory = lazy(() => import("@/components/FeaturedStory"));
+const LatestDiscoveries = lazy(() => import("@/components/LatestDiscoveries"));
 const DailyAINews = lazy(() => import("@/components/DailyAINews"));
-const Sidebar = lazy(() => import("@/components/Sidebar"));
-const AIToolsSidebar = lazy(() => import("@/components/AIToolsSidebar"));
 const LiveAINewsVideos = lazy(() => import("@/components/LiveAINewsVideos"));
-const PodcastSection = lazy(() => import("@/components/PodcastSection"));
-const AIToolsSection = lazy(() => import("@/components/AIToolsSection"));
-const BooksSection = lazy(() => import("@/components/BooksSection"));
+const AIToolsSidebar = lazy(() => import("@/components/AIToolsSidebar"));
+const Sidebar = lazy(() => import("@/components/Sidebar"));
 const Footer = lazy(() => import("@/components/Footer"));
 
 const Index = () => {
@@ -76,8 +75,10 @@ const Index = () => {
       <Suspense fallback={<div className="h-16 bg-background border-b border-border animate-pulse" />}>
         <Header />
       </Suspense>
+
+      {/* SECTION 1: HERO BANNER (Existing - Keep as is) */}
       <Suspense fallback={
-        <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-starfield" aria-label="Loading hero section">
+        <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-starfield">
           <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/40 to-background/80" />
           <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
             <div className="h-24 bg-muted/20 rounded-lg mb-6 animate-pulse-safe" />
@@ -96,89 +97,124 @@ const Index = () => {
       <div className="flex">
         {/* Main Content Area */}
         <main id="main-content" className="flex-1 min-w-0">
+          {/* SECTION 2: TODAY'S TOP STORIES - Immediately below Hero */}
+          <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
+            <TodaysTopStories />
+          </Suspense>
+
+          {/* SECTION 3: FEATURED STORY - No spacing */}
+          <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
+            <FeaturedStory />
+          </Suspense>
+
+          {/* SECTION 4: LATEST DISCOVERIES (Card Grid) - No spacing */}
+          <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
+            <LatestDiscoveries />
+          </Suspense>
+
           {/* Container for standard content */}
-          <div className="container mx-auto px-4 py-12">
-            {/* Daily AI Briefing */}
-            <Suspense fallback={<div className="h-32 bg-muted animate-pulse rounded-lg mb-8" />}>
-              <div className="mb-12">
+          <div className="container mx-auto px-4">
+            {/* SECTION 5: DAILY AI BRIEFING - No spacing */}
+            <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg mb-8" />}>
+              <div className="py-8">
                 <DailyAINews />
               </div>
             </Suspense>
 
-            {/* Live AI News Videos - EXPANDED SECTION */}
-            <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg mb-12" />}>
+            {/* SECTION 6: LIVE AI NEWS (Videos) - No spacing */}
+            <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg mb-8" />}>
               <LiveAINewsVideos />
-            </Suspense>
-            
-            {/* Main News Feed - Today's Top Stories */}
-            <Suspense fallback={<div className="space-y-6"><div className="h-8 bg-muted animate-pulse rounded" /><div className="h-96 bg-muted animate-pulse rounded-lg" /><div className="grid grid-cols-1 md:grid-cols-2 gap-6"><div className="h-48 bg-muted animate-pulse rounded-lg" /><div className="h-48 bg-muted animate-pulse rounded-lg" /></div></div>}>
-              <MainFeed />
-            </Suspense>
-
-            {/* Podcasts Section */}
-            <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg mb-12 mt-12" />}>
-              <div className="mb-12 mt-12">
-                <PodcastSection />
-              </div>
             </Suspense>
           </div>
 
-          {/* Subscribe Section - MOVED TO BOTTOM */}
+          {/* SECTION 7: NEWSLETTER SIGNUP - No spacing */}
           <section className="py-16 bg-gradient-to-b from-transparent to-primary/20 border-t border-border/30">
-            <div className="container mx-auto px-4 text-center">
-              <div className="max-w-3xl mx-auto">
-                <h2 className="font-orbitron text-3xl font-bold text-glow-primary mb-4">
-                  📧 Never Miss an Update
-                </h2>
-                <p className="text-muted-foreground text-lg mb-8">
-                  Get daily AI & tech news, curated podcasts, and exclusive insights delivered to your inbox every morning.
-                </p>
-                <button 
-                  className="px-12 py-4 bg-gradient-to-r from-primary to-accent text-white rounded-lg font-bold text-lg hover:opacity-90 transition-all inline-flex items-center gap-3"
-                  onClick={() => {
-                    const sidebar = document.querySelector('aside');
-                    if (sidebar) {
-                      sidebar.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      setTimeout(() => {
-                        const newsletterForm = sidebar.querySelector('form');
-                        if (newsletterForm) {
-                          newsletterForm.classList.add('ring-4', 'ring-primary', 'ring-offset-4', 'ring-offset-background');
+            <div className="container mx-auto px-4">
+              <div className="max-w-4xl mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Newsletter Content */}
+                  <div className="lg:col-span-2 text-center lg:text-left">
+                    <h2 className="font-orbitron text-3xl font-bold text-glow-primary mb-4">
+                      📧 Never Miss an Update
+                    </h2>
+                    <p className="text-muted-foreground text-lg mb-8 font-roboto">
+                      Get daily AI & tech news, curated podcasts, and exclusive insights delivered to your inbox every morning.
+                    </p>
+                    <button 
+                      className="px-12 py-4 bg-gradient-to-r from-primary to-accent text-white rounded-lg font-bold text-lg hover:opacity-90 transition-all inline-flex items-center gap-3 font-orbitron"
+                      onClick={() => {
+                        const sidebar = document.querySelector('aside');
+                        if (sidebar) {
+                          sidebar.scrollIntoView({ behavior: 'smooth', block: 'start' });
                           setTimeout(() => {
-                            newsletterForm.classList.remove('ring-4', 'ring-primary', 'ring-offset-4', 'ring-offset-background');
-                          }, 2000);
+                            const newsletterForm = sidebar.querySelector('form');
+                            if (newsletterForm) {
+                              newsletterForm.classList.add('ring-4', 'ring-primary', 'ring-offset-4', 'ring-offset-background');
+                              setTimeout(() => {
+                                newsletterForm.classList.remove('ring-4', 'ring-primary', 'ring-offset-4', 'ring-offset-background');
+                              }, 2000);
+                            }
+                          }, 500);
                         }
-                      }, 500);
-                    }
-                  }}
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                  Subscribe to Daily AI News
-                </button>
-                <p className="text-xs text-muted-foreground mt-4">
-                  🤖 Join 50,000+ readers staying ahead in AI & tech • Free forever • Unsubscribe anytime
-                </p>
+                      }}
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      Subscribe to Daily AI News
+                    </button>
+                    <div className="mt-6 space-y-2">
+                      <p className="text-sm text-muted-foreground font-roboto">
+                        🤝 Join 50,000+ readers staying ahead in AI & tech
+                      </p>
+                      <p className="text-xs text-muted-foreground font-roboto">
+                        • Free forever • Unsubscribe anytime
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Trending Now Sidebar */}
+                  <div className="lg:col-span-1">
+                    <div className="bg-card-modern border border-card-border/60 rounded-lg p-6">
+                      <h3 className="font-orbitron font-bold text-xl mb-4 flex items-center gap-2 text-glow-accent">
+                        🔥 Trending Now
+                      </h3>
+                      <div className="space-y-3">
+                        {[
+                          { title: 'OpenAI GPT-5 Release', category: 'AI', hot: true },
+                          { title: 'Quantum Computing Breakthrough', category: 'Tech', hot: true },
+                          { title: 'African Tech Unicorns', category: 'Startups', hot: false },
+                          { title: 'Cybersecurity Threats 2025', category: 'Security', hot: false }
+                        ].map((item, index) => (
+                          <div
+                            key={index}
+                            className="p-3 bg-accent/10 hover:bg-accent/20 rounded-lg transition-colors cursor-pointer group"
+                          >
+                            <div className="flex items-start gap-2">
+                              <span className="text-muted-foreground text-sm font-bold mt-0.5">#{index + 1}</span>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                                    {item.title}
+                                  </p>
+                                  {item.hot && (
+                                    <span className="text-xs">🔥</span>
+                                  )}
+                                </div>
+                                <span className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded">
+                                  {item.category}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
-
-          {/* Hidden sections accessible via navigation */}
-          <div className="hidden">
-            {/* AI Tools Directory - Full directory accessible via /ai-tools route or AI dropdown */}
-            <div id="ai-tools-section" className="scroll-mt-24">
-              <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg" />}>
-                <AIToolsSection />
-              </Suspense>
-            </div>
-            
-            {/* Books Section - Accessible via Resources dropdown */}
-            <div id="books-section" className="scroll-mt-24">
-              <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg" />}>
-                <BooksSection />
-              </Suspense>
-            </div>
-          </div>
         </main>
 
         {/* AI Tools Sidebar - RIGHT SIDE (3 Featured Tools) */}
@@ -194,6 +230,7 @@ const Index = () => {
         </Suspense>
       </div>
       
+      {/* SECTION 8: FOOTER */}
       <Suspense fallback={<div className="h-32 bg-muted animate-pulse" />}>
         <Footer />
       </Suspense>
