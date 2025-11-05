@@ -151,7 +151,7 @@ When ready to deploy:
 
 3. Deploy to:
    - **Netlify:** `netlify deploy --prod`
-   - **Vercel:** `vercel --prod`
+   - **Cloudflare Pages:** `npm run deploy:cloudflare`
    - **Other:** Upload `dist/` folder to your hosting
 
 ## 📞 Support

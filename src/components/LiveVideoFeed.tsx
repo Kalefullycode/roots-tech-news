@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { VideoCard } from './VideoCard';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -7,6 +8,7 @@ import { youtubeService } from '@/services/YouTubeService';
 import type { YouTubeVideo } from '@/services/YouTubeService';
 
 export function LiveVideoFeed() {
+  const navigate = useNavigate();
   const [videos, setVideos] = useState<YouTubeVideo[]>([]);
   const [filteredVideos, setFilteredVideos] = useState<YouTubeVideo[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -23,10 +25,6 @@ export function LiveVideoFeed() {
     { id: 'Tutorials', label: 'Tutorials', icon: '📚' },
   ];
 
-  // Fetch videos on mount
-  useEffect(() => {
-    loadVideos();
-  }, []);
 
   // Filter videos when category changes
   useEffect(() => {
@@ -51,18 +49,29 @@ export function LiveVideoFeed() {
     return () => clearInterval(interval);
   }, [autoRotate, filteredVideos.length]);
 
-  const loadVideos = async () => {
-    setLoading(true);
-    try {
-      const fetchedVideos = await youtubeService.fetchAllVideos();
-      setVideos(fetchedVideos);
-      setFilteredVideos(fetchedVideos);
-    } catch (error) {
-      console.error('Error loading videos:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Auto-refresh videos every 5 minutes to get latest content
+  useEffect(() => {
+    const loadVideos = async () => {
+      setLoading(true);
+      try {
+        // Clear cache to ensure we get latest videos
+        youtubeService.clearCache();
+        const fetchedVideos = await youtubeService.fetchAllVideos();
+        setVideos(fetchedVideos);
+        setFilteredVideos(fetchedVideos);
+      } catch (error) {
+        console.error('Error loading videos:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadVideos();
+    const interval = setInterval(() => {
+      loadVideos();
+    }, 5 * 60 * 1000); // Refresh every 5 minutes
+    return () => clearInterval(interval);
+  }, []);
 
   const displayVideos = filteredVideos.slice(0, 12);
 
@@ -90,7 +99,22 @@ export function LiveVideoFeed() {
           <Button
             variant="outline"
             size="sm"
-            onClick={loadVideos}
+            onClick={() => {
+              youtubeService.clearCache();
+              const loadVideos = async () => {
+                setLoading(true);
+                try {
+                  const fetchedVideos = await youtubeService.fetchAllVideos();
+                  setVideos(fetchedVideos);
+                  setFilteredVideos(fetchedVideos);
+                } catch (error) {
+                  console.error('Error loading videos:', error);
+                } finally {
+                  setLoading(false);
+                }
+              };
+              loadVideos();
+            }}
             disabled={loading}
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -140,8 +164,7 @@ export function LiveVideoFeed() {
               size="lg"
               className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white px-8"
               onClick={() => {
-                // Navigate to YouTube page or show all videos
-                window.location.href = '/videos';
+                navigate('/videos');
               }}
             >
               View All AI Videos
