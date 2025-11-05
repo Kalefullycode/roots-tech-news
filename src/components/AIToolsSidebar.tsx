@@ -101,34 +101,6 @@ const AIToolsSidebar = () => {
           </a>
         </Card>
 
-        {/* Newsletter Signup - Keep it visible but compact */}
-        <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 p-6">
-          <h3 className="text-lg font-orbitron font-bold text-foreground mb-2 flex items-center gap-2">
-            📬 Daily Digest
-          </h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            Get AI & tech news in your inbox
-          </p>
-          <a
-            href="#newsletter-signup"
-            className="block w-full px-4 py-2 bg-gradient-to-r from-primary to-accent text-white text-center rounded-lg font-medium hover:opacity-90 transition-opacity"
-            onClick={(e) => {
-              e.preventDefault();
-              const newsletter = document.querySelector('aside form') || document.querySelector('[id*="newsletter"]');
-              if (newsletter) {
-                newsletter.scrollIntoView({ behavior: 'smooth' });
-                // Highlight effect
-                newsletter.classList.add('ring-4', 'ring-primary', 'ring-offset-4', 'ring-offset-background');
-                setTimeout(() => {
-                  newsletter.classList.remove('ring-4', 'ring-primary', 'ring-offset-4', 'ring-offset-background');
-                }, 2000);
-              }
-            }}
-          >
-            Subscribe Now
-          </a>
-        </Card>
-
         {/* Trending Topics */}
         <Card className="bg-card-modern border border-card-border/60 p-6">
           <h3 className="text-lg font-orbitron font-bold text-foreground mb-4 flex items-center gap-2">
@@ -136,14 +108,20 @@ const AIToolsSidebar = () => {
           </h3>
           <div className="space-y-3">
             {[
-              { title: 'OpenAI GPT-5 Release', category: 'AI', hot: true },
-              { title: 'Quantum Computing Breakthrough', category: 'Tech', hot: true },
-              { title: 'African Tech Unicorns', category: 'Startups', hot: false },
-              { title: 'Cybersecurity Threats 2025', category: 'Security', hot: false }
+              { title: 'OpenAI GPT-5 Release', category: 'AI', hot: true, url: '/category/ai' },
+              { title: 'Quantum Computing Breakthrough', category: 'Tech', hot: true, url: '/category/tech' },
+              { title: 'African Tech Unicorns', category: 'Startups', hot: false, url: '/category/startups' },
+              { title: 'Cybersecurity Threats 2025', category: 'Security', hot: false, url: '/category/security' }
             ].map((item, index) => (
-              <div
+              <a
                 key={index}
-                className="p-3 bg-accent/10 hover:bg-accent/20 rounded-lg transition-colors cursor-pointer group"
+                href={item.url}
+                className="block p-3 bg-accent/10 hover:bg-accent/20 rounded-lg transition-colors cursor-pointer group"
+                onClick={(e) => {
+                  e.preventDefault();
+                  // Navigate to category page or specific article
+                  window.location.href = item.url;
+                }}
               >
                 <div className="flex items-start gap-2">
                   <span className="text-muted-foreground text-sm font-bold mt-0.5">#{index + 1}</span>
@@ -156,12 +134,19 @@ const AIToolsSidebar = () => {
                         <span className="text-xs">🔥</span>
                       )}
                     </div>
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge 
+                      variant="secondary" 
+                      className="text-xs cursor-pointer hover:bg-primary/20"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.location.href = item.url;
+                      }}
+                    >
                       {item.category}
                     </Badge>
                   </div>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         </Card>

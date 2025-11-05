@@ -340,7 +340,15 @@ const TodaysTopStories = () => {
                         {priority.label}
                       </Badge>
                       {article.category && (
-                        <Badge variant="secondary" className="text-xs">
+                        <Badge 
+                          variant="secondary" 
+                          className="text-xs cursor-pointer hover:bg-primary/20 transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const categoryUrl = `/category/${article.category.toLowerCase()}`;
+                            window.location.href = categoryUrl;
+                          }}
+                        >
                           {article.category}
                         </Badge>
                       )}

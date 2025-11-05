@@ -9,6 +9,7 @@ const HeroSection = lazy(() => import("@/components/HeroSection"));
 // Lazy load below-the-fold and non-critical components for better performance
 const Header = lazy(() => import("@/components/Header"));
 const TodaysTopStories = lazy(() => import("@/components/TodaysTopStories"));
+const YouTubeVideosSection = lazy(() => import("@/components/YouTubeVideosSection"));
 const FeaturedStory = lazy(() => import("@/components/FeaturedStory"));
 const LatestDiscoveries = lazy(() => import("@/components/LatestDiscoveries"));
 const DailyAINews = lazy(() => import("@/components/DailyAINews"));
@@ -102,6 +103,11 @@ const Index = () => {
             <TodaysTopStories />
           </Suspense>
 
+          {/* NEW SECTION: LATEST AI & TECH VIDEOS - After Today's Top Stories */}
+          <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
+            <YouTubeVideosSection />
+          </Suspense>
+
           {/* SECTION 3: FEATURED STORY - No spacing */}
           <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
             <FeaturedStory />
@@ -131,30 +137,30 @@ const Index = () => {
           <section className="py-16 bg-gradient-to-b from-transparent to-primary/20 border-t border-border/30">
             <div className="container mx-auto px-4">
               <div className="max-w-4xl mx-auto">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="text-center lg:text-left max-w-3xl mx-auto">
                   {/* Newsletter Content */}
-                  <div className="lg:col-span-2 text-center lg:text-left">
                     <h2 className="font-orbitron text-3xl font-bold text-glow-primary mb-4">
                       📧 Never Miss an Update
                     </h2>
                     <p className="text-muted-foreground text-lg mb-8 font-roboto">
                       Get daily AI & tech news, curated podcasts, and exclusive insights delivered to your inbox every morning.
                     </p>
-                    <button 
-                      className="px-12 py-4 bg-gradient-to-r from-primary to-accent text-white rounded-lg font-bold text-lg hover:opacity-90 transition-all inline-flex items-center gap-3 font-orbitron"
-                      onClick={() => {
-                        const sidebar = document.querySelector('aside');
-                        if (sidebar) {
-                          sidebar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    <a
+                      href="#newsletter-signup"
+                      className="inline-flex items-center gap-3 px-12 py-4 bg-gradient-to-r from-primary to-accent text-white rounded-lg font-bold text-lg hover:opacity-90 transition-all font-orbitron"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        // Scroll to newsletter form in sidebar or mobile sidebar
+                        const newsletterForm = document.querySelector('aside form') || 
+                                             document.querySelector('[id*="newsletter"]') ||
+                                             document.querySelector('.newsletter-form');
+                        if (newsletterForm) {
+                          newsletterForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          // Highlight effect
+                          newsletterForm.classList.add('ring-4', 'ring-primary', 'ring-offset-4', 'ring-offset-background');
                           setTimeout(() => {
-                            const newsletterForm = sidebar.querySelector('form');
-                            if (newsletterForm) {
-                              newsletterForm.classList.add('ring-4', 'ring-primary', 'ring-offset-4', 'ring-offset-background');
-                              setTimeout(() => {
-                                newsletterForm.classList.remove('ring-4', 'ring-primary', 'ring-offset-4', 'ring-offset-background');
-                              }, 2000);
-                            }
-                          }, 500);
+                            newsletterForm.classList.remove('ring-4', 'ring-primary', 'ring-offset-4', 'ring-offset-background');
+                          }, 2000);
                         }
                       }}
                     >
@@ -162,7 +168,7 @@ const Index = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
                       Subscribe to Daily AI News
-                    </button>
+                    </a>
                     <div className="mt-6 space-y-2">
                       <p className="text-sm text-muted-foreground font-roboto">
                         🤝 Join 50,000+ readers staying ahead in AI & tech
@@ -173,44 +179,7 @@ const Index = () => {
                     </div>
                   </div>
 
-                  {/* Trending Now Sidebar */}
-                  <div className="lg:col-span-1">
-                    <div className="bg-card-modern border border-card-border/60 rounded-lg p-6">
-                      <h3 className="font-orbitron font-bold text-xl mb-4 flex items-center gap-2 text-glow-accent">
-                        🔥 Trending Now
-                      </h3>
-                      <div className="space-y-3">
-                        {[
-                          { title: 'OpenAI GPT-5 Release', category: 'AI', hot: true },
-                          { title: 'Quantum Computing Breakthrough', category: 'Tech', hot: true },
-                          { title: 'African Tech Unicorns', category: 'Startups', hot: false },
-                          { title: 'Cybersecurity Threats 2025', category: 'Security', hot: false }
-                        ].map((item, index) => (
-                          <div
-                            key={index}
-                            className="p-3 bg-accent/10 hover:bg-accent/20 rounded-lg transition-colors cursor-pointer group"
-                          >
-                            <div className="flex items-start gap-2">
-                              <span className="text-muted-foreground text-sm font-bold mt-0.5">#{index + 1}</span>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-1">
-                                  <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
-                                    {item.title}
-                                  </p>
-                                  {item.hot && (
-                                    <span className="text-xs">🔥</span>
-                                  )}
-                                </div>
-                                <span className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded">
-                                  {item.category}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                  {/* Newsletter content only - no duplicate Trending Now */}
                 </div>
               </div>
             </div>
