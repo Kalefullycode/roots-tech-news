@@ -116,7 +116,7 @@ const Sidebar = () => {
   };
 
   const currentVideo = aiVideos[currentVideoIndex];
-
+  // Trending Now (mobile/tablet sidebar only)
   const fallbackTrending = [
     {
       title: "AI Revolution in African Tech Startups",
@@ -147,10 +147,11 @@ const Sidebar = () => {
   const trending = trendingArticles && trendingArticles.length > 0 
     ? trendingArticles.slice(0, 4) 
     : fallbackTrending;
+  // Trending removed entirely
 
   return (
     <aside className="space-y-6">
-      {/* Trending Section */}
+      {/* Trending Section (Mobile/Tablet Sidebar) */}
       <Card className="bg-gradient-card border-card-border p-6">
         <div className="flex items-center gap-2 mb-4">
           <TrendingUp className="h-5 w-5 text-accent" />

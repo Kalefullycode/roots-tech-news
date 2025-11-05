@@ -101,55 +101,7 @@ const AIToolsSidebar = () => {
           </a>
         </Card>
 
-        {/* Trending Topics */}
-        <Card className="bg-card-modern border border-card-border/60 p-6">
-          <h3 className="text-lg font-orbitron font-bold text-foreground mb-4 flex items-center gap-2">
-            🔥 Trending Now
-          </h3>
-          <div className="space-y-3">
-            {[
-              { title: 'OpenAI GPT-5 Release', category: 'AI', hot: true, url: '/category/ai' },
-              { title: 'Quantum Computing Breakthrough', category: 'Tech', hot: true, url: '/category/tech' },
-              { title: 'African Tech Unicorns', category: 'Startups', hot: false, url: '/category/startups' },
-              { title: 'Cybersecurity Threats 2025', category: 'Security', hot: false, url: '/category/security' }
-            ].map((item, index) => (
-              <a
-                key={index}
-                href={item.url}
-                className="block p-3 bg-accent/10 hover:bg-accent/20 rounded-lg transition-colors cursor-pointer group"
-                onClick={(e) => {
-                  e.preventDefault();
-                  // Navigate to category page or specific article
-                  window.location.href = item.url;
-                }}
-              >
-                <div className="flex items-start gap-2">
-                  <span className="text-muted-foreground text-sm font-bold mt-0.5">#{index + 1}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
-                        {item.title}
-                      </p>
-                      {item.hot && (
-                        <span className="text-xs">🔥</span>
-                      )}
-                    </div>
-                    <Badge 
-                      variant="secondary" 
-                      className="text-xs cursor-pointer hover:bg-primary/20"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.location.href = item.url;
-                      }}
-                    >
-                      {item.category}
-                    </Badge>
-                  </div>
-                </div>
-              </a>
-            ))}
-          </div>
-        </Card>
+        
       </div>
     </aside>
   );
