@@ -90,7 +90,7 @@ roots-tech-news/
 
 ## 🚀 Deployment
 
-### Netlify
+### Cloudflare
 
 ```bash
 ./scripts/deploy.sh
