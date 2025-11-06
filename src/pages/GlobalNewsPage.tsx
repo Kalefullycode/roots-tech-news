@@ -379,60 +379,75 @@ const GlobalNewsPage = () => {
               </section>
 
               {/* Tech News Section */}
-              <section className="mb-16">
-                <div className="flex items-center justify-between mb-6 pb-4 border-b border-purple-500/20">
-                  <div className="flex items-center gap-4">
-                    <div className="text-3xl">💻</div>
-                    <div>
-                      <h2 className="font-orbitron text-3xl font-bold text-white">Technology News</h2>
-                      <p className="text-gray-400 text-sm">Breaking tech news, product launches, and industry updates</p>
+              <section className="technology-news-section mb-16 bg-[#0d0d1a] text-white py-16 px-4 md:px-8">
+                <div className="container mx-auto">
+                  {/* Section Heading */}
+                  <div className="mb-12 pb-4 border-b border-purple-500/20">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-4">
+                        <div className="text-3xl">💻</div>
+                        <p className="text-[#a0a0b8] text-sm font-roboto">Breaking tech news, product launches, and industry updates</p>
+                      </div>
+                      <Button variant="outline" className="bg-purple-500/15 border-purple-500/30 text-purple-400 hover:bg-purple-500/25">
+                        View All →
+                      </Button>
                     </div>
+                    <h2 className="section-title font-orbitron text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-[#8b5cf6] to-[#ec4899] bg-clip-text text-transparent mb-3">
+                      Technology
+                    </h2>
                   </div>
-                  <Button variant="outline" className="bg-purple-500/15 border-purple-500/30 text-purple-400 hover:bg-purple-500/25">
-                    View All →
-                  </Button>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {techNews.length > 0 ? (
-                    techNews.map((article) => (
-                      <Card key={article.url} className="bg-gray-800/50 border-purple-500/20 overflow-hidden hover:border-purple-500/50 transition-all group">
-                        <div className="aspect-video bg-gray-900 relative overflow-hidden">
-                          <img
-                            src={article.urlToImage || '/placeholder.svg'}
-                            alt={article.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = '/placeholder.svg';
-                            }}
-                          />
-                        </div>
-                        <div className="p-5">
-                          <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 mb-3 text-xs">
-                            {article.source.name}
-                          </Badge>
-                          <h3 className="font-semibold text-white mb-2 line-clamp-2 group-hover:text-blue-400 transition-colors">
-                            <a href={article.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                              {article.title}
-                            </a>
-                          </h3>
-                          <p className="text-sm text-gray-400 mb-4 line-clamp-3">
-                            {article.description || 'Read more...'}
-                          </p>
-                          <div className="flex justify-between items-center text-xs text-gray-500">
-                            <span className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {formatTime(article.publishedAt)}
-                            </span>
-                            <span className="bg-gray-700/50 px-2 py-1 rounded text-xs">🌍 Global</span>
+                  
+                  {/* Article Cards Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {techNews.length > 0 ? (
+                      techNews.map((article) => (
+                        <Card 
+                          key={article.url} 
+                          className="article-card bg-[#1a1a2e] border border-[rgba(139,92,246,0.2)] rounded-xl p-6 text-white transition-all duration-300 overflow-hidden group hover:border-[rgba(139,92,246,0.6)] hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(139,92,246,0.25)]"
+                        >
+                          {/* Image Container with Gradient Overlay */}
+                          <div className="image-container aspect-video bg-gray-900 relative rounded-lg overflow-hidden mb-4">
+                            <img
+                              src={article.urlToImage || '/placeholder.svg'}
+                              alt={article.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = '/placeholder.svg';
+                              }}
+                            />
+                            {/* Gradient Overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                           </div>
-                        </div>
-                      </Card>
-                    ))
-                  ) : (
-                    <div className="col-span-3 text-center py-12 text-gray-400">
-                      No tech news articles found. Try refreshing the page.
-                    </div>
-                  )}
+                          
+                          {/* Card Content */}
+                          <div className="p-0">
+                            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 mb-3 text-xs font-roboto">
+                              {article.source.name}
+                            </Badge>
+                            <h3 className="article-title font-roboto text-xl font-semibold text-white mb-2 line-clamp-2 group-hover:text-purple-400 transition-colors">
+                              <a href={article.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                                {article.title}
+                              </a>
+                            </h3>
+                            <p className="article-excerpt text-[#a0a0b8] text-sm font-roboto mb-4 line-clamp-3">
+                              {article.description || 'Read more...'}
+                            </p>
+                            <div className="article-metadata flex justify-between items-center text-xs text-[#6b7280] font-roboto">
+                              <span className="flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                {formatTime(article.publishedAt)}
+                              </span>
+                              <span className="bg-[rgba(139,92,246,0.15)] px-2 py-1 rounded text-xs border border-[rgba(139,92,246,0.2)]">🌍 Global</span>
+                            </div>
+                          </div>
+                        </Card>
+                      ))
+                    ) : (
+                      <div className="col-span-3 text-center py-12 text-[#a0a0b8] font-roboto">
+                        No tech news articles found. Try refreshing the page.
+                      </div>
+                    )}
+                  </div>
                 </div>
               </section>
 
