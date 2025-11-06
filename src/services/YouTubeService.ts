@@ -62,7 +62,13 @@ class YouTubeService {
 
     // Check if API key is available
     if (!YOUTUBE_CONFIG.apiKey) {
-      console.warn('YouTube API key not configured. Falling back to RSS feeds.');
+      // Only log once per session to reduce console noise
+      if (!(window as any).__youtubeApiKeyWarningShown) {
+        if (import.meta.env.DEV) {
+          console.warn('YouTube API key not configured. Falling back to RSS feeds.');
+        }
+        (window as any).__youtubeApiKeyWarningShown = true;
+      }
       return this.fetchChannelVideosRSS(channelId, channelName, category);
     }
 
