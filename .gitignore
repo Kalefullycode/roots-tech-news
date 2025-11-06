@@ -43,7 +43,7 @@ coverage/
 
 # Cloudflare
 .wrangler/
-wrangler.toml
+# Note: wrangler.toml should be committed (needed for deployment)
 
 # Misc
 .cache/

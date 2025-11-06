@@ -15,8 +15,8 @@ A modern AI & tech news aggregator with real-time updates, curated content, and 
 
 - **Frontend:** React 18, TypeScript, Vite
 - **Styling:** Tailwind CSS, shadcn/ui
-- **Backend:** Netlify Serverless Functions
-- **Deployment:** Netlify / Cloudflare Pages
+- **Backend:** Cloudflare Pages Functions
+- **Deployment:** Cloudflare Pages
 - **Email:** Resend.com API
 - **Data:** RSS-Parser, React Query
 
@@ -77,8 +77,8 @@ roots-tech-news/
 │   ├── hooks/         # Custom React hooks
 │   └── types/         # TypeScript types
 ├── public/            # Static assets
-└── netlify/           # Serverless functions
-    └── functions/
+└── functions/         # Cloudflare Pages Functions
+    └── api/
 ```
 
 ## 📚 Documentation
