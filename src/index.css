@@ -250,3 +250,88 @@ section[id] {
     display: none;  /* Chrome, Safari and Opera */
   }
 }
+
+/* RSS.app Widget Dark Theme Styling */
+.youtube-feed-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: rgba(17, 24, 39, 0.5);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 20px;
+  padding: 30px;
+}
+
+.rssapp-wrapper {
+  width: 100%;
+}
+
+/* Override RSS.app default styles for dark theme */
+rssapp-wall {
+  --rssapp-bg-color: #111827 !important;
+  --rssapp-text-color: #e0e0e0 !important;
+  --rssapp-border-color: rgba(168, 85, 247, 0.2) !important;
+  --rssapp-card-bg: rgba(31, 41, 55, 0.5) !important;
+  --rssapp-card-hover: rgba(168, 85, 247, 0.1) !important;
+}
+
+/* Style RSS.app video cards */
+rssapp-wall .rssapp-item,
+rssapp-wall [class*="rssapp"],
+rssapp-wall [class*="item"] {
+  background: rgba(31, 41, 55, 0.5) !important;
+  border: 1px solid rgba(168, 85, 247, 0.2) !important;
+  border-radius: 16px !important;
+  transition: all 0.3s ease !important;
+  color: #e0e0e0 !important;
+}
+
+rssapp-wall .rssapp-item:hover,
+rssapp-wall [class*="rssapp"]:hover,
+rssapp-wall [class*="item"]:hover {
+  background: rgba(168, 85, 247, 0.1) !important;
+  border-color: rgba(168, 85, 247, 0.5) !important;
+  transform: translateY(-5px) !important;
+  box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3) !important;
+}
+
+/* Style RSS.app video thumbnails */
+rssapp-wall img {
+  border-radius: 12px !important;
+  transition: transform 0.3s ease !important;
+}
+
+rssapp-wall .rssapp-item:hover img,
+rssapp-wall [class*="item"]:hover img {
+  transform: scale(1.05) !important;
+}
+
+/* Style RSS.app text elements */
+rssapp-wall h3,
+rssapp-wall [class*="title"],
+rssapp-wall [class*="heading"] {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+rssapp-wall p,
+rssapp-wall [class*="description"],
+rssapp-wall [class*="text"] {
+  color: #9ca3af !important;
+}
+
+/* Style RSS.app links */
+rssapp-wall a {
+  color: #a855f7 !important;
+  transition: color 0.3s ease !important;
+}
+
+rssapp-wall a:hover {
+  color: #ec4899 !important;
+}
+
+/* Responsive adjustments for RSS.app */
+@media (max-width: 768px) {
+  .youtube-feed-container {
+    padding: 20px;
+  }
+}

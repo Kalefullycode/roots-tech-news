@@ -32,6 +32,26 @@ This document outlines all required and optional environment variables for the R
 
 ### Optional Variables
 
+#### `VITE_RSSAPP_FEED_ID` (Optional but Recommended for Videos Page)
+- **Purpose**: RSS.app Feed ID for displaying YouTube videos from 200+ channels
+- **Location**: For local development, add to `.env.local` file
+- **How to Get**:
+  1. Go to [RSS.app](https://rss.app)
+  2. Create account (free tier works)
+  3. Click "New Feed" → "YouTube"
+  4. Add YouTube channels (200+ channels recommended)
+  5. Configure settings:
+     - Name: "RootsTechNews AI & Tech Videos"
+     - Items: 20-30
+     - Layout: Grid
+     - Theme: Dark
+     - Sort: Most Recent
+  6. Click "Create Feed"
+  7. Go to "Embed" → Copy Feed ID (looks like: `tTCtnPmhJDGhOAbH`)
+- **Format**: Alphanumeric string (e.g., `tTCtnPmhJDGhOAbH`)
+- **Used In**: `src/pages/YouTubePage.tsx`
+- **Note**: If not provided, the videos page will fall back to YouTubeService which uses a limited set of channels
+
 #### `VITE_YOUTUBE_API_KEY`
 - **Purpose**: YouTube Data API v3 key for enhanced video features (optional)
 - **Location**: For local development, add to `.env.local` file
@@ -79,6 +99,9 @@ RESEND_API_KEY=re_your_api_key_here
 
 # Optional but recommended - Resend Audience ID for subscriber management
 RESEND_AUDIENCE_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+# Optional but recommended - RSS.app Feed ID for videos page (200+ YouTube channels)
+VITE_RSSAPP_FEED_ID=tTCtnPmhJDGhOAbH
 
 # Optional - for future YouTube API features
 VITE_YOUTUBE_API_KEY=AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
