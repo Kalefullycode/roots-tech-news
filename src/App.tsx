@@ -13,6 +13,7 @@ import Index from "./pages/Index";
 // Lazy load non-critical pages to reduce initial bundle size
 const CategoryPage = lazy(() => import("./pages/CategoryPage"));
 const YouTubePage = lazy(() => import("./pages/YouTubePage"));
+const AIVideosPage = lazy(() => import("./pages/AIVideosPage"));
 const PodcastsPage = lazy(() => import("./pages/PodcastsPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
@@ -62,6 +63,14 @@ const App: React.FC = () => {
                 element={
                   <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><div className="text-muted-foreground">Loading...</div></div>}>
                     <YouTubePage />
+                  </Suspense>
+                } 
+              />
+              <Route 
+                path="/ai-videos" 
+                element={
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><div className="text-muted-foreground">Loading...</div></div>}>
+                    <AIVideosPage />
                   </Suspense>
                 } 
               />
