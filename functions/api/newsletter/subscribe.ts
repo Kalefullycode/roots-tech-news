@@ -59,25 +59,28 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
               
               <div style="padding: 20px; background: #f9fafb; border-radius: 10px;">
                 <h2>Thanks for subscribing! 🎉</h2>
-                <p>You're now part of 50,000+ tech enthusiasts.</p>
+                <p>You're now part of 50,000+ tech enthusiasts staying ahead in AI & technology.</p>
                 
-                <p><strong>You'll get:</strong></p>
+                <p><strong>Here's what you'll get:</strong></p>
                 <ul>
-                  <li>📰 Daily AI & tech news</li>
-                  <li>🛠️ Tool reviews & deals</li>
-                  <li>🎓 Free tutorials</li>
-                  <li>🔥 Breaking news</li>
+                  <li>📰 Daily AI & tech news digest</li>
+                  <li>🛠️ Exclusive AI tool reviews</li>
+                  <li>💰 Special deals (30-50% off)</li>
+                  <li>🎓 Free tutorials & guides</li>
+                  <li>🔥 Breaking news alerts</li>
                 </ul>
                 
                 <div style="text-align: center; margin: 30px 0;">
                   <a href="https://rootstechnews.com" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-                    Visit Site →
+                    Explore Latest News →
                   </a>
                 </div>
               </div>
               
               <div style="text-align: center; color: #6b7280; font-size: 14px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
-                <p><strong>Roots Tech News</strong><br>AI & Technology News</p>
+                <p>You're receiving this because you subscribed to Roots Tech News.</p>
+                <p><a href="https://rootstechnews.com">Visit Website</a> • <a href="https://rootstechnews.com/newsletter">Newsletter</a></p>
+                <p style="margin-top: 20px;"><strong>Roots Tech News</strong><br>AI & Technology News for the Real World</p>
               </div>
             </body>
           </html>
@@ -87,6 +90,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
     if (!resendResponse.ok) {
       const errorText = await resendResponse.text();
+      console.error('Resend API error:', errorText);
       return new Response(
         JSON.stringify({ error: 'Failed to send email' }),
         { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
@@ -98,15 +102,16 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     return new Response(
       JSON.stringify({ 
         success: true,
-        message: '✅ Subscribed! Check your email.',
+        message: '✅ Successfully subscribed! Check your email.',
         emailId: data.id
       }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
 
   } catch (error: any) {
+    console.error('Newsletter subscription error:', error);
     return new Response(
-      JSON.stringify({ error: 'Internal error' }),
+      JSON.stringify({ error: 'Internal error', message: error.message }),
       { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   }
