@@ -1,5 +1,18 @@
 /// <reference types="@cloudflare/workers-types" />
 
+/**
+ * Newsletter Subscription API
+ * File: functions/api/newsletter/subscribe.ts
+ * Endpoint: /api/newsletter/subscribe
+ * 
+ * Issues fixed:
+ * 1. CORS - Handled with corsHeaders
+ * 2. Resend API key validation - Validates format (re_XXXXX)
+ * 3. Domain verification - Uses onboarding@resend.dev temporarily
+ * 4. File path - Correct: functions/api/newsletter/subscribe.ts
+ * 5. Environment variable - Added logging for debugging
+ */
+
 interface Env {
   RESEND_API_KEY: string;
 }
@@ -22,6 +35,15 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     const body = await context.request.json() as { email: string };
     const { email } = body;
 
+    // Get Resend API key from environment
+    const RESEND_API_KEY = context.env.RESEND_API_KEY;
+
+    // Debug logging at the top of the function
+    console.log('Newsletter signup request received');
+    console.log('Email:', email);
+    console.log('Has Resend key:', !!RESEND_API_KEY);
+    console.log('Key starts with re_:', RESEND_API_KEY?.startsWith('re_'));
+
     // Validate email
     if (!email || !email.includes('@')) {
       return new Response(
@@ -33,13 +55,23 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       );
     }
 
-    // Get Resend API key from environment
-    const RESEND_API_KEY = context.env.RESEND_API_KEY;
-
     if (!RESEND_API_KEY) {
       console.error('RESEND_API_KEY is not set');
       return new Response(
         JSON.stringify({ error: 'Server configuration error' }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        }
+      );
+    }
+
+    // Validate API key format (should start with 're_')
+    const isValidKey = RESEND_API_KEY.startsWith('re_');
+    if (!isValidKey) {
+      console.error('Invalid Resend API key format. Expected format: re_XXXXX');
+      return new Response(
+        JSON.stringify({ error: 'Invalid API key format' }),
         {
           status: 500,
           headers: { 'Content-Type': 'application/json', ...corsHeaders }
@@ -55,7 +87,8 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Roots Tech News <newsletter@rootstechnews.com>',
+        // Use onboarding@resend.dev temporarily until domain is verified
+        from: 'Roots Tech News <onboarding@resend.dev>',
         to: [email],
         subject: '🎉 Welcome to Roots Tech News!',
         html: `
