@@ -158,7 +158,10 @@ class YouTubeService {
       const xmlText = await response.text();
       return this.parseYouTubeRSS(xmlText, channelName, category);
     } catch (error) {
-      console.warn(`Failed to fetch YouTube channel ${channelName} via RSS:`, error);
+      // Only log errors in development to reduce console noise
+      if (import.meta.env.DEV) {
+        console.warn(`Failed to fetch YouTube channel ${channelName} via RSS:`, error);
+      }
       return [];
     }
   }

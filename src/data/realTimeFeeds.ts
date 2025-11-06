@@ -16,20 +16,20 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
   {
     id: 'openai-blog',
     name: 'OpenAI Blog',
-    url: 'https://openai.com/index/rss.xml', // UPDATED URL
+    url: 'https://openai.com/blog/rss.xml',
     category: 'ai',
     updateFrequency: 15,
     priority: 'high',
-    active: true
+    active: false // RSS feed may not be available - disabled to prevent errors
   },
   {
     id: 'anthropic-news',
     name: 'Anthropic News',
-    url: 'https://www.anthropic.com/news/rss.xml',
+    url: 'https://www.anthropic.com/feed',
     category: 'ai',
     updateFrequency: 15,
     priority: 'high',
-    active: true
+    active: false // RSS feed may not be available - disabled to prevent errors
   },
   {
     id: 'google-ai',
@@ -43,20 +43,20 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
   {
     id: 'deepmind',
     name: 'DeepMind Blog',
-    url: 'https://www.deepmind.com/blog/rss.xml',
+    url: 'https://www.deepmind.com/feed',
     category: 'ai',
     updateFrequency: 30,
     priority: 'high',
-    active: true
+    active: false // RSS feed may not be available - disabled to prevent errors
   },
   {
     id: 'meta-ai',
     name: 'Meta AI Blog',
-    url: 'https://ai.meta.com/blog/rss/',
+    url: 'https://ai.meta.com/blog/rss.xml',
     category: 'ai',
     updateFrequency: 30,
     priority: 'high',
-    active: true
+    active: false // RSS feed may not be available - disabled to prevent errors
   },
 
   // ============================================

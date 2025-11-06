@@ -21,11 +21,10 @@ class PodcastService {
   private readonly PODCASTS = [
     // AI-Focused Podcasts
     { url: 'https://lexfridman.com/feed/podcast/', name: 'Lex Fridman Podcast', category: 'AI' },
-    { url: 'https://twimlai.com/feed/podcast/', name: 'TWIML AI Podcast', category: 'AI' },
-    { url: 'https://feeds.transistor.fm/the-cognitive-revolution-how-ai-changes-everything', name: 'The Cognitive Revolution', category: 'AI' },
+    { url: 'https://twimlai.com/feed/', name: 'TWIML AI Podcast', category: 'AI' },
     { url: 'https://api.substack.com/feed/podcast/1084089.rss', name: 'Latent Space', category: 'AI' },
     { url: 'https://changelog.com/practicalai/feed', name: 'Practical AI', category: 'AI' },
-    { url: 'https://feeds.megaphone.fm/MLN2155636147', name: 'Hard Fork', category: 'AI' }, // NYT tech podcast
+    { url: 'https://feeds.megaphone.fm/MLN2155636147', name: 'Hard Fork', category: 'AI' },
     
     // Tech News & Analysis
     { url: 'https://feeds.simplecast.com/54nAGcIl', name: 'The Vergecast', category: 'Tech' },
@@ -127,7 +126,10 @@ class PodcastService {
       this.cache.set(cacheKey, { data: episodes, timestamp: Date.now() });
       return episodes;
     } catch (error) {
-      console.warn(`Failed to fetch podcast ${podcastName}:`, error);
+      // Only log errors in development to reduce console noise
+      if (import.meta.env.DEV) {
+        console.warn(`Failed to fetch podcast ${podcastName}:`, error);
+      }
       return [];
     }
   }

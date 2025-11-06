@@ -134,7 +134,10 @@ class EnhancedRSSService {
       }
       return articles;
     } catch (error) {
-      console.warn(`Failed to fetch RSS from ${feedUrl}:`, error);
+      // Only log errors in development to reduce console noise
+      if (import.meta.env.DEV) {
+        console.warn(`Failed to fetch RSS from ${feedUrl}:`, error);
+      }
       
       // Return empty array - let the calling function handle fallbacks
       return [];
