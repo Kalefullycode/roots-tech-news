@@ -1,169 +1,214 @@
-// Cloudflare Pages Function
-import { Resend } from 'resend';
+/// <reference types="@cloudflare/workers-types" />
 
-const AUDIENCE_ID = '35eb466a-614c-46d8-830b-0ae8108177c8';
-
-interface CloudflareContext {
-  request: Request;
-  env: {
-    RESEND_API_KEY?: string;
-    NODE_ENV?: string;
-    [key: string]: unknown;
-  };
+interface Env {
+  RESEND_API_KEY: string;
 }
 
-export async function onRequestPost(context: CloudflareContext) {
-  const headers = {
+export const onRequestPost: PagesFunction<Env> = async (context) => {
+  // Enable CORS
+  const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Content-Type': 'application/json'
+    'Access-Control-Allow-Headers': 'Content-Type',
   };
+
+  // Handle CORS preflight
+  if (context.request.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
 
   try {
-    // Get RESEND_API_KEY from environment variables
-    const RESEND_API_KEY = context.env.RESEND_API_KEY;
-    
-    if (!RESEND_API_KEY) {
-      return new Response(JSON.stringify({ 
-        error: 'API key not configured' 
-      }), {
-        status: 500,
-        headers
-      });
-    }
-
-    const resend = new Resend(RESEND_API_KEY);
-    
-    const body = await context.request.json();
+    // Parse request body
+    const body = await context.request.json() as { email: string };
     const { email } = body;
 
+    // Validate email
     if (!email || !email.includes('@')) {
-      return new Response(JSON.stringify({ 
-        error: 'Valid email required' 
-      }), {
-        status: 400,
-        headers
-      });
+      return new Response(
+        JSON.stringify({ error: 'Valid email is required' }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        }
+      );
     }
 
-    // Add to Resend audience
-    await resend.contacts.create({
-      email: email,
-      unsubscribed: false,
-      audienceId: AUDIENCE_ID
-    });
+    // Get Resend API key from environment
+    const RESEND_API_KEY = context.env.RESEND_API_KEY;
 
-    // Send welcome email
-    await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: email,
-      subject: '🚀 Welcome to RootsTechNews!',
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <style>
-              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
-              .container { max-width: 600px; margin: 0 auto; background: #ffffff; }
-              .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; text-align: center; }
-              .header h1 { margin: 0; font-size: 32px; font-weight: 800; }
-              .content { background: #ffffff; padding: 40px 30px; }
-              .button { display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: 600; transition: transform 0.2s; }
-              .button:hover { transform: scale(1.05); }
-              .feature { margin: 15px 0; padding-left: 25px; position: relative; color: #555; }
-              .feature:before { content: "✓"; position: absolute; left: 0; color: #667eea; font-weight: bold; font-size: 18px; }
-              .footer { padding: 30px; text-align: center; color: #666; font-size: 12px; background: #f9f9f9; border-top: 1px solid #eee; }
-              .highlight-box { background: #f0f4ff; border-left: 4px solid #667eea; padding: 20px; margin: 25px 0; border-radius: 4px; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
+    if (!RESEND_API_KEY) {
+      console.error('RESEND_API_KEY is not set');
+      return new Response(
+        JSON.stringify({ error: 'Server configuration error' }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        }
+      );
+    }
+
+    // Send welcome email via Resend
+    const resendResponse = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'Roots Tech News <newsletter@rootstechnews.com>',
+        to: [email],
+        subject: '🎉 Welcome to Roots Tech News!',
+        html: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <style>
+                body {
+                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                  line-height: 1.6;
+                  color: #333;
+                  max-width: 600px;
+                  margin: 0 auto;
+                  padding: 20px;
+                }
+                .header {
+                  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+                  padding: 40px 20px;
+                  text-align: center;
+                  border-radius: 10px;
+                  margin-bottom: 30px;
+                }
+                .header h1 {
+                  color: white;
+                  margin: 0;
+                  font-size: 32px;
+                }
+                .content {
+                  padding: 20px;
+                  background: #f9fafb;
+                  border-radius: 10px;
+                  margin-bottom: 20px;
+                }
+                .button {
+                  display: inline-block;
+                  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+                  color: white;
+                  padding: 15px 30px;
+                  text-decoration: none;
+                  border-radius: 8px;
+                  font-weight: bold;
+                  margin: 20px 0;
+                }
+                .footer {
+                  text-align: center;
+                  color: #6b7280;
+                  font-size: 14px;
+                  margin-top: 30px;
+                  padding-top: 20px;
+                  border-top: 1px solid #e5e7eb;
+                }
+              </style>
+            </head>
+            <body>
               <div class="header">
-                <h1>🤖 Welcome to RootsTechNews!</h1>
-                <p style="margin: 10px 0 0; opacity: 0.9;">Illuminating the Future of Technology</p>
+                <h1>🚀 Welcome to Roots Tech News!</h1>
               </div>
+              
               <div class="content">
-                <p style="font-size: 18px; margin-bottom: 25px; color: #333;">Hi there! 👋</p>
-                <p style="color: #555;">Thanks for subscribing to our daily AI & tech digest. You're now part of a community that stays ahead of the curve!</p>
+                <h2>Thanks for subscribing! 🎉</h2>
+                <p>You're now part of our community of 50,000+ tech enthusiasts staying ahead in AI & technology.</p>
                 
-                <div class="highlight-box">
-                  <h3 style="margin-top: 0; color: #667eea;">📬 What you'll receive every morning at 8 AM:</h3>
-                  <div class="feature">📰 Daily AI news roundup & breakthroughs</div>
-                  <div class="feature">🔧 New AI tools & resources you can use today</div>
-                  <div class="feature">🚀 Startup funding announcements & unicorns</div>
-                  <div class="feature">🌍 Emerging market tech trends</div>
-                  <div class="feature">🧠 Quantum computing & cutting-edge research</div>
-                  <div class="feature">🎓 Learning guides, tutorials & best practices</div>
-                </div>
-                
-                <p style="color: #555; margin-top: 30px;">We curate only the most important tech news so you can stay informed without the noise.</p>
+                <p><strong>Here's what you'll get:</strong></p>
+                <ul>
+                  <li>📰 Daily AI & tech news digest (every morning)</li>
+                  <li>🛠️ Exclusive AI tool reviews & comparisons</li>
+                  <li>💰 Special deals on AI tools (30-50% off)</li>
+                  <li>🎓 Free tutorials & guides</li>
+                  <li>🔥 Breaking news alerts</li>
+                </ul>
                 
                 <center>
-                  <a href="https://rootstechnews.com" class="button">Explore RootsTechNews →</a>
+                  <a href="https://rootstechnews.com" class="button">Explore Latest News →</a>
                 </center>
-                
-                <div style="margin-top: 40px; padding: 20px; background: #fff8f0; border-radius: 8px; border: 1px solid #ffe4cc;">
-                  <p style="margin: 0; color: #d97706; font-size: 14px;">
-                    <strong>💡 Pro Tip:</strong> Add <strong>onboarding@resend.dev</strong> to your contacts to ensure our emails always land in your primary inbox!
-                  </p>
-                </div>
               </div>
+              
+              <div class="content">
+                <h3>🔥 Hot Right Now:</h3>
+                <p>Check out our latest content:</p>
+                <ul>
+                  <li><a href="https://rootstechnews.com/blog/chatgpt-vs-claude-2025">ChatGPT Plus vs Claude Pro: Which is Worth It?</a></li>
+                  <li><a href="https://rootstechnews.com/videos">Live AI News Videos</a></li>
+                  <li><a href="https://rootstechnews.com/resources">Top AI Tools Directory</a></li>
+                </ul>
+              </div>
+              
               <div class="footer">
-                <p style="margin-bottom: 15px;">Not interested anymore? You can <a href="https://rootstechnews.com/unsubscribe" style="color: #667eea; text-decoration: none;">unsubscribe anytime</a>.</p>
-                <p style="margin: 10px 0;">© 2025 RootsTechNews. All rights reserved.</p>
-                <p style="margin: 5px 0;">
-                  <a href="https://rootstechnews.com/privacy" style="color: #999; text-decoration: none; margin: 0 10px;">Privacy Policy</a> •
-                  <a href="https://rootstechnews.com/terms" style="color: #999; text-decoration: none; margin: 0 10px;">Terms</a>
+                <p>You're receiving this because you subscribed to Roots Tech News.</p>
+                <p>
+                  <a href="https://rootstechnews.com">Visit Website</a> • 
+                  <a href="https://rootstechnews.com/newsletter">Newsletter Archive</a> • 
+                  <a href="{{unsubscribe_url}}">Unsubscribe</a>
+                </p>
+                <p style="margin-top: 20px;">
+                  <strong>Roots Tech News</strong><br>
+                  AI & Technology News for the Real World
                 </p>
               </div>
-            </div>
-          </body>
-        </html>
-      `
+            </body>
+          </html>
+        `,
+      }),
     });
 
-    return new Response(JSON.stringify({ 
-      success: true,
-      message: 'Successfully subscribed! Check your email.' 
-    }), {
-      status: 200,
-      headers
-    });
+    if (!resendResponse.ok) {
+      const errorData = await resendResponse.text();
+      console.error('Resend API error:', errorData);
+      
+      return new Response(
+        JSON.stringify({ 
+          error: 'Failed to send welcome email',
+          details: errorData 
+        }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        }
+      );
+    }
 
-  } catch (error: unknown) {
-    console.error('Newsletter error:', error);
+    const data = await resendResponse.json();
+
+    // Also save to your database/audience list here
+    // For now, we'll just return success
     
-    // Handle duplicate email (already subscribed)
-    const errorMessage = error instanceof Error ? error.message : '';
-    if (errorMessage.includes('already exists') || errorMessage.includes('Contact already exists')) {
-      return new Response(JSON.stringify({ 
-        error: 'This email is already subscribed!' 
-      }), {
-        status: 400,
-        headers
-      });
-    }
+    return new Response(
+      JSON.stringify({ 
+        success: true,
+        message: 'Successfully subscribed! Check your email.',
+        emailId: data.id
+      }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      }
+    );
 
-    return new Response(JSON.stringify({ 
-      error: 'Failed to subscribe. Please try again.',
-      details: context.env.NODE_ENV === 'development' ? errorMessage : undefined
-    }), {
-      status: 500,
-      headers
-    });
+  } catch (error: any) {
+    console.error('Newsletter subscription error:', error);
+    
+    return new Response(
+      JSON.stringify({ 
+        error: 'Internal server error',
+        message: error.message 
+      }),
+      {
+        status: 500,
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
+      }
+    );
   }
-}
-
-// Handle OPTIONS for CORS preflight
-export async function onRequestOptions() {
-  return new Response(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Content-Type',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS'
-    }
-  });
-}
+};
 
