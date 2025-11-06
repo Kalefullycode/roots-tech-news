@@ -25,9 +25,8 @@ export function NewsletterSignup({ variant = 'inline' }: { variant?: 'inline' | 
     try {
       console.log('Subscribing email:', email);
       
-      // Use the correct endpoint for Cloudflare Pages Functions
-      // Matches the pattern used elsewhere in the codebase
-      const response = await fetch('/functions/subscribe', {
+      // Use the newsletter API endpoint
+      const response = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
