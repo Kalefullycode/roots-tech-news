@@ -11,7 +11,7 @@ interface NewsletterResponse {
 }
 
 export class NewsletterService {
-  private static readonly ENDPOINT = '/functions/subscribe';
+  private static readonly ENDPOINT = '/api/newsletter/subscribe';
 
   /**
    * Subscribe to newsletter

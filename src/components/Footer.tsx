@@ -103,6 +103,12 @@ const Footer = () => {
             </p>
             <div className="flex items-center gap-6 text-sm">
               <button 
+                onClick={() => navigate('/newsletter')}
+                className="text-muted-foreground hover:text-primary transition-colors bg-transparent border-none cursor-pointer"
+              >
+                Newsletter
+              </button>
+              <button 
                 onClick={() => navigate('/privacy')}
                 className="text-muted-foreground hover:text-primary transition-colors bg-transparent border-none cursor-pointer"
               >
@@ -119,6 +125,12 @@ const Footer = () => {
                 className="text-muted-foreground hover:text-primary transition-colors bg-transparent border-none cursor-pointer"
               >
                 Contact
+              </button>
+              <button 
+                onClick={() => navigate('/unsubscribe')}
+                className="text-muted-foreground hover:text-primary transition-colors bg-transparent border-none cursor-pointer"
+              >
+                Unsubscribe
               </button>
             </div>
           </div>

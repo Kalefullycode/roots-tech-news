@@ -21,6 +21,8 @@ const TermsPage = lazy(() => import("./pages/TermsPage"));
 const ResourcesPage = lazy(() => import("./pages/ResourcesPage"));
 const BlogPage = lazy(() => import("./pages/BlogPage"));
 const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
+const NewsletterPage = lazy(() => import("./pages/NewsletterPage"));
+const UnsubscribePage = lazy(() => import("./pages/UnsubscribePage"));
 
 // Lazy load the 404 page since it's only needed when user hits an invalid route
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -124,6 +126,22 @@ const App: React.FC = () => {
                 element={
                   <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><div className="text-muted-foreground">Loading...</div></div>}>
                     <BlogPostPage />
+                  </Suspense>
+                } 
+              />
+              <Route 
+                path="/newsletter" 
+                element={
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><div className="text-muted-foreground">Loading...</div></div>}>
+                    <NewsletterPage />
+                  </Suspense>
+                } 
+              />
+              <Route 
+                path="/unsubscribe" 
+                element={
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><div className="text-muted-foreground">Loading...</div></div>}>
+                    <UnsubscribePage />
                   </Suspense>
                 } 
               />

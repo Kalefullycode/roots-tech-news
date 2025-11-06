@@ -145,23 +145,8 @@ const Index = () => {
                   Get daily AI & tech news, curated podcasts, and exclusive insights delivered to your inbox every morning.
                 </p>
                 <a
-                  href="#newsletter-signup"
+                  href="/newsletter"
                   className="inline-flex items-center gap-3 px-12 py-4 bg-gradient-to-r from-primary to-accent text-white rounded-lg font-bold text-lg hover:opacity-90 transition-all font-orbitron"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    // Scroll to newsletter form in sidebar or mobile sidebar
-                    const newsletterForm = document.querySelector('aside form') || 
-                                         document.querySelector('[id*="newsletter"]') ||
-                                         document.querySelector('.newsletter-form');
-                    if (newsletterForm) {
-                      newsletterForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                      // Highlight effect
-                      newsletterForm.classList.add('ring-4', 'ring-primary', 'ring-offset-4', 'ring-offset-background');
-                      setTimeout(() => {
-                        newsletterForm.classList.remove('ring-4', 'ring-primary', 'ring-offset-4', 'ring-offset-background');
-                      }, 2000);
-                    }
-                  }}
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

@@ -178,9 +178,9 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
               <div class="footer">
                 <p>You're receiving this because you subscribed to Roots Tech News.</p>
                 <p>
-                  <a href="https://rootstechnews.com">Visit Website</a> • 
-                  <a href="https://rootstechnews.com/newsletter">Newsletter Archive</a> • 
-                  <a href="{{unsubscribe_url}}">Unsubscribe</a>
+                  <a href="https://rootstechnews.com" style="color: #7c3aed; text-decoration: none;">Visit Website</a> • 
+                  <a href="https://rootstechnews.com/newsletter" style="color: #7c3aed; text-decoration: none;">Subscribe</a> • 
+                  <a href="https://rootstechnews.com/unsubscribe" style="color: #7c3aed; text-decoration: none;">Unsubscribe</a>
                 </p>
                 <p style="margin-top: 20px;">
                   <strong>Roots Tech News</strong><br>
