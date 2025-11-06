@@ -11,14 +11,12 @@
     "postbuild": "cp dist/index.html dist/404.html",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "npm run build && npx netlify-cli deploy --prod",
-    "deploy:draft": "npm run build && npx netlify-cli deploy",
+    "deploy": "npm run build && npx wrangler pages deploy dist --project-name=roots-tech-news",
     "deploy:cloudflare": "npm run build && npx wrangler pages deploy dist --project-name=roots-tech-news",
     "cf:dev": "wrangler pages dev dist"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
-    "@netlify/functions": "^5.0.1",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-alert-dialog": "^1.1.14",
     "@radix-ui/react-aspect-ratio": "^1.1.7",
