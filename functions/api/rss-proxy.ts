@@ -30,7 +30,7 @@ const ALLOWED_DOMAINS = [
   'hnrss.org',
   
   // RSS Aggregators
-  'rss.app',
+  'rss.app', // RSS.app YouTube feeds
   'feedburner.com',
   'feeds.feedburner.com',
   

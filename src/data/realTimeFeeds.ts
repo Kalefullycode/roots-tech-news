@@ -235,6 +235,21 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
     priority: 'medium',
     active: true
   },
+
+  // ============================================
+  // RSS.APP YOUTUBE FEEDS (Add after setup)
+  // ============================================
+  // Add your RSS.app feed URLs here after creating feeds on RSS.app
+  // Example:
+  // {
+  //   id: 'rssapp-ai-channels',
+  //   name: 'RSS.app AI Channels',
+  //   url: 'https://rss.app/feeds/YOUR_FEED_ID.xml',
+  //   category: 'ai',
+  //   updateFrequency: 30,
+  //   priority: 'high',
+  //   active: true
+  // },
 ];
 
 // Helper to get feeds by priority
