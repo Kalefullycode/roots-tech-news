@@ -16,7 +16,19 @@ This document outlines all required and optional environment variables for the R
   4. Copy the key (starts with `re_`)
 - **Format**: `re_xxxxxxxxxxxxx`
 - **Security**: Mark as "Encrypted" in Cloudflare
-- **Used In**: `functions/subscribe.ts`
+- **Used In**: `functions/api/newsletter/subscribe.ts`
+
+#### `RESEND_AUDIENCE_ID` (Optional but Recommended)
+- **Purpose**: Resend Audience ID for managing newsletter subscribers
+- **Location**: Cloudflare Pages Dashboard → Settings → Environment Variables
+- **How to Get**:
+  1. Go to https://resend.com/audiences
+  2. Create a new audience or select an existing one
+  3. Copy the Audience ID (UUID format)
+- **Format**: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
+- **Security**: Mark as "Encrypted" in Cloudflare
+- **Used In**: `functions/api/newsletter/subscribe.ts`
+- **Note**: If not provided, the subscription will still work but contacts won't be added to an audience
 
 ### Optional Variables
 
@@ -64,6 +76,9 @@ For local development, create a `.env.local` file in the project root:
 # .env.local (DO NOT COMMIT THIS FILE)
 # Required for newsletter functionality
 RESEND_API_KEY=re_your_api_key_here
+
+# Optional but recommended - Resend Audience ID for subscriber management
+RESEND_AUDIENCE_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 
 # Optional - for future YouTube API features
 VITE_YOUTUBE_API_KEY=AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -114,14 +129,14 @@ wrangler pages dev dist --local --env .dev.vars
 ## Additional Configuration
 
 ### Resend Audience ID
-The newsletter subscription uses a fixed audience ID defined in `functions/subscribe.ts`:
-```typescript
-const AUDIENCE_ID = '35eb466a-614c-46d8-830b-0ae8108177c8';
-```
+The newsletter subscription now uses the `RESEND_AUDIENCE_ID` environment variable for managing subscribers. This allows you to:
+- Manage subscribers in Resend's dashboard
+- Send targeted emails to your audience
+- Track subscriber metrics
 
-If you need to change this:
+If you need to change the audience:
 1. Create a new audience in Resend dashboard
-2. Update the `AUDIENCE_ID` constant in `functions/subscribe.ts`
+2. Update the `RESEND_AUDIENCE_ID` environment variable in Cloudflare Pages
 
 ---
 

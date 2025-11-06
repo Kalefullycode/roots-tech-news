@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
+import NewsletterSubscribe from '@/components/NewsletterSubscribe';
 
 export function Header() {
   const location = useLocation();
@@ -52,6 +53,10 @@ export function Header() {
               {item.name}
             </Link>
           ))}
+          {/* Newsletter Subscribe Button */}
+          <div className="ml-2">
+            <NewsletterSubscribe variant="compact" />
+          </div>
         </div>
 
         {/* Mobile Menu Button */}
@@ -86,6 +91,10 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
+            {/* Newsletter Subscribe Button for Mobile */}
+            <div className="pt-2">
+              <NewsletterSubscribe variant="compact" />
+            </div>
           </div>
         </div>
       )}

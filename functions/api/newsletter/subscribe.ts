@@ -2,10 +2,12 @@
 
 interface Env {
   RESEND_API_KEY: string;
+  RESEND_AUDIENCE_ID?: string;
 }
 
 interface RequestBody {
   email: string;
+  source?: string;
 }
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
@@ -23,14 +25,16 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     const body = await context.request.json() as RequestBody;
     const { email } = body;
 
-    if (!email || !email.includes('@')) {
+    // Validate email with regex
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return new Response(
-        JSON.stringify({ error: 'Valid email required' }),
+        JSON.stringify({ error: 'Invalid email address' }),
         { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
     }
 
     const RESEND_API_KEY = context.env.RESEND_API_KEY;
+    const RESEND_AUDIENCE_ID = context.env.RESEND_AUDIENCE_ID;
 
     if (!RESEND_API_KEY) {
       return new Response(
@@ -39,7 +43,41 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       );
     }
 
-    const resendResponse = await fetch('https://api.resend.com/emails', {
+    // Add contact to Resend audience if audience ID is configured
+    if (RESEND_AUDIENCE_ID) {
+      try {
+        const contactResponse = await fetch('https://api.resend.com/audiences/' + RESEND_AUDIENCE_ID + '/contacts', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${RESEND_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email,
+          }),
+        });
+
+        if (!contactResponse.ok) {
+          const errorText = await contactResponse.text();
+          console.error('Resend Contacts API error:', errorText);
+          
+          // If contact already exists (409), that's okay - continue
+          if (contactResponse.status !== 409) {
+            // For other errors, log but continue to send welcome email
+            console.warn('Failed to add contact to audience, but continuing with email send');
+          }
+        } else {
+          const contactData = await contactResponse.json();
+          console.log('Contact added to audience:', contactData);
+        }
+      } catch (contactError) {
+        console.error('Error adding contact to audience:', contactError);
+        // Continue with email send even if audience add fails
+      }
+    }
+
+    // Send welcome email
+    const emailResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
@@ -88,22 +126,22 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       }),
     });
 
-    if (!resendResponse.ok) {
-      const errorText = await resendResponse.text();
-      console.error('Resend API error:', errorText);
+    if (!emailResponse.ok) {
+      const errorText = await emailResponse.text();
+      console.error('Resend Email API error:', errorText);
       return new Response(
         JSON.stringify({ error: 'Failed to send email' }),
         { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
     }
 
-    const data = await resendResponse.json();
+    const emailData = await emailResponse.json();
 
     return new Response(
       JSON.stringify({ 
         success: true,
         message: '✅ Successfully subscribed! Check your email.',
-        emailId: data.id
+        emailId: emailData.id
       }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
@@ -111,7 +149,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   } catch (error: any) {
     console.error('Newsletter subscription error:', error);
     return new Response(
-      JSON.stringify({ error: 'Internal error', message: error.message }),
+      JSON.stringify({ error: error.message || 'Failed to subscribe' }),
       { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   }
