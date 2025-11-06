@@ -1,9 +1,20 @@
 // Cloudflare Pages Function - RSS Proxy
 // Handles CORS issues when fetching RSS feeds from external sources
+// Uses Cloudflare Cache API for performance
+
+/// <reference types="@cloudflare/workers-types" />
 
 interface Env {
   RESEND_API_KEY?: string;
   [key: string]: unknown;
+}
+
+interface PagesFunctionContext {
+  request: Request;
+  env: Env;
+  waitUntil?: (promise: Promise<unknown>) => void;
+  next?: () => Response | Promise<Response>;
+  data?: Record<string, unknown>;
 }
 
 // Whitelist of allowed RSS feed domains for security
@@ -131,7 +142,7 @@ function isAllowedDomain(url: string): boolean {
 }
 
 // Main request handler
-export async function onRequestGet(context: { request: Request; env: Env }) {
+export async function onRequestGet(context: PagesFunctionContext): Promise<Response> {
   const { request } = context;
   
   // Block AI crawlers at edge
@@ -153,7 +164,23 @@ export async function onRequestGet(context: { request: Request; env: Env }) {
 
   try {
     // Parse URL and get the 'url' query parameter
-    const url = new URL(request.url);
+    let url: URL;
+    try {
+      url = new URL(request.url);
+    } catch (urlError) {
+      console.error('Invalid request URL:', urlError);
+      return new Response(
+        JSON.stringify({ error: 'Invalid request URL' }), 
+        {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            ...corsHeaders,
+          },
+        }
+      );
+    }
+
     const feedUrl = url.searchParams.get('url');
 
     // Validate feed URL parameter
@@ -174,15 +201,48 @@ export async function onRequestGet(context: { request: Request; env: Env }) {
     }
 
     // Decode URL if it's encoded
-    const decodedFeedUrl = decodeURIComponent(feedUrl);
+    let decodedFeedUrl: string;
+    try {
+      decodedFeedUrl = decodeURIComponent(feedUrl);
+    } catch (decodeError) {
+      console.error('Failed to decode URL:', decodeError);
+      return new Response(
+        JSON.stringify({ error: 'Invalid URL encoding' }), 
+        {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            ...corsHeaders,
+          },
+        }
+      );
+    }
+
+    // Validate URL format
+    let parsedFeedUrl: URL;
+    try {
+      parsedFeedUrl = new URL(decodedFeedUrl);
+    } catch (urlParseError) {
+      console.error('Invalid feed URL format:', urlParseError);
+      return new Response(
+        JSON.stringify({ error: 'Invalid feed URL format' }), 
+        {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            ...corsHeaders,
+          },
+        }
+      );
+    }
 
     // Security check: Validate domain
     if (!isAllowedDomain(decodedFeedUrl)) {
+      console.warn(`Blocked request to unauthorized domain: ${parsedFeedUrl.hostname}`);
       return new Response(
         JSON.stringify({ 
           error: 'Domain not allowed',
           message: 'This RSS feed domain is not in the allowed list for security reasons.',
-          allowedDomains: ALLOWED_DOMAINS
         }), 
         {
           status: 403,
@@ -194,29 +254,83 @@ export async function onRequestGet(context: { request: Request; env: Env }) {
       );
     }
 
-    console.log(`Fetching RSS feed: ${decodedFeedUrl}`);
+    // Create cache key from URL
+    const cacheKey = new Request(decodedFeedUrl, {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+      },
+    });
+
+    // Try to get from cache first (Cloudflare Cache API)
+    const cache = caches.default;
+    let cachedResponse = await cache.match(cacheKey);
+
+    if (cachedResponse) {
+      console.log(`Cache hit for: ${decodedFeedUrl}`);
+      // Clone response to add CORS headers
+      const headers = new Headers(cachedResponse.headers);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        headers.set(key, value);
+      });
+      
+      return new Response(cachedResponse.body, {
+        status: cachedResponse.status,
+        statusText: cachedResponse.statusText,
+        headers,
+      });
+    }
+
+    console.log(`Fetching RSS feed (cache miss): ${decodedFeedUrl}`);
 
     // Fetch the RSS feed with timeout
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
-    // Use realistic browser headers to avoid 403 errors from some sites
-    const response = await fetch(decodedFeedUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'application/rss+xml, application/xml, text/xml, */*',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Cache-Control': 'no-cache',
-        'Referer': 'https://rootstechnews.com/',
-      },
-      signal: controller.signal,
-    });
-
-    clearTimeout(timeoutId);
+    let response: Response;
+    try {
+      // Use realistic browser headers to avoid 403 errors from some sites
+      response = await fetch(decodedFeedUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+          'Accept-Language': 'en-US,en;q=0.9',
+          'Cache-Control': 'no-cache',
+          'Referer': 'https://rootstechnews.com/',
+        },
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+    } catch (fetchError) {
+      clearTimeout(timeoutId);
+      
+      if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+        console.error(`Timeout fetching RSS feed: ${decodedFeedUrl}`);
+        return new Response(
+          JSON.stringify({ 
+            error: 'Request timeout',
+            message: 'RSS feed took too long to respond (15s timeout)',
+            url: decodedFeedUrl
+          }), 
+          {
+            status: 504,
+            headers: {
+              'Content-Type': 'application/json',
+              ...corsHeaders,
+            },
+          }
+        );
+      }
+      
+      console.error('Failed to fetch RSS feed:', fetchError);
+      throw fetchError;
+    }
 
     // Check if fetch was successful
     if (!response.ok) {
-      console.error(`Failed to fetch RSS feed: ${response.status} ${response.statusText}`);
+      console.error(`Failed to fetch RSS feed: ${response.status} ${response.statusText} - ${decodedFeedUrl}`);
+      
+      // Don't cache error responses
       return new Response(
         JSON.stringify({ 
           error: 'Failed to fetch RSS feed',
@@ -225,7 +339,7 @@ export async function onRequestGet(context: { request: Request; env: Env }) {
           url: decodedFeedUrl
         }), 
         {
-          status: response.status,
+          status: response.status >= 400 && response.status < 500 ? response.status : 500,
           headers: {
             'Content-Type': 'application/json',
             ...corsHeaders,
@@ -235,20 +349,75 @@ export async function onRequestGet(context: { request: Request; env: Env }) {
     }
 
     // Get the RSS content
-    const rssContent = await response.text();
+    let rssContent: string;
+    try {
+      rssContent = await response.text();
+    } catch (textError) {
+      console.error('Failed to read RSS content:', textError);
+      return new Response(
+        JSON.stringify({ 
+          error: 'Failed to read RSS feed content',
+          url: decodedFeedUrl
+        }), 
+        {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            ...corsHeaders,
+          },
+        }
+      );
+    }
+
+    // Validate that we got actual content
+    if (!rssContent || rssContent.trim().length === 0) {
+      console.error('Empty RSS feed content received');
+      return new Response(
+        JSON.stringify({ 
+          error: 'Empty RSS feed received',
+          url: decodedFeedUrl
+        }), 
+        {
+          status: 502,
+          headers: {
+            'Content-Type': 'application/json',
+            ...corsHeaders,
+          },
+        }
+      );
+    }
 
     // Determine content type
     const contentType = response.headers.get('content-type') || 'application/xml';
 
-    // Return the RSS feed with CORS headers
-    return new Response(rssContent, {
-      status: 200,
-      headers: {
-        'Content-Type': contentType,
-        'Cache-Control': 'public, max-age=300', // Cache for 5 minutes
-        ...corsHeaders,
-      },
+    // Create response with caching headers
+    const responseHeaders = new Headers({
+      'Content-Type': contentType,
+      'Cache-Control': 'public, max-age=300, s-maxage=300', // Cache for 5 minutes
+      ...corsHeaders,
     });
+
+    const finalResponse = new Response(rssContent, {
+      status: 200,
+      headers: responseHeaders,
+    });
+
+    // Cache the response (Cloudflare Cache API)
+    // Use waitUntil to cache in background if available
+    if (context.waitUntil) {
+      context.waitUntil(
+        cache.put(cacheKey, finalResponse.clone()).catch((cacheError) => {
+          console.warn('Failed to cache RSS feed:', cacheError);
+        })
+      );
+    } else {
+      // Fallback: cache synchronously
+      cache.put(cacheKey, finalResponse.clone()).catch((cacheError) => {
+        console.warn('Failed to cache RSS feed:', cacheError);
+      });
+    }
+
+    return finalResponse;
 
   } catch (error: unknown) {
     console.error('RSS Proxy Error:', error);

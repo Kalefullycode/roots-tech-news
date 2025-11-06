@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface NewsletterSubscribeProps {
   variant?: 'hero' | 'compact';
@@ -30,14 +31,35 @@ export default function NewsletterSubscribe({
         setStatus('success');
         setMessage('🎉 Successfully subscribed to Daily AI News!');
         setEmail('');
+        
+        // Show success toast
+        toast.success('Successfully subscribed!', {
+          description: 'Check your email for confirmation.',
+          duration: 5000,
+        });
+        
         setTimeout(() => setStatus('idle'), 5000);
       } else {
+        const errorMsg = data.error || 'Failed to subscribe. Please try again.';
         setStatus('error');
-        setMessage(data.error || 'Failed to subscribe. Please try again.');
+        setMessage(errorMsg);
+        
+        // Show error toast
+        toast.error('Subscription failed', {
+          description: errorMsg,
+          duration: 5000,
+        });
       }
     } catch (error) {
+      const errorMsg = 'An error occurred. Please try again.';
       setStatus('error');
-      setMessage('An error occurred. Please try again.');
+      setMessage(errorMsg);
+      
+      // Show error toast
+      toast.error('Subscription failed', {
+        description: errorMsg,
+        duration: 5000,
+      });
     }
   };
 

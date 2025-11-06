@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Mail, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
+import { toast } from 'sonner';
 
 export function NewsletterSignup({ variant = 'inline' }: { variant?: 'inline' | 'hero' | 'sidebar' }) {
   const [email, setEmail] = useState('');
@@ -45,6 +46,12 @@ export function NewsletterSignup({ variant = 'inline' }: { variant?: 'inline' | 
       setMessage('🎉 Success! Check your email for confirmation.');
       setEmail('');
       
+      // Show toast notification
+      toast.success('Successfully subscribed!', {
+        description: 'Check your email for confirmation.',
+        duration: 5000,
+      });
+      
       // Track conversion
       if (typeof window !== 'undefined' && (window as any).gtag) {
         (window as any).gtag('event', 'newsletter_signup', {
@@ -60,8 +67,15 @@ export function NewsletterSignup({ variant = 'inline' }: { variant?: 'inline' | 
 
     } catch (error: any) {
       console.error('Subscription error:', error);
+      const errorMessage = error.message || 'Something went wrong. Please try again.';
       setStatus('error');
-      setMessage(error.message || 'Something went wrong. Please try again.');
+      setMessage(errorMessage);
+      
+      // Show error toast notification
+      toast.error('Subscription failed', {
+        description: errorMessage,
+        duration: 5000,
+      });
       
       setTimeout(() => {
         setStatus('idle');
