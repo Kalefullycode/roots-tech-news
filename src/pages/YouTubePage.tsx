@@ -118,6 +118,14 @@ const YouTubePage = () => {
     };
     
     document.head.appendChild(script);
+
+    return () => {
+      // Cleanup: remove script on unmount if component is unmounted
+      const existingScript = document.getElementById(scriptId);
+      if (existingScript && existingScript.parentNode) {
+        existingScript.parentNode.removeChild(existingScript);
+      }
+    };
   }, []);
 
   // Update feed when category changes

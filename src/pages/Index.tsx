@@ -25,6 +25,7 @@ const Index = () => {
     // Add JSON-LD for the homepage articles
     const script = document.createElement('script');
     script.type = 'application/ld+json';
+    script.id = 'homepage-json-ld';
     script.text = JSON.stringify({
       "@context": "https://schema.org",
       "@type": "ItemList",
@@ -54,7 +55,10 @@ const Index = () => {
     document.head.appendChild(script);
 
     return () => {
-      document.head.removeChild(script);
+      const existingScript = document.getElementById('homepage-json-ld');
+      if (existingScript && existingScript.parentNode) {
+        existingScript.parentNode.removeChild(existingScript);
+      }
     };
   }, []);
 
