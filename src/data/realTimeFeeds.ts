@@ -25,7 +25,7 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
   {
     id: 'anthropic-news',
     name: 'Anthropic News',
-    url: 'https://www.anthropic.com/feed',
+    url: 'https://www.anthropic.com/news/rss',
     category: 'ai',
     updateFrequency: 15,
     priority: 'high',
@@ -43,7 +43,7 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
   {
     id: 'deepmind',
     name: 'DeepMind Blog',
-    url: 'https://www.deepmind.com/feed',
+    url: 'https://deepmind.google/discover/blog/rss/',
     category: 'ai',
     updateFrequency: 30,
     priority: 'high',
@@ -52,7 +52,7 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
   {
     id: 'meta-ai',
     name: 'Meta AI Blog',
-    url: 'https://ai.meta.com/blog/rss.xml',
+    url: 'https://ai.meta.com/blog/rss/',
     category: 'ai',
     updateFrequency: 30,
     priority: 'high',

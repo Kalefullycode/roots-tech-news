@@ -119,19 +119,31 @@ class PodcastService {
         }
       });
       
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      // Get response text first
+      const responseText = await response.text();
       
-      // Get XML content directly (no JSON wrapper)
-      const xmlText = await response.text();
-      const episodes = this.parsePodcastRSS(xmlText, podcastName, category);
+      // Check if response is JSON error
+      const contentType = response.headers.get('content-type') || '';
+      if (contentType.includes('application/json') || (responseText.trim().startsWith('{') && responseText.includes('error'))) {
+        // Silently handle errors
+        return [];
+      }
       
-      this.cache.set(cacheKey, { data: episodes, timestamp: Date.now() });
+      if (!response.ok) {
+        // Silently handle HTTP errors
+        return [];
+      }
+      
+      // Parse XML content
+      const episodes = this.parsePodcastRSS(responseText, podcastName, category);
+      
+      // Only cache successful results
+      if (episodes.length > 0) {
+        this.cache.set(cacheKey, { data: episodes, timestamp: Date.now() });
+      }
       return episodes;
     } catch (error) {
-      // Only log errors in development to reduce console noise
-      if (import.meta.env.DEV) {
-        console.warn(`Failed to fetch podcast ${podcastName}:`, error);
-      }
+      // Suppress all errors to reduce console noise
       return [];
     }
   }

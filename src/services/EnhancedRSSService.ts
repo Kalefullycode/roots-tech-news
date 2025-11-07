@@ -12,12 +12,14 @@ class EnhancedRSSService {
   private cache = new Map<string, { data: NewsArticle[]; timestamp: number }>();
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-  // Use real-time feeds data source
-  private readonly RSS_FEEDS: RSSFeed[] = REAL_TIME_RSS_FEEDS.map(feed => ({
-    url: feed.url,
-    name: feed.name,
-    category: this.mapCategory(feed.category)
-  }));
+  // Use real-time feeds data source - only include active feeds
+  private readonly RSS_FEEDS: RSSFeed[] = REAL_TIME_RSS_FEEDS
+    .filter(feed => feed.active === true)
+    .map(feed => ({
+      url: feed.url,
+      name: feed.name,
+      category: this.mapCategory(feed.category)
+    }));
 
   private mapCategory(category: string): string {
     const map: Record<string, string> = {
@@ -120,13 +122,23 @@ class EnhancedRSSService {
         }
       });
       
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      // Get response text first
+      const responseText = await response.text();
+      
+      // Check if response is JSON error (from rss-proxy error handling)
+      const contentType = response.headers.get('content-type') || '';
+      if (contentType.includes('application/json') || (responseText.trim().startsWith('{') && responseText.includes('error'))) {
+        // Silently handle errors - don't throw to prevent console noise
+        return [];
       }
       
-      // Get XML content directly (no JSON wrapper like allorigins)
-      const xmlText = await response.text();
-      const articles = this.parseRSSXML(xmlText, sourceName, category);
+      if (!response.ok) {
+        // Silently handle HTTP errors
+        return [];
+      }
+      
+      // Parse XML content
+      const articles = this.parseRSSXML(responseText, sourceName, category);
       
       // Only cache successful results with articles
       if (articles.length > 0) {
@@ -134,12 +146,13 @@ class EnhancedRSSService {
       }
       return articles;
     } catch (error) {
-      // Only log errors in development to reduce console noise
-      // Suppress 404 errors (function might not be deployed yet)
+      // Suppress all console errors for failed RSS feeds to reduce noise
+      // Only log in development mode and only for non-404/400 errors
       if (import.meta.env.DEV) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        if (!errorMessage.includes('404') && !errorMessage.includes('Failed to fetch')) {
-          console.warn(`Failed to fetch RSS from ${feedUrl}:`, error);
+        const statusCode = errorMessage.match(/\b(400|404|403|500|502|503|504)\b/);
+        if (!statusCode) {
+          console.warn(`Failed to fetch RSS from ${sourceName}:`, errorMessage);
         }
       }
       
@@ -166,12 +179,25 @@ class EnhancedRSSService {
         successCount++;
       } else {
         failureCount++;
-        console.warn(`Failed to fetch RSS feed: ${this.RSS_FEEDS[index].name}`, 
-          result.status === 'rejected' ? result.reason : 'No articles returned');
+        // Only log failures in development mode to reduce console noise
+        if (import.meta.env.DEV) {
+          const feedName = this.RSS_FEEDS[index]?.name || 'Unknown';
+          const reason = result.status === 'rejected' 
+            ? (result.reason instanceof Error ? result.reason.message : String(result.reason))
+            : 'No articles returned';
+          
+          // Suppress common error messages
+          if (!reason.includes('404') && !reason.includes('400') && !reason.includes('403')) {
+            console.warn(`Failed to fetch RSS feed: ${feedName}`, reason);
+          }
+        }
       }
     });
 
-    console.log(`RSS Feed Summary: ${successCount} succeeded, ${failureCount} failed out of ${this.RSS_FEEDS.length} total feeds`);
+    // Only log summary in development
+    if (import.meta.env.DEV && failureCount > 0) {
+      console.log(`RSS Feed Summary: ${successCount} succeeded, ${failureCount} failed out of ${this.RSS_FEEDS.length} total feeds`);
+    }
 
     // If we have articles, filter and return them
     if (allArticles.length > 0) {

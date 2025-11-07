@@ -92,12 +92,13 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     console.warn('KV cache read error:', kvError);
   }
 
-  // Validate API key
+  // Validate API key - return empty array instead of error if not configured
   if (!env.YOUTUBE_API_KEY) {
+    console.warn('YOUTUBE_API_KEY not configured, returning empty results');
     return new Response(
-      JSON.stringify({ error: 'YOUTUBE_API_KEY not configured' }),
+      JSON.stringify([]),
       {
-        status: 500,
+        status: 200,
         headers: {
           'Content-Type': 'application/json',
           ...corsHeaders,
@@ -143,7 +144,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       try {
         const channelId = await getChannelId(channel.handle, env.YOUTUBE_API_KEY);
         if (!channelId) {
-          console.warn(`Could not find channel ID for ${channel.handle}`);
+          // Suppress warning - channel might not exist or handle might be incorrect
           return null;
         }
 
@@ -151,11 +152,21 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
         const response = await fetch(searchUrl);
         
         if (!response.ok) {
-          console.error(`Failed to fetch videos for ${channel.name}: ${response.status}`);
+          // Suppress error logging for quota exceeded or invalid API key
+          if (response.status !== 403 && response.status !== 401) {
+            console.warn(`Failed to fetch videos for ${channel.name}: ${response.status}`);
+          }
           return null;
         }
 
         const data = await response.json();
+        
+        // Check for API errors
+        if (data.error) {
+          console.warn(`YouTube API error for ${channel.name}:`, data.error.message);
+          return null;
+        }
+        
         if (data.items && data.items.length > 0) {
           return {
             ...data.items[0],
@@ -165,7 +176,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
         
         return null;
       } catch (error) {
-        console.error(`Error fetching video for ${channel.name}:`, error);
+        // Suppress error logging - fail silently
         return null;
       }
     });

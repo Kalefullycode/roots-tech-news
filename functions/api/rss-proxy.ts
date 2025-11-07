@@ -345,9 +345,17 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
 
     // Check if fetch was successful
     if (!response.ok) {
-      console.error(`Failed to fetch RSS feed: ${response.status} ${response.statusText} - ${decodedFeedUrl}`);
+      // Suppress logging for common errors (404, 400, 403)
+      if (response.status >= 400 && response.status < 500) {
+        // Only log in development or for unexpected 4xx errors
+        if (response.status !== 404 && response.status !== 400 && response.status !== 403) {
+          console.warn(`Failed to fetch RSS feed: ${response.status} ${response.statusText} - ${decodedFeedUrl}`);
+        }
+      } else {
+        console.error(`Failed to fetch RSS feed: ${response.status} ${response.statusText} - ${decodedFeedUrl}`);
+      }
       
-      // Don't cache error responses
+      // Return proper error status but with JSON body for client-side handling
       return new Response(
         JSON.stringify({ 
           error: 'Failed to fetch RSS feed',

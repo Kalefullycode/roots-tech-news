@@ -159,15 +159,18 @@ class YouTubeService {
         }
       });
 
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        // Suppress 404 errors for YouTube RSS feeds (they may not be available)
+        if (response.status !== 404) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return [];
+      }
 
       const xmlText = await response.text();
       return this.parseYouTubeRSS(xmlText, channelName, category);
     } catch (error) {
-      // Only log errors in development to reduce console noise
-      if (import.meta.env.DEV) {
-        console.warn(`Failed to fetch YouTube channel ${channelName} via RSS:`, error);
-      }
+      // Suppress all YouTube RSS errors to reduce console noise
       return [];
     }
   }
