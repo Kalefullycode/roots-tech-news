@@ -21,14 +21,55 @@ interface Article {
   image: string;
 }
 
-// Fetch articles from RSS endpoint
+// Fetch articles from RSS endpoint with robust error handling
 async function fetchArticles(): Promise<Article[]> {
-  const response = await fetch('/functions/fetch-rss');
-  if (!response.ok) {
-    throw new Error(`Failed to fetch articles: ${response.status} ${response.statusText}`);
+  try {
+    const response = await fetch('/functions/fetch-rss', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      // Try to get error details from response
+      let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorData.error || errorMessage;
+      } catch {
+        // If response isn't JSON, use status text
+      }
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json();
+    
+    // Check if response has error field
+    if (data.error) {
+      throw new Error(data.message || data.error);
+    }
+
+    // Return articles array, or empty array if none
+    const articles = data.articles || [];
+    
+    // Log success info if available
+    if (data.successfulSources !== undefined) {
+      console.log(`Fetched ${articles.length} articles from ${data.successfulSources}/${data.sources} sources`);
+      if (data.errors && data.errors.length > 0) {
+        console.warn('Some RSS feeds failed:', data.errors);
+      }
+    }
+    
+    return articles;
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+    // Re-throw with more context
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch articles: ${error.message}`);
+    }
+    throw new Error('Failed to fetch articles: Unknown error');
   }
-  const data = await response.json();
-  return data.articles || [];
 }
 
 // Filter articles by category
@@ -43,12 +84,16 @@ const CategorySlugPage = () => {
   // Get category config
   const category = slug ? getCategoryBySlug(slug) : undefined;
   
-  // Fetch all articles
-  const { data: allArticles, isLoading, isError, error } = useQuery({
+  // Fetch all articles with improved error handling
+  const { data: allArticles, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['category-articles', slug],
     queryFn: fetchArticles,
     staleTime: 300000, // 5 minutes
-    retry: 2,
+    gcTime: 600000, // 10 minutes
+    retry: 3, // Retry up to 3 times
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
   });
 
   // Filter articles by category
@@ -177,15 +222,25 @@ const CategorySlugPage = () => {
               </span>
             </div>
           ) : isError ? (
-            <Card className="p-8 text-center">
+            <Card className="p-8 text-center bg-card-modern border border-destructive/20">
               <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2">Error Loading Articles</h2>
-              <p className="text-muted-foreground mb-4">
+              <h2 className="text-2xl font-bold mb-2 text-destructive">Error Loading Articles</h2>
+              <p className="text-muted-foreground mb-4 font-roboto">
                 {error instanceof Error ? error.message : 'Failed to load articles. Please try again later.'}
               </p>
-              <Button onClick={() => window.location.reload()}>
-                Retry
-              </Button>
+              <div className="flex gap-3 justify-center">
+                <Button onClick={() => refetch()} variant="default">
+                  <Loader2 className="h-4 w-4 mr-2" />
+                  Retry
+                </Button>
+                <Button onClick={() => navigate('/')} variant="outline">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Home
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-4 font-roboto">
+                If this problem persists, the RSS feed service may be temporarily unavailable.
+              </p>
             </Card>
           ) : formattedArticles.length === 0 ? (
             <Card className="p-8 text-center">

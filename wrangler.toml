@@ -2,3 +2,11 @@ name = "roots-tech-news"
 compatibility_date = "2024-10-27"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "dist"
+
+# KV Namespace binding for RSS feed caching
+# This will be created in Cloudflare Dashboard and bound here
+# For local development, create with: wrangler kv:namespace create "FEED_CACHE"
+[[kv_namespaces]]
+binding = "FEED_CACHE"
+id = "your-kv-namespace-id-here"  # Replace with actual KV namespace ID from Cloudflare Dashboard
+preview_id = "your-preview-kv-namespace-id-here"  # Replace with preview namespace ID

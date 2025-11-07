@@ -47,14 +47,21 @@ const ALLOWED_DOMAINS = [
   
   // AI Companies & Research
   'openai.com',
+  'www.openai.com',
   'anthropic.com',
   'www.anthropic.com',
+  'deepmind.com',
+  'deepmind.google',
+  'www.deepmind.com',
+  'ai.meta.com',
+  'www.ai.meta.com',
+  'meta.com',
   'blogs.nvidia.com',
   'ai.googleblog.com',
   'blog.research.google',
-  'deepmind.com',
-  'ai.meta.com', // ✅ Added Meta AI
-  'blogs.microsoft.com', // ✅ Added Microsoft AI
+  'research.google',
+  'blogs.microsoft.com',
+  'microsoft.com',
   
   // Academic & Research
   'rss.arxiv.org', // ✅ Added arXiv (AI & ML research papers)
