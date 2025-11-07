@@ -3,11 +3,11 @@ import { Helmet } from 'react-helmet-async';
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Globe, TrendingUp, Clock, RefreshCw, ExternalLink, Podcast } from "lucide-react";
+import { Globe, TrendingUp, Clock, RefreshCw, ExternalLink } from "lucide-react";
 import { NewsArticle } from "@/services/NewsService";
 import EnhancedRSSService from "@/services/EnhancedRSSService";
 import PodcastService, { PodcastEpisode } from "@/services/PodcastService";
-import PodcastCard from "@/components/cards/PodcastCard";
+import DarkArticleCard from "@/components/cards/DarkArticleCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const Header = lazy(() => import("@/components/Header"));
@@ -47,7 +47,7 @@ const GlobalNewsPage = () => {
         setAllArticles(articles);
         setFilteredArticles(articles);
         
-        // Filter podcasts for tech topics: AI, quantum computing, VR/AR, space computing, glasses, 2029, future tech
+        // Filter podcasts for tech topics
         const techTopics = [
           'ai', 'artificial intelligence', 'tech', 'technology', 
           'quantum', 'quantum computing', 'quantum computer',
@@ -149,16 +149,10 @@ const GlobalNewsPage = () => {
     a.title.toLowerCase().includes('artificial intelligence') ||
     a.category === 'AI'
   ).slice(0, 6);
-  // Filter tech news including quantum computing, VR/AR, space computing, AI
-  const techNews = filteredArticles.filter(a => {
-    const searchText = `${a.title} ${a.description} ${a.category}`.toLowerCase();
-    const techKeywords = [
-      'tech', 'technology', 'quantum', 'vr', 'virtual reality', 'ar', 'augmented reality',
-      'glasses', 'headset', 'space computing', 'space tech', 'ai', 'artificial intelligence',
-      'future', '2029', 'trillion', 'investor', 'founder'
-    ];
-    return a.category === 'Tech' || techKeywords.some(keyword => searchText.includes(keyword));
-  }).slice(0, 6);
+  const techNews = filteredArticles.filter(a => 
+    a.category === 'Tech' || 
+    a.title.toLowerCase().includes('tech')
+  ).slice(0, 6);
   const startupNews = filteredArticles.filter(a => 
     a.category === 'Startups' || 
     a.title.toLowerCase().includes('startup') ||
@@ -358,45 +352,26 @@ const GlobalNewsPage = () => {
                       <p className="text-gray-400 text-sm">Latest developments in AI, machine learning, and neural networks</p>
                     </div>
                   </div>
-                  <Button variant="outline" className="bg-purple-500/15 border-purple-500/30 text-purple-400 hover:bg-purple-500/25">
+                  <Button 
+                    variant="outline" 
+                    className="bg-purple-500/15 border-purple-500/30 text-purple-400 hover:bg-purple-500/25"
+                    onClick={() => setActiveTab('ai')}
+                  >
                     View All →
                   </Button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {aiNews.length > 0 ? (
                     aiNews.map((article) => (
-                      <Card key={article.url} className="bg-gray-800/50 border-purple-500/20 overflow-hidden hover:border-purple-500/50 transition-all group">
-                        <div className="aspect-video bg-gray-900 relative overflow-hidden">
-                          <img
-                            src={article.urlToImage || '/placeholder.svg'}
-                            alt={article.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = '/placeholder.svg';
-                            }}
-                          />
-                        </div>
-                        <div className="p-5">
-                          <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 mb-3 text-xs">
-                            {article.source.name}
-                          </Badge>
-                          <h3 className="font-semibold text-white mb-2 line-clamp-2 group-hover:text-blue-400 transition-colors">
-                            <a href={article.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                              {article.title}
-                            </a>
-                          </h3>
-                          <p className="text-sm text-gray-400 mb-4 line-clamp-3">
-                            {article.description || 'Read more...'}
-                          </p>
-                          <div className="flex justify-between items-center text-xs text-gray-500">
-                            <span className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {formatTime(article.publishedAt)}
-                            </span>
-                            <span className="bg-gray-700/50 px-2 py-1 rounded text-xs">🌍 Global</span>
-                          </div>
-                        </div>
-                      </Card>
+                      <DarkArticleCard
+                        key={article.url}
+                        title={article.title}
+                        excerpt={article.description || 'Read more...'}
+                        category={article.source.name || 'AI'}
+                        date={formatTime(article.publishedAt)}
+                        imageUrl={article.urlToImage || '/placeholder.svg'}
+                        url={article.url}
+                      />
                     ))
                   ) : (
                     <div className="col-span-3 text-center py-12 text-gray-400">
@@ -406,44 +381,57 @@ const GlobalNewsPage = () => {
                 </div>
               </section>
 
-              {/* Technology Section - Matching Latest Tech Podcasts Design */}
-              <section className="technology-section-redesigned mb-16">
-                <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-3">
-                    <Podcast className="h-8 w-8 text-purple-500" />
-                    <h2 className="section-heading font-orbitron text-foreground">
-                      #Technology
-                    </h2>
+              {/* Tech New Articles - Daily AI News by Hours and Minutes */}
+              <section className="mb-16">
+                <div className="flex items-center justify-between mb-6 pb-4 border-b border-purple-500/20">
+                  <div className="flex items-center gap-4">
+                    <div className="text-3xl">🤖</div>
+                    <div>
+                      <h2 className="font-orbitron text-3xl font-bold text-white">Tech New Articles</h2>
+                      <p className="text-gray-400 text-sm">Daily AI news updated by hours and minutes</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <Clock className="w-4 h-4" />
+                    <span>Last updated: {lastUpdate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
                   </div>
                 </div>
-
-                <div className="podcast-grid">
-                  {/* Combine tech articles and podcasts */}
-                  {techPodcasts.length > 0 ? (
-                    techPodcasts.map((podcast) => (
-                      <PodcastCard key={podcast.id} podcast={podcast} />
-                    ))
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {techNews.length > 0 ? (
+                    techNews.map((article) => {
+                      const articleDate = new Date(article.publishedAt);
+                      const now = new Date();
+                      const diffMs = now.getTime() - articleDate.getTime();
+                      const diffMins = Math.floor(diffMs / 60000);
+                      const diffHours = Math.floor(diffMins / 60);
+                      
+                      let timeDisplay = '';
+                      if (diffMins < 60) {
+                        timeDisplay = `${diffMins}m ago`;
+                      } else if (diffHours < 24) {
+                        const remainingMins = diffMins % 60;
+                        timeDisplay = remainingMins > 0 ? `${diffHours}h ${remainingMins}m ago` : `${diffHours}h ago`;
+                      } else {
+                        timeDisplay = articleDate.toLocaleDateString();
+                      }
+                      
+                      return (
+                        <DarkArticleCard
+                          key={article.url}
+                          title={article.title}
+                          excerpt={article.description || 'Read more...'}
+                          category={article.category || 'Tech'}
+                          date={timeDisplay}
+                          imageUrl={article.urlToImage || '/placeholder.svg'}
+                          url={article.url}
+                        />
+                      );
+                    })
                   ) : (
-                    <div className="col-span-full text-center py-12 text-muted-foreground">
-                      Loading technology podcasts and articles...
+                    <div className="col-span-3 text-center py-12 text-gray-400">
+                      No tech news articles found. Try refreshing the page.
                     </div>
                   )}
-                  
-                  {/* Also show tech articles converted to podcast-like format */}
-                  {techNews.length > 0 && techNews.slice(0, 6 - techPodcasts.length).map((article) => {
-                    // Convert article to podcast-like format for PodcastCard
-                    const podcastEpisode: PodcastEpisode = {
-                      id: article.url,
-                      title: article.title,
-                      description: article.description || 'Read more about this technology story...',
-                      thumbnail: article.urlToImage || '/placeholder.svg',
-                      podcastName: article.source.name,
-                      publishedAt: article.publishedAt,
-                      url: article.url,
-                      category: article.category || 'Tech'
-                    };
-                    return <PodcastCard key={article.url} podcast={podcastEpisode} />;
-                  })}
                 </div>
               </section>
 
@@ -457,45 +445,26 @@ const GlobalNewsPage = () => {
                       <p className="text-gray-400 text-sm">Latest startup launches, funding rounds, and venture capital news</p>
                     </div>
                   </div>
-                  <Button variant="outline" className="bg-purple-500/15 border-purple-500/30 text-purple-400 hover:bg-purple-500/25">
+                  <Button 
+                    variant="outline" 
+                    className="bg-purple-500/15 border-purple-500/30 text-purple-400 hover:bg-purple-500/25"
+                    onClick={() => setActiveTab('startups')}
+                  >
                     View All →
                   </Button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {startupNews.length > 0 ? (
                     startupNews.map((article) => (
-                      <Card key={article.url} className="bg-gray-800/50 border-purple-500/20 overflow-hidden hover:border-purple-500/50 transition-all group">
-                        <div className="aspect-video bg-gray-900 relative overflow-hidden">
-                          <img
-                            src={article.urlToImage || '/placeholder.svg'}
-                            alt={article.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = '/placeholder.svg';
-                            }}
-                          />
-                        </div>
-                        <div className="p-5">
-                          <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 mb-3 text-xs">
-                            {article.source.name}
-                          </Badge>
-                          <h3 className="font-semibold text-white mb-2 line-clamp-2 group-hover:text-blue-400 transition-colors">
-                            <a href={article.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                              {article.title}
-                            </a>
-                          </h3>
-                          <p className="text-sm text-gray-400 mb-4 line-clamp-3">
-                            {article.description || 'Read more...'}
-                          </p>
-                          <div className="flex justify-between items-center text-xs text-gray-500">
-                            <span className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {formatTime(article.publishedAt)}
-                            </span>
-                            <span className="bg-gray-700/50 px-2 py-1 rounded text-xs">🌍 Global</span>
-                          </div>
-                        </div>
-                      </Card>
+                      <DarkArticleCard
+                        key={article.url}
+                        title={article.title}
+                        excerpt={article.description || 'Read more...'}
+                        category={article.source.name || 'Startups'}
+                        date={formatTime(article.publishedAt)}
+                        imageUrl={article.urlToImage || '/placeholder.svg'}
+                        url={article.url}
+                      />
                     ))
                   ) : (
                     <div className="col-span-3 text-center py-12 text-gray-400">
