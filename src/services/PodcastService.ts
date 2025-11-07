@@ -33,11 +33,13 @@ class PodcastService {
     { url: 'https://feeds.pacific-content.com/commandlineheroes', name: 'Command Line Heroes', category: 'Tech' },
     { url: 'https://changelog.com/podcast/feed', name: 'The Changelog', category: 'Tech' },
     
+    // Quantum Computing & Advanced Tech
+    { url: 'https://feeds.simplecast.com/dHoohVNH', name: 'a16z Podcast', category: 'Tech' }, // Covers quantum, VR/AR, space tech
+    { url: 'https://feeds.megaphone.fm/acquired', name: 'Acquired', category: 'Tech' }, // Covers emerging tech
+    
     // Startups & Business
     { url: 'https://feeds.megaphone.fm/WWO3519750118', name: 'Pivot', category: 'Startups' },
-    { url: 'https://feeds.simplecast.com/dHoohVNH', name: 'a16z Podcast', category: 'Startups' },
     { url: 'https://feeds.npr.org/510313/podcast.xml', name: 'How I Built This', category: 'Startups' },
-    { url: 'https://feeds.megaphone.fm/acquired', name: 'Acquired', category: 'Startups' },
     { url: 'https://feeds.simplecast.com/JoGtLBBd', name: 'Masters of Scale', category: 'Startups' },
     
     // Security & Privacy
