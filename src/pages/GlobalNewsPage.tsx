@@ -407,24 +407,19 @@ const GlobalNewsPage = () => {
               </section>
 
               {/* Technology Section - Matching Latest Tech Podcasts Design */}
-              <section className="mb-16">
-                <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-3">
-                    <Podcast className="h-8 w-8 text-purple-500" />
-                    <h2 className="font-orbitron text-3xl font-bold text-foreground">
-                      #Technology
-                    </h2>
-                  </div>
-                </div>
+              <section className="technology-section-redesigned mb-16">
+                <h2 className="section-heading font-orbitron">
+                  #Technology
+                </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="podcast-grid">
                   {/* Combine tech articles and podcasts */}
                   {techPodcasts.length > 0 ? (
                     techPodcasts.map((podcast) => (
                       <PodcastCard key={podcast.id} podcast={podcast} />
                     ))
                   ) : (
-                    <div className="col-span-2 text-center py-12 text-muted-foreground">
+                    <div className="col-span-full text-center py-12 text-muted-foreground">
                       Loading technology podcasts and articles...
                     </div>
                   )}
@@ -520,6 +515,118 @@ const GlobalNewsPage = () => {
         }
         .animate-scroll {
           animation: scroll 30s linear infinite;
+        }
+        
+        /* Technology Section Styling */
+        .technology-section-redesigned {
+          background-color: #0d0d1a;
+          padding: 4rem 2rem;
+        }
+        
+        .section-heading {
+          font-size: 2.5rem;
+          font-weight: 700;
+          color: #ffffff;
+          margin-bottom: 2.5rem;
+        }
+        
+        .podcast-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+          gap: 2rem;
+        }
+        
+        /* Article Card Redesigned */
+        .article-card-redesigned {
+          background-color: #1c1c2b;
+          border-radius: 16px;
+          padding: 1.5rem;
+          border: 1px solid #2d2d3f;
+          transition: all 0.3s ease;
+        }
+        
+        .article-card-redesigned:hover {
+          transform: translateY(-5px);
+          border-color: #8b5cf6;
+        }
+        
+        .card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1rem;
+        }
+        
+        .category-badge {
+          background-color: rgba(139, 92, 246, 0.1);
+          color: #8b5cf6;
+          padding: 0.25rem 0.75rem;
+          border-radius: 9999px;
+          font-size: 0.8rem;
+          font-weight: 500;
+        }
+        
+        .duration {
+          color: #a0aec0;
+          font-size: 0.9rem;
+        }
+        
+        .card-body h3 {
+          color: #ffffff;
+          font-size: 1.25rem;
+          font-weight: 600;
+          margin-bottom: 0.5rem;
+        }
+        
+        .card-body p {
+          color: #a0aec0;
+          font-size: 0.9rem;
+          line-height: 1.6;
+        }
+        
+        .card-footer {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-top: 1.5rem;
+        }
+        
+        .date {
+          color: #718096;
+          font-size: 0.9rem;
+        }
+        
+        .listen-button {
+          background-color: #8b5cf6;
+          color: #ffffff;
+          padding: 0.5rem 1rem;
+          border-radius: 8px;
+          text-decoration: none;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          transition: background-color 0.3s ease;
+        }
+        
+        .listen-button:hover {
+          background-color: #7c3aed;
+        }
+        
+        @media (max-width: 768px) {
+          .technology-section-redesigned {
+            padding: 2rem 1rem;
+          }
+          
+          .section-heading {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+          }
+          
+          .podcast-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+          }
         }
       `}</style>
     </>

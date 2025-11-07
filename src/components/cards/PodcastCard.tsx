@@ -1,6 +1,3 @@
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Play, ExternalLink, Clock } from "lucide-react";
 import { PodcastEpisode } from "@/services/PodcastService";
 
@@ -10,9 +7,7 @@ interface PodcastCardProps {
 
 const PodcastCard = ({ podcast }: PodcastCardProps) => {
   return (
-    <Card 
-      className="p-5 bg-card-modern border border-card-border/60 hover:border-purple-500/50 transition-all hover-lift group"
-    >
+    <div className="article-card-redesigned">
       <div className="flex gap-4">
         {/* Thumbnail */}
         <div className="flex-shrink-0 w-24 h-24 bg-muted rounded-lg overflow-hidden">
@@ -28,47 +23,54 @@ const PodcastCard = ({ podcast }: PodcastCardProps) => {
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between mb-2">
-            <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30 text-xs">
+          <div className="card-header">
+            <span className="category-badge">
               {podcast.category}
-            </Badge>
+            </span>
             {podcast.duration && (
-              <div className="flex items-center text-xs text-muted-foreground">
-                <Clock className="h-3 w-3 mr-1" />
+              <span className="duration">
+                <Clock className="inline h-3 w-3 mr-1" />
                 {podcast.duration}
-              </div>
+              </span>
             )}
           </div>
 
-          <h3 className="font-orbitron text-base font-semibold text-foreground mb-1 line-clamp-2 group-hover:text-purple-500 transition-colors">
-            {podcast.title}
-          </h3>
-          
-          <p className="text-sm text-muted-foreground mb-2">
-            {podcast.podcastName}
-          </p>
+          <div className="card-body">
+            <h3 className="line-clamp-2">
+              {podcast.title}
+            </h3>
+            
+            <p className="mb-2">
+              {podcast.podcastName}
+            </p>
 
-          <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
-            {podcast.description}
-          </p>
+            <p className="line-clamp-2">
+              {podcast.description}
+            </p>
+          </div>
 
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-muted-foreground">
+          <div className="card-footer">
+            <span className="date">
               {new Date(podcast.publishedAt).toLocaleDateString()}
             </span>
-            <Button 
-              size="sm" 
-              className="bg-purple-500 hover:bg-purple-600"
-              onClick={() => window.open(podcast.url, '_blank')}
+            <a
+              href={podcast.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="listen-button"
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(podcast.url, '_blank');
+              }}
             >
-              <Play className="h-3 w-3 mr-1" />
+              <Play className="h-4 w-4" />
               Listen
-              <ExternalLink className="h-3 w-3 ml-1" />
-            </Button>
+              <ExternalLink className="h-3 w-3" />
+            </a>
           </div>
         </div>
       </div>
-    </Card>
+    </div>
   );
 };
 
