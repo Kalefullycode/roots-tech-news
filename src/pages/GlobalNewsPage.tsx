@@ -408,9 +408,14 @@ const GlobalNewsPage = () => {
 
               {/* Technology Section - Matching Latest Tech Podcasts Design */}
               <section className="technology-section-redesigned mb-16">
-                <h2 className="section-heading font-orbitron">
-                  #Technology
-                </h2>
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-3">
+                    <Podcast className="h-8 w-8 text-purple-500" />
+                    <h2 className="section-heading font-orbitron text-foreground">
+                      #Technology
+                    </h2>
+                  </div>
+                </div>
 
                 <div className="podcast-grid">
                   {/* Combine tech articles and podcasts */}
@@ -527,13 +532,20 @@ const GlobalNewsPage = () => {
           font-size: 2.5rem;
           font-weight: 700;
           color: #ffffff;
-          margin-bottom: 2.5rem;
+          margin-bottom: 0;
         }
         
         .podcast-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-          gap: 2rem;
+          gap: 1.5rem;
+        }
+        
+        @media (min-width: 768px) {
+          .podcast-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+          }
         }
         
         /* Article Card Redesigned */
