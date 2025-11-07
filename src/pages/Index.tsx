@@ -10,6 +10,7 @@ const HeroSection = lazy(() => import("@/components/HeroSection"));
 const Header = lazy(() => import("@/components/Header"));
 const TodaysTopStories = lazy(() => import("@/components/TodaysTopStories"));
 const YouTubeVideosSection = lazy(() => import("@/components/YouTubeVideosSection"));
+const LatestAiTechVideos = lazy(() => import("@/components/sections/LatestAiTechVideos"));
 const FeaturedStory = lazy(() => import("@/components/FeaturedStory"));
 const LatestDiscoveries = lazy(() => import("@/components/LatestDiscoveries"));
 const DailyAINews = lazy(() => import("@/components/DailyAINews"));
@@ -109,7 +110,14 @@ const Index = () => {
             <TodaysTopStories />
           </Suspense>
 
-          {/* NEW SECTION: LATEST AI & TECH VIDEOS - After Today's Top Stories */}
+          {/* SECTION 3: LATEST AI & TECH VIDEOS - After Today's Top Stories */}
+          <div className="container mx-auto px-4">
+            <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
+              <LatestAiTechVideos />
+            </Suspense>
+          </div>
+
+          {/* SECTION 4: YOUTUBE VIDEOS SECTION (Existing) */}
           <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
             <YouTubeVideosSection />
           </Suspense>

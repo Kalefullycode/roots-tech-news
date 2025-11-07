@@ -15,6 +15,7 @@ export function Header() {
     { name: 'Startups', href: '/category/startups', icon: '🚀' },
     { name: 'Security', href: '/category/security', icon: '🔒' },
     { name: 'Videos', href: '/videos', icon: '🎥' },
+    { name: 'Live', href: '/videos/live', icon: '🔴' },
     { name: 'Podcasts', href: '/podcasts', icon: '🎙️' },
     { name: 'Resources', href: '/resources', icon: '🛠️' },
     { name: 'Blog', href: '/blog', icon: '📝' },

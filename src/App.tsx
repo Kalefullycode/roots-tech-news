@@ -15,6 +15,7 @@ const CategoryPage = lazy(() => import("./pages/CategoryPage"));
 const CategorySlugPage = lazy(() => import("./pages/CategorySlugPage"));
 const YouTubePage = lazy(() => import("./pages/YouTubePage"));
 const AIVideosPage = lazy(() => import("./pages/AIVideosPage"));
+const LiveVideosPage = lazy(() => import("./pages/videos/live"));
 const GlobalNewsPage = lazy(() => import("./pages/GlobalNewsPage"));
 const PodcastsPage = lazy(() => import("./pages/PodcastsPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
@@ -73,6 +74,14 @@ const App: React.FC = () => {
                 element={
                   <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><div className="text-muted-foreground">Loading...</div></div>}>
                     <AIVideosPage />
+                  </Suspense>
+                } 
+              />
+              <Route 
+                path="/videos/live" 
+                element={
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><div className="text-muted-foreground">Loading...</div></div>}>
+                    <LiveVideosPage />
                   </Suspense>
                 } 
               />
