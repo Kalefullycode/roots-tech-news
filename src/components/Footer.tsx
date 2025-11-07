@@ -14,6 +14,7 @@ const Footer = () => {
 
   const categories = [
     { name: "AI", href: "/category/ai" },
+    { name: "Technology", href: "/category/technology" },
     { name: "Startups", href: "/category/startups" },
     { name: "Culture", href: "/category/culture" },
     { name: "Gadgets", href: "/category/gadgets" },

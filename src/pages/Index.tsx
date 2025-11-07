@@ -99,7 +99,12 @@ const Index = () => {
       <div className="flex">
         {/* Main Content Area */}
         <main id="main-content" className="flex-1 min-w-0">
-          {/* SECTION 2: TODAY'S TOP STORIES - Immediately below Hero */}
+          {/* SECTION 1: FEATURED STORY - Moved to top */}
+          <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
+            <FeaturedStory />
+          </Suspense>
+
+          {/* SECTION 2: TODAY'S TOP STORIES - After Featured Story */}
           <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
             <TodaysTopStories />
           </Suspense>
@@ -107,11 +112,6 @@ const Index = () => {
           {/* NEW SECTION: LATEST AI & TECH VIDEOS - After Today's Top Stories */}
           <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
             <YouTubeVideosSection />
-          </Suspense>
-
-          {/* SECTION 3: FEATURED STORY - No spacing */}
-          <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
-            <FeaturedStory />
           </Suspense>
 
           {/* SECTION 4: LATEST DISCOVERIES (Card Grid) - No spacing */}

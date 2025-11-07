@@ -11,7 +11,7 @@ export function Header() {
   const navigation = [
     { name: 'Home', href: '/', icon: '🏠' },
     { name: 'AI News', href: '/category/ai', icon: '🤖' },
-    { name: 'Tech News', href: '/category/tech-news', icon: '💻' },
+    { name: 'Technology', href: '/category/technology', icon: '💻' },
     { name: 'Startups', href: '/category/startups', icon: '🚀' },
     { name: 'Security', href: '/category/security', icon: '🔒' },
     { name: 'Videos', href: '/videos', icon: '🎥' },
