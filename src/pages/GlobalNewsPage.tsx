@@ -491,32 +491,6 @@ const GlobalNewsPage = () => {
           animation: scroll 30s linear infinite;
         }
         
-        /* Technology Section Styling */
-        .technology-section-redesigned {
-          background-color: #0d0d1a;
-          padding: 4rem 2rem;
-        }
-        
-        .section-heading {
-          font-size: 2.5rem;
-          font-weight: 700;
-          color: #ffffff;
-          margin-bottom: 0;
-        }
-        
-        .podcast-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-          gap: 1.5rem;
-        }
-        
-        @media (min-width: 768px) {
-          .podcast-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-          }
-        }
-        
         /* Article Card Redesigned */
         .article-card-redesigned {
           background-color: #1c1c2b;
@@ -592,22 +566,6 @@ const GlobalNewsPage = () => {
         
         .listen-button:hover {
           background-color: #7c3aed;
-        }
-        
-        @media (max-width: 768px) {
-          .technology-section-redesigned {
-            padding: 2rem 1rem;
-          }
-          
-          .section-heading {
-            font-size: 2rem;
-            margin-bottom: 2rem;
-          }
-          
-          .podcast-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-          }
         }
       `}</style>
     </>
