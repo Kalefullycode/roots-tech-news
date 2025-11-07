@@ -161,9 +161,19 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
     // No-op if util not available
   }
   
-  // CORS headers
+  // CORS headers - restrict to allowed origins
+  const allowedOrigins = [
+    'https://rootstechnews.com',
+    'https://www.rootstechnews.com',
+    'http://localhost:5173', // Vite dev server
+    'http://localhost:3000', // Alternative dev port
+  ];
+  
+  const origin = request.headers.get('Origin') || '';
+  const corsOrigin = allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+  
   const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': corsOrigin,
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Max-Age': '86400',
@@ -461,11 +471,22 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
 }
 
 // Handle OPTIONS requests for CORS preflight
-export async function onRequestOptions() {
+export async function onRequestOptions(context: PagesFunctionContext) {
+  const { request } = context;
+  const allowedOrigins = [
+    'https://rootstechnews.com',
+    'https://www.rootstechnews.com',
+    'http://localhost:5173',
+    'http://localhost:3000',
+  ];
+  
+  const origin = request.headers.get('Origin') || '';
+  const corsOrigin = allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+  
   return new Response(null, {
     status: 204,
     headers: {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': corsOrigin,
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
       'Access-Control-Max-Age': '86400',

@@ -34,20 +34,43 @@ try {
 } catch (error) {
   console.error('❌ Failed to mount React app:', error);
   
-  // Fallback error display
+  // Fallback error display - using textContent to prevent XSS
   const container = document.getElementById("root");
   if (container) {
-    container.innerHTML = `
-      <div style="padding: 20px; font-family: monospace; background: #1a1a1a; color: #ff6b6b; min-height: 100vh;">
-        <h1>⚠️ Application Error</h1>
-        <p>Failed to initialize the application.</p>
-        <pre style="background: #000; padding: 10px; border-radius: 5px; overflow: auto;">
-${error instanceof Error ? error.message : String(error)}
-${error instanceof Error && error.stack ? '\n\nStack trace:\n' + error.stack : ''}
-        </pre>
-        <p style="color: #ffff00;">Please check the browser console for more details (Press F12)</p>
-        <p style="color: #888; margin-top: 20px;">Site: rootstechnews.com</p>
-      </div>
-    `;
+    // Clear container
+    container.innerHTML = '';
+    
+    // Create error container
+    const errorDiv = document.createElement('div');
+    errorDiv.style.cssText = 'padding: 20px; font-family: monospace; background: #1a1a1a; color: #ff6b6b; min-height: 100vh;';
+    
+    // Create elements safely
+    const h1 = document.createElement('h1');
+    h1.textContent = '⚠️ Application Error';
+    errorDiv.appendChild(h1);
+    
+    const p1 = document.createElement('p');
+    p1.textContent = 'Failed to initialize the application.';
+    errorDiv.appendChild(p1);
+    
+    const pre = document.createElement('pre');
+    pre.style.cssText = 'background: #000; padding: 10px; border-radius: 5px; overflow: auto;';
+    const errorText = error instanceof Error 
+      ? error.message + (error.stack ? '\n\nStack trace:\n' + error.stack : '')
+      : String(error);
+    pre.textContent = errorText;
+    errorDiv.appendChild(pre);
+    
+    const p2 = document.createElement('p');
+    p2.style.color = '#ffff00';
+    p2.textContent = 'Please check the browser console for more details (Press F12)';
+    errorDiv.appendChild(p2);
+    
+    const p3 = document.createElement('p');
+    p3.style.cssText = 'color: #888; margin-top: 20px;';
+    p3.textContent = 'Site: rootstechnews.com';
+    errorDiv.appendChild(p3);
+    
+    container.appendChild(errorDiv);
   }
 }

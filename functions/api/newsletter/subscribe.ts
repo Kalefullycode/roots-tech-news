@@ -11,18 +11,41 @@ interface RequestBody {
 }
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
+  // CORS headers - restrict to allowed origins
+  const allowedOrigins = [
+    'https://rootstechnews.com',
+    'https://www.rootstechnews.com',
+    'http://localhost:5173',
+    'http://localhost:3000',
+  ];
+  
+  const origin = context.request.headers.get('Origin') || '';
+  const corsOrigin = allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+  
   const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': corsOrigin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
   };
 
   // Handle CORS preflight
   if (context.request.method === 'OPTIONS') {
+    const allowedOrigins = [
+      'https://rootstechnews.com',
+      'https://www.rootstechnews.com',
+      'http://localhost:5173',
+      'http://localhost:3000',
+    ];
+    
+    const origin = context.request.headers.get('Origin') || '';
+    const corsOrigin = allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+    
     return new Response(null, { 
       status: 204,
       headers: {
-        ...corsHeaders,
+        'Access-Control-Allow-Origin': corsOrigin,
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Max-Age': '86400',
       }
     });
