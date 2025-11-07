@@ -392,56 +392,80 @@ const GlobalNewsPage = () => {
                         View All →
                       </Button>
                     </div>
-                    <h2 className="section-title font-orbitron text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-[#8b5cf6] to-[#ec4899] bg-clip-text text-transparent mb-3">
+                    <h2 className="section-title font-orbitron text-3xl md:text-4xl font-bold text-center mb-3" style={{
+                      background: 'linear-gradient(90deg, #8b5cf6, #ec4899)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text'
+                    }}>
                       Technology
                     </h2>
                   </div>
                   
                   {/* Article Cards Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="technology-grid gap-6">
                     {techNews.length > 0 ? (
-                      techNews.map((article) => (
-                        <Card 
-                          key={article.url} 
-                          className="article-card bg-[#1a1a2e] border border-[rgba(139,92,246,0.2)] rounded-xl p-6 text-white transition-all duration-300 overflow-hidden group hover:border-[rgba(139,92,246,0.6)] hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(139,92,246,0.25)]"
-                        >
-                          {/* Image Container with Gradient Overlay */}
-                          <div className="image-container aspect-video bg-gray-900 relative rounded-lg overflow-hidden mb-4">
-                            <img
-                              src={article.urlToImage || '/placeholder.svg'}
-                              alt={article.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                              onError={(e) => {
-                                (e.target as HTMLImageElement).src = '/placeholder.svg';
-                              }}
-                            />
-                            {/* Gradient Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
-                          </div>
-                          
-                          {/* Card Content */}
-                          <div className="p-0">
-                            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 mb-3 text-xs font-roboto">
-                              {article.source.name}
-                            </Badge>
-                            <h3 className="article-title font-roboto text-xl font-semibold text-white mb-2 line-clamp-2 group-hover:text-purple-400 transition-colors">
-                              <a href={article.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                                {article.title}
-                              </a>
-                            </h3>
-                            <p className="article-excerpt text-[#a0a0b8] text-sm font-roboto mb-4 line-clamp-3">
-                              {article.description || 'Read more...'}
-                            </p>
-                            <div className="article-metadata flex justify-between items-center text-xs text-[#6b7280] font-roboto">
-                              <span className="flex items-center gap-1">
-                                <Clock className="w-3 h-3" />
-                                {formatTime(article.publishedAt)}
-                              </span>
-                              <span className="bg-[rgba(139,92,246,0.15)] px-2 py-1 rounded text-xs border border-[rgba(139,92,246,0.2)]">🌍 Global</span>
+                      techNews.map((article, index) => {
+                        const cardIndex = index + 1;
+                        const isCard2 = cardIndex === 2;
+                        const isCard4 = cardIndex === 4;
+                        const isCard5 = cardIndex === 5;
+                        
+                        return (
+                          <Card 
+                            key={article.url} 
+                            className={`technology-card article-card bg-[#1a1a2e] rounded-xl p-6 text-white transition-all duration-300 overflow-hidden group relative ${
+                              isCard2 ? 'technology-card-offset' : ''
+                            } ${isCard4 ? 'technology-card-offset' : ''} ${
+                              isCard5 ? 'technology-card-span-2' : ''
+                            }`}
+                            style={{
+                              border: 'none'
+                            }}
+                          >
+                            {/* Gradient Border using ::before */}
+                            
+                            {/* Card Content Wrapper */}
+                            <div className="relative z-10">
+                              {/* Image Container with Gradient Overlay */}
+                              <div className="image-container aspect-video bg-gray-900 relative rounded-lg overflow-hidden mb-4">
+                                <img
+                                  src={article.urlToImage || '/placeholder.svg'}
+                                  alt={article.title}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = '/placeholder.svg';
+                                  }}
+                                />
+                                {/* Gradient Overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
+                              </div>
+                              
+                              {/* Card Content */}
+                              <div className="p-0">
+                                <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 mb-3 text-xs font-roboto">
+                                  {article.source.name}
+                                </Badge>
+                                <h3 className="article-title font-roboto text-xl font-semibold text-white mb-2 line-clamp-2 group-hover:text-purple-400 transition-colors">
+                                  <a href={article.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                                    {article.title}
+                                  </a>
+                                </h3>
+                                <p className="article-excerpt text-gray-400 text-sm font-roboto mb-4 line-clamp-3">
+                                  {article.description || 'Read more...'}
+                                </p>
+                                <div className="article-metadata flex justify-between items-center text-xs text-[#6b7280] font-roboto">
+                                  <span className="flex items-center gap-1">
+                                    <Clock className="w-3 h-3" />
+                                    {formatTime(article.publishedAt)}
+                                  </span>
+                                  <span className="bg-[rgba(139,92,246,0.15)] px-2 py-1 rounded text-xs border border-[rgba(139,92,246,0.2)]">🌍 Global</span>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </Card>
-                      ))
+                          </Card>
+                        );
+                      })
                     ) : (
                       <div className="col-span-3 text-center py-12 text-[#a0a0b8] font-roboto">
                         No tech news articles found. Try refreshing the page.
@@ -524,6 +548,84 @@ const GlobalNewsPage = () => {
         }
         .animate-scroll {
           animation: scroll 30s linear infinite;
+        }
+        
+        /* Technology Section Grid */
+        .technology-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 1.5rem;
+        }
+        
+        @media (min-width: 768px) {
+          .technology-grid {
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          }
+        }
+        
+        @media (min-width: 1024px) {
+          .technology-grid {
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+          }
+        }
+        
+        /* Technology Section Card Styles */
+        .technology-card {
+          position: relative;
+          border: none !important;
+        }
+        
+        .technology-card::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 0.75rem;
+          padding: 1px;
+          background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+          -webkit-mask: 
+            linear-gradient(#fff 0 0) content-box, 
+            linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask: 
+            linear-gradient(#fff 0 0) content-box, 
+            linear-gradient(#fff 0 0);
+          mask-composite: exclude;
+          pointer-events: none;
+          z-index: 1;
+          transition: background 0.3s ease;
+        }
+        
+        .technology-card:hover::before {
+          background: linear-gradient(135deg, rgba(139, 92, 246, 0.6), rgba(236, 72, 153, 0.6));
+        }
+        
+        .technology-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3), 0 0 20px rgba(236, 72, 153, 0.2);
+        }
+        
+        .technology-card-offset {
+          transform: translateY(1rem);
+        }
+        
+        .technology-card-offset:hover {
+          transform: translateY(calc(1rem - 5px));
+        }
+        
+        .technology-card-span-2 {
+          grid-column: span 2;
+        }
+        
+        @media (max-width: 768px) {
+          .technology-card-offset {
+            transform: none;
+          }
+          .technology-card-offset:hover {
+            transform: translateY(-5px);
+          }
+          .technology-card-span-2 {
+            grid-column: span 1;
+          }
         }
       `}</style>
     </>
