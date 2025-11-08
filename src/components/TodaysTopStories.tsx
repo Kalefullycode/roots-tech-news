@@ -3,6 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Zap } from "lucide-react";
 import NewsListItem from "./NewsListItem";
+import aiArticle from "@/assets/ai-article.webp";
+import startupArticle from "@/assets/startup-article.webp";
+import securityArticle from "@/assets/security-article.webp";
+import gadgetArticle from "@/assets/gadget-article.webp";
 
 async function fetchArticles() {
   const response = await fetch('/functions/fetch-rss');
