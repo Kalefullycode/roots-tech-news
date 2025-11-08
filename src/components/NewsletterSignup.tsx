@@ -24,8 +24,6 @@ export function NewsletterSignup({ variant = 'inline' }: { variant?: 'inline' | 
     setMessage('');
 
     try {
-      console.log('Subscribing email:', email);
-      
       // Use the newsletter API endpoint
       const response = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
@@ -36,7 +34,6 @@ export function NewsletterSignup({ variant = 'inline' }: { variant?: 'inline' | 
       });
 
       const data = await response.json();
-      console.log('Response:', data);
 
       if (!response.ok) {
         throw new Error(data.error || data.message || 'Failed to subscribe');
@@ -65,9 +62,8 @@ export function NewsletterSignup({ variant = 'inline' }: { variant?: 'inline' | 
         setMessage('');
       }, 5000);
 
-    } catch (error: any) {
-      console.error('Subscription error:', error);
-      const errorMessage = error.message || 'Something went wrong. Please try again.';
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
       setStatus('error');
       setMessage(errorMessage);
       

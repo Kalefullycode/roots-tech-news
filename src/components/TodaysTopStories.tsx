@@ -269,7 +269,7 @@ const TodaysTopStories = () => {
 
         {/* Stories List - Hacker News Style */}
         <div className="news-list-container">
-          {topStories.map((article: any, index: number) => {
+          {topStories.map((article: { id?: string; title?: string; url?: string; link?: string; source?: { name?: string } | string; publishedAt?: string; pubDate?: string; category?: string }, index: number) => {
             const source = article.source?.name || article.source || 'Tech News';
             const timeAgo = formatTime(article.publishedAt || article.pubDate || new Date().toISOString());
             const domain = getDomain(article.url || article.link);

@@ -39,8 +39,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     const { email } = body;
 
     // Debug logging
-    console.log('Unsubscribe request received');
-    console.log('Email:', email);
+    // Log unsubscribe request (without sensitive data)
 
     // Validate email
     if (!email || !email.includes('@')) {

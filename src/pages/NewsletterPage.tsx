@@ -29,8 +29,6 @@ export default function NewsletterPage() {
     setMessage('');
 
     try {
-      console.log('Subscribing email:', email);
-      
       // Use the newsletter API endpoint
       const response = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
@@ -41,7 +39,6 @@ export default function NewsletterPage() {
       });
 
       const data = await response.json();
-      console.log('Response:', data);
 
       if (!response.ok) {
         throw new Error(data.error || data.message || 'Failed to subscribe');
@@ -64,9 +61,8 @@ export default function NewsletterPage() {
         });
       }
 
-    } catch (error: any) {
-      console.error('Subscription error:', error);
-      const errorMessage = error.message || 'Something went wrong. Please try again.';
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
       setStatus('error');
       setMessage(errorMessage);
       

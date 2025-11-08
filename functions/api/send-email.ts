@@ -1,4 +1,5 @@
 /// <reference types="@cloudflare/workers-types" />
+import { Resend } from "resend";
 
 interface Env {
   RESEND_API_KEY: string;
@@ -89,6 +90,17 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       }
     }
 
+    // Validate that either html or text is provided
+    if (!html && !text) {
+      return new Response(
+        JSON.stringify({ error: 'Either html or text content is required' }),
+        { 
+          status: 400, 
+          headers: { 'Content-Type': 'application/json', ...corsHeaders } 
+        }
+      );
+    }
+
     // Get environment variables
     const RESEND_API_KEY = context.env.RESEND_API_KEY;
 
@@ -103,8 +115,10 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       );
     }
 
-    // Send email via Resend
-    let emailResponse: Response;
+    // Initialize Resend client
+    const resend = new Resend(RESEND_API_KEY);
+
+    // Send email via Resend SDK
     try {
       const emailPayload: any = {
         from: from || 'Roots Tech News <onboarding@resend.dev>',
@@ -118,29 +132,44 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       if (text) {
         emailPayload.text = text;
       }
-      if (!html && !text) {
+
+      const { data, error } = await resend.emails.send(emailPayload);
+
+      if (error) {
+        console.error('Resend API error:', error);
         return new Response(
-          JSON.stringify({ error: 'Either html or text content is required' }),
+          JSON.stringify({ 
+            error: 'Failed to send email',
+            details: error.message || 'Email service error'
+          }),
           { 
-            status: 400, 
+            status: 500,
             headers: { 'Content-Type': 'application/json', ...corsHeaders } 
           }
         );
       }
 
-      emailResponse = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(emailPayload),
-      });
-    } catch (fetchError) {
-      console.error('Failed to send email request:', fetchError);
       return new Response(
         JSON.stringify({ 
-          error: 'Failed to connect to email service. Please try again later.' 
+          success: true,
+          message: 'Email sent successfully',
+          emailId: data?.id
+        }),
+        { 
+          status: 200, 
+          headers: { 'Content-Type': 'application/json', ...corsHeaders } 
+        }
+      );
+    } catch (sendError) {
+      console.error('Failed to send email:', sendError);
+      const errorMessage = sendError instanceof Error 
+        ? sendError.message 
+        : 'Failed to connect to email service. Please try again later.';
+      
+      return new Response(
+        JSON.stringify({ 
+          error: 'Failed to send email',
+          details: errorMessage
         }),
         { 
           status: 500, 
@@ -148,61 +177,6 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         }
       );
     }
-
-    if (!emailResponse.ok) {
-      let errorText = 'Unknown error';
-      try {
-        errorText = await emailResponse.text();
-      } catch (textError) {
-        console.error('Failed to read error response:', textError);
-      }
-      
-      console.error('Resend Email API error:', {
-        status: emailResponse.status,
-        statusText: emailResponse.statusText,
-        error: errorText
-      });
-      
-      return new Response(
-        JSON.stringify({ 
-          error: 'Failed to send email',
-          details: emailResponse.status === 401 ? 'Invalid API key' : 'Email service error'
-        }),
-        { 
-          status: emailResponse.status >= 400 && emailResponse.status < 500 ? emailResponse.status : 500,
-          headers: { 'Content-Type': 'application/json', ...corsHeaders } 
-        }
-      );
-    }
-
-    let emailData: { id?: string };
-    try {
-      emailData = await emailResponse.json();
-    } catch (jsonError) {
-      console.error('Failed to parse email response JSON:', jsonError);
-      return new Response(
-        JSON.stringify({ 
-          success: true,
-          message: 'Email sent successfully',
-        }),
-        { 
-          status: 200, 
-          headers: { 'Content-Type': 'application/json', ...corsHeaders } 
-        }
-      );
-    }
-
-    return new Response(
-      JSON.stringify({ 
-        success: true,
-        message: 'Email sent successfully',
-        emailId: emailData.id
-      }),
-      { 
-        status: 200, 
-        headers: { 'Content-Type': 'application/json', ...corsHeaders } 
-      }
-    );
 
   } catch (error: unknown) {
     console.error('Send email error:', error);

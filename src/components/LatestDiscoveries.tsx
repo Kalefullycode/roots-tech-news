@@ -70,7 +70,21 @@ const LatestDiscoveries = () => {
   const articles = (newsArticles && newsArticles.length > 0) ? newsArticles : fallbackArticles;
   
   // Format articles for ArticleCard component
-  const formatArticle = (article: any, index: number) => {
+  interface ArticleInput {
+    title?: string;
+    description?: string;
+    contentSnippet?: string;
+    category?: string;
+    publishedAt?: string;
+    pubDate?: string;
+    image?: string;
+    urlToImage?: string;
+    media?: { thumbnail?: string };
+    url?: string;
+    link?: string;
+  }
+
+  const formatArticle = (article: ArticleInput, index: number) => {
     // Map categories from real articles to our categories
     const categoryMap: Record<string, string> = {
       'AI': 'AI',
@@ -103,7 +117,7 @@ const LatestDiscoveries = () => {
   };
 
   // Get 4 articles for 2x2 grid
-  const discoveryArticles = articles.slice(0, 4).map((article: any, index: number) => formatArticle(article, index));
+  const discoveryArticles = articles.slice(0, 4).map((article: ArticleInput, index: number) => formatArticle(article, index));
 
   if (isLoading) {
     return (

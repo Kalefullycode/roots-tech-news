@@ -45,10 +45,10 @@ export default function UnsubscribePage() {
       setMessage('You have been successfully unsubscribed. We\'re sorry to see you go!');
       setEmail('');
 
-    } catch (error: any) {
-      console.error('Unsubscribe error:', error);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again or contact support.';
       setStatus('error');
-      setMessage(error.message || 'Something went wrong. Please try again or contact support.');
+      setMessage(errorMessage);
     }
   };
 
