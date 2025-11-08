@@ -130,7 +130,7 @@ MIT
 ## 📧 Contact
 
 Visit [rootstechnews.com](https://rootstechnews.com)
-We Build 
+
 ---
 
 Built with ❤️ using React, TypeScript, and Vite
