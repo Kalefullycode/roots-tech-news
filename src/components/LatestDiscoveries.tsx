@@ -125,7 +125,7 @@ const LatestDiscoveries = () => {
       <div className="container mx-auto px-4">
         <div className="mb-6">
           <h2 className="font-orbitron text-3xl font-bold text-glow-accent">
-            LATEST DISCOVERIES
+            LIVE TECH FEED
           </h2>
         </div>
 

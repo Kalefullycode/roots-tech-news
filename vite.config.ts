@@ -7,9 +7,10 @@ import { componentTagger } from "lovable-tagger";
 export default defineConfig(({ mode }) => ({
   base: '/', // Ensure assets load correctly on custom domain
   server: {
-    host: "localhost",
+    host: "0.0.0.0",
     port: 8080,
     strictPort: false,
+    allowedHosts: [".manusvm.computer"],
   },
   plugins: [
     react(),
