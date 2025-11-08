@@ -58,8 +58,11 @@ export default function NewsListItem({
   })();
 
   const handleClick = () => {
-    if (articleUrl && articleUrl !== '#') {
+    if (articleUrl && articleUrl !== '#' && articleUrl.startsWith('http')) {
       window.open(articleUrl, '_blank', 'noopener,noreferrer');
+    } else if (articleUrl && articleUrl !== '#' && !articleUrl.startsWith('http')) {
+      // Handle relative URLs
+      window.location.href = articleUrl;
     }
     onClick?.();
   };
@@ -96,17 +99,27 @@ export default function NewsListItem({
           {articleTimeAgo && (
             <span>{articleTimeAgo}</span>
           )}
-          {articleComments !== undefined && (
+          {articleComments !== undefined && articleComments > 0 && (
             <>
-              <span>|</span>
+              <span className="text-muted-foreground">|</span>
               <a 
-                href={articleId ? `/item/${articleId}` : `${articleUrl}#comments`}
+                href={articleUrl && articleUrl !== '#' ? `${articleUrl}#comments` : '#'}
                 onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
+                  if (articleUrl && articleUrl !== '#') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (articleUrl.startsWith('http')) {
+                      window.open(`${articleUrl}#comments`, '_blank', 'noopener,noreferrer');
+                    } else {
+                      window.location.href = `${articleUrl}#comments`;
+                    }
+                  } else {
+                    e.preventDefault();
+                  }
                 }}
+                className="hover:text-primary transition-colors"
               >
-                {articleComments} comments
+                {articleComments} {articleComments === 1 ? 'comment' : 'comments'}
               </a>
             </>
           )}

@@ -219,9 +219,9 @@ const TodaysTopStories = () => {
   }
 
   return (
-    <section className="py-8 bg-gradient-to-b from-transparent to-primary/5">
+    <section className="py-8">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <Zap className="h-6 w-6 text-primary" />
             <h2 className="font-orbitron text-3xl font-bold text-glow-primary">
@@ -237,18 +237,29 @@ const TodaysTopStories = () => {
         </div>
 
         {/* Stories List - Hacker News Style */}
-        <div className="news-list-container">
+        <div className="news-list-container bg-card/30 rounded-lg p-4 border border-border/50">
           {topStories.map((article: { id?: string; title?: string; url?: string; link?: string; source?: { name?: string } | string; publishedAt?: string; pubDate?: string; category?: string }, index: number) => {
             const source = article.source?.name || article.source || 'Tech News';
             const timeAgo = formatTime(article.publishedAt || article.pubDate || new Date().toISOString());
-            const domain = getDomain(article.url || article.link);
+            
+            // Get valid URL - prefer url over link, ensure it's a valid URL
+            let articleUrl = article.url || article.link;
+            if (articleUrl && !articleUrl.startsWith('http') && !articleUrl.startsWith('/') && !articleUrl.startsWith('#')) {
+              // If it's not a valid URL format, make it a hash
+              articleUrl = '#';
+            }
+            if (!articleUrl) {
+              articleUrl = '#';
+            }
+            
+            const domain = getDomain(articleUrl);
             
             return (
               <NewsListItem
-                key={article.id || index}
+                key={article.id || `article-${index}`}
                 index={index}
-                title={article.title}
-                url={article.url || article.link || '#'}
+                title={article.title || 'Untitled Article'}
+                url={articleUrl}
                 source={source}
                 timeAgo={timeAgo}
                 domain={domain}
