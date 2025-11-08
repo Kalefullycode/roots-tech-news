@@ -69,7 +69,7 @@ const FeaturedStory = () => {
       <div className="container mx-auto px-4">
         <div className="mb-6">
           <h2 className="font-orbitron text-3xl font-bold text-glow-primary">
-            FEATURED STORY
+            BREAKING NEWS
           </h2>
         </div>
 

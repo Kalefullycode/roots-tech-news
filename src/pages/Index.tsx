@@ -8,13 +8,10 @@ const HeroSection = lazy(() => import("@/components/HeroSection"));
 
 // Lazy load below-the-fold and non-critical components for better performance
 const Header = lazy(() => import("@/components/Header"));
-const TodaysTopStories = lazy(() => import("@/components/TodaysTopStories"));
-const YouTubeVideosSection = lazy(() => import("@/components/YouTubeVideosSection"));
-const LatestAiTechVideos = lazy(() => import("@/components/sections/LatestAiTechVideos"));
 const FeaturedStory = lazy(() => import("@/components/FeaturedStory"));
 const LatestDiscoveries = lazy(() => import("@/components/LatestDiscoveries"));
+const TodaysTopStories = lazy(() => import("@/components/TodaysTopStories"));
 const DailyAINews = lazy(() => import("@/components/DailyAINews"));
-const LiveAINewsVideos = lazy(() => import("@/components/LiveAINewsVideos"));
 const NewsletterSubscribe = lazy(() => import("@/components/NewsletterSubscribe"));
 const AIToolsSidebar = lazy(() => import("@/components/AIToolsSidebar"));
 const Sidebar = lazy(() => import("@/components/Sidebar"));
@@ -83,7 +80,7 @@ const Index = () => {
         <Header />
       </Suspense>
 
-      {/* SECTION 1: HERO BANNER (Existing - Keep as is) */}
+      {/* HERO BANNER */}
       <Suspense fallback={
         <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-starfield">
           <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/40 to-background/80" />
@@ -104,49 +101,32 @@ const Index = () => {
       <div className="flex">
         {/* Main Content Area */}
         <main id="main-content" className="flex-1 min-w-0">
-          {/* SECTION 1: FEATURED STORY - Moved to top */}
+          {/* SECTION 1: BREAKING NEWS - Large Featured Story */}
           <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
             <FeaturedStory />
           </Suspense>
 
-          {/* SECTION 2: TODAY'S TOP STORIES - After Featured Story */}
-          <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
-            <TodaysTopStories />
-          </Suspense>
-
-          {/* SECTION 3: LATEST AI & TECH VIDEOS - After Today's Top Stories */}
-          <div className="container mx-auto px-4">
-            <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
-              <LatestAiTechVideos />
-            </Suspense>
-          </div>
-
-          {/* SECTION 4: YOUTUBE VIDEOS SECTION (Existing) */}
-          <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
-            <YouTubeVideosSection />
-          </Suspense>
-
-          {/* SECTION 4: LATEST DISCOVERIES (Card Grid) - No spacing */}
+          {/* SECTION 2: LIVE TECH FEED - News Cards Grid */}
           <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
             <LatestDiscoveries />
           </Suspense>
 
+          {/* SECTION 3: TODAY'S TOP STORIES - RSS Feed Articles */}
+          <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
+            <TodaysTopStories />
+          </Suspense>
+
           {/* Container for standard content */}
           <div className="container mx-auto px-4">
-            {/* SECTION 5: DAILY AI BRIEFING - No spacing */}
+            {/* SECTION 4: DAILY AI BRIEFING */}
             <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg mb-8" />}>
               <div className="py-8">
                 <DailyAINews />
               </div>
             </Suspense>
-
-            {/* SECTION 6: LIVE AI NEWS (Videos) - No spacing */}
-            <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg mb-8" />}>
-              <LiveAINewsVideos />
-            </Suspense>
           </div>
 
-          {/* SECTION 7: NEWSLETTER SIGNUP - No spacing */}
+          {/* SECTION 5: NEWSLETTER SIGNUP */}
           <section className="py-16 px-4">
             <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg" />}>
               <NewsletterSubscribe variant="hero" />
@@ -167,7 +147,7 @@ const Index = () => {
         </Suspense>
       </div>
       
-      {/* SECTION 8: FOOTER */}
+      {/* FOOTER */}
       <Suspense fallback={<div className="h-32 bg-muted animate-pulse" />}>
         <Footer />
       </Suspense>
