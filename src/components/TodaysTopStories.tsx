@@ -1,13 +1,8 @@
 import { useState, useEffect } from "react";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Zap, Clock, Brain, Cpu, Rocket, Shield, TrendingUp } from "lucide-react";
-import aiArticle from "@/assets/ai-article.webp";
-import startupArticle from "@/assets/startup-article.webp";
-import securityArticle from "@/assets/security-article.webp";
-import gadgetArticle from "@/assets/gadget-article.webp";
+import { Zap } from "lucide-react";
+import NewsListItem from "./NewsListItem";
 
 async function fetchArticles() {
   const response = await fetch('/functions/fetch-rss');
@@ -202,32 +197,14 @@ const TodaysTopStories = () => {
     return bDate - aDate;
   });
 
-  const topStories = sortedArticles.slice(0, 10);
-
-  const getPriorityBadge = (index: number, category?: string) => {
-    if (category?.toLowerCase().includes('ai')) {
-      return { label: "AI", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" };
-    }
-    if (index === 0) return { label: "High", color: "bg-red-500/20 text-red-400 border-red-500/30" };
-    if (index < 3) return { label: "Medium", color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" };
-    return { label: "Low", color: "bg-green-500/20 text-green-400 border-green-500/30" };
-  };
-
-  const getCategoryIcon = (category?: string) => {
-    const cat = (category || '').toLowerCase();
-    if (cat.includes('ai')) return Brain;
-    if (cat.includes('startup')) return Rocket;
-    if (cat.includes('security')) return Shield;
-    if (cat.includes('tech')) return Cpu;
-    return TrendingUp;
-  };
+  const topStories = sortedArticles.slice(0, 30);
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
     const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
     
-    if (diffInMinutes < 1) return "Just now";
+    if (diffInMinutes < 1) return "just now";
     if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
     const diffInHours = Math.floor(diffInMinutes / 60);
     if (diffInHours < 24) return `${diffInHours}h ago`;
@@ -235,13 +212,13 @@ const TodaysTopStories = () => {
     return `${diffInDays}d ago`;
   };
 
-  const getStoryImage = (article: any) => {
-    if (article.image) return article.image;
-    if (article.urlToImage) return article.urlToImage;
-    if (article.category?.toLowerCase().includes('ai')) return aiArticle;
-    if (article.category?.toLowerCase().includes('startup')) return startupArticle;
-    if (article.category?.toLowerCase().includes('security')) return securityArticle;
-    return gadgetArticle;
+  const getDomain = (url?: string) => {
+    if (!url || url === '#') return '';
+    try {
+      return new URL(url).hostname.replace('www.', '');
+    } catch {
+      return '';
+    }
   };
 
   if (isLoading) {
@@ -290,88 +267,23 @@ const TodaysTopStories = () => {
           <rssapp-wall id="tTCtnPmhJDGhOAbH"></rssapp-wall>
         </div>
 
-        {/* Stories List - Full Width */}
-        <div className="space-y-4">
+        {/* Stories List - Hacker News Style */}
+        <div className="news-list-container">
           {topStories.map((article: any, index: number) => {
-            const priority = getPriorityBadge(index, article.category);
-            const CategoryIcon = getCategoryIcon(article.category);
-            const storyImage = getStoryImage(article);
             const source = article.source?.name || article.source || 'Tech News';
-            const summary = article.description || article.contentSnippet || article.summary || '';
-            const cleanSummary = summary.replace(/<[^>]*>/g, '').substring(0, 250);
+            const timeAgo = formatTime(article.publishedAt || article.pubDate || new Date().toISOString());
+            const domain = getDomain(article.url || article.link);
             
             return (
-              <Card
+              <NewsListItem
                 key={article.id || index}
-                className="p-6 bg-card-modern border border-card-border/60 hover:border-primary/40 transition-all cursor-pointer group"
-                onClick={() => {
-                  if (article.url && article.url !== '#') {
-                    window.open(article.url, '_blank', 'noopener,noreferrer');
-                  }
-                }}
-              >
-                <div className="flex items-start gap-6">
-                  {/* Story Number & Icon */}
-                  <div className="flex-shrink-0 flex flex-col items-center gap-2">
-                    <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center font-orbitron font-bold text-xl text-primary">
-                      #{index + 1}
-                    </div>
-                    <CategoryIcon className="h-5 w-5 text-primary/60" />
-                  </div>
-
-                  {/* Story Image */}
-                  <div className="flex-shrink-0">
-                    <div className="w-24 h-24 rounded-lg overflow-hidden bg-muted">
-                      <img
-                        src={storyImage}
-                        alt={article.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = gadgetArticle;
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Story Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-3 flex-wrap">
-                      <Badge className={priority.color}>
-                        {priority.label}
-                      </Badge>
-                      {article.category && (
-                        <Badge 
-                          variant="secondary" 
-                          className="text-xs cursor-pointer hover:bg-primary/20 transition-colors"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const categoryUrl = `/category/${article.category.toLowerCase()}`;
-                            window.location.href = categoryUrl;
-                          }}
-                        >
-                          {article.category}
-                        </Badge>
-                      )}
-                    </div>
-                    
-                    <h3 className="font-roboto font-bold text-xl mb-3 line-clamp-2 group-hover:text-primary transition-colors">
-                      {article.title}
-                    </h3>
-                    
-                    {cleanSummary && (
-                      <p className="font-roboto text-sm text-muted-foreground mb-4 line-clamp-3 leading-relaxed">
-                        {cleanSummary}
-                      </p>
-                    )}
-                    
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <span className="font-medium">{source}</span>
-                      <span>•</span>
-                      <span>{formatTime(article.publishedAt || article.pubDate || new Date().toISOString())}</span>
-                    </div>
-                  </div>
-                </div>
-              </Card>
+                index={index}
+                title={article.title}
+                url={article.url || article.link || '#'}
+                source={source}
+                timeAgo={timeAgo}
+                domain={domain}
+              />
             );
           })}
         </div>

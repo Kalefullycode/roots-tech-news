@@ -335,3 +335,68 @@ rssapp-wall a:hover {
     padding: 20px;
   }
 }
+
+/* Hacker News Style News List */
+.news-list-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0;
+  background: transparent;
+}
+
+.news-list-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 8px 4px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.news-list-item:last-child {
+  border-bottom: none;
+}
+
+.news-list-item a {
+  color: #000;
+  text-decoration: none;
+}
+
+.dark .news-list-item a {
+  color: #e0e0e0;
+}
+
+.news-list-item a:hover {
+  text-decoration: underline;
+}
+
+.news-list-item .news-number {
+  color: #828282;
+  font-size: 12px;
+  min-width: 24px;
+  text-align: right;
+}
+
+.dark .news-list-item .news-number {
+  color: #666;
+}
+
+.news-list-item .news-metadata {
+  color: #828282;
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.dark .news-list-item .news-metadata {
+  color: #888;
+}
+
+.news-list-item .news-metadata a {
+  color: #828282;
+}
+
+.dark .news-list-item .news-metadata a {
+  color: #888;
+}
+
+.news-list-item .news-metadata a:hover {
+  text-decoration: underline;
+}

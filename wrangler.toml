@@ -3,6 +3,11 @@ compatibility_date = "2024-10-27"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "dist"
 
+# Environment Variables
+# Add these in Cloudflare Pages Dashboard → Settings → Environment Variables
+# RESEND_API_KEY: Your Resend API key (starts with re_)
+# RESEND_AUDIENCE_ID (optional): Resend Audience ID for managing subscribers
+
 # KV Namespace binding for RSS feed caching
 [[kv_namespaces]]
 binding = "FEED_CACHE"
