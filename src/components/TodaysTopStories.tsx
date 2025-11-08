@@ -121,7 +121,6 @@ const fallbackArticles = [
 
 const TodaysTopStories = () => {
   const [lastUpdate, setLastUpdate] = useState<string>("Just now");
-  const [rssWidgetLoaded, setRssWidgetLoaded] = useState(false);
 
   const { data: newsArticles, isLoading } = useQuery({
     queryKey: ['top-stories'],
@@ -147,35 +146,6 @@ const TodaysTopStories = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Load RSS.app widget script
-  useEffect(() => {
-    const scriptId = 'rssapp-wall-script';
-    
-    // Check if script already exists
-    if (document.getElementById(scriptId)) {
-      setRssWidgetLoaded(true);
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.id = scriptId;
-    script.src = 'https://widget.rss.app/v1/wall.js';
-    script.type = 'text/javascript';
-    script.async = true;
-    script.onload = () => {
-      setRssWidgetLoaded(true);
-    };
-    
-    document.head.appendChild(script);
-
-    return () => {
-      // Cleanup: remove script on unmount if needed
-      const existingScript = document.getElementById(scriptId);
-      if (existingScript) {
-        // Keep script for reuse
-      }
-    };
-  }, []);
 
   // Always use articles - prioritize real RSS data, fallback to curated articles
   const allArticles = (newsArticles && newsArticles.length > 0) ? newsArticles : fallbackArticles;
@@ -264,11 +234,6 @@ const TodaysTopStories = () => {
               🟢 LIVE - Last updated: {lastUpdate}
             </span>
           </div>
-        </div>
-
-        {/* RSS.app Widget - Integrated Feed */}
-        <div className="mb-8 w-full">
-          <rssapp-wall id="tTCtnPmhJDGhOAbH"></rssapp-wall>
         </div>
 
         {/* Stories List - Hacker News Style */}
