@@ -27,6 +27,23 @@ interface LiveVideoItem {
   channelName?: string;
 }
 
+interface YouTubeSearchItem {
+  id: {
+    videoId: string;
+  };
+  snippet: {
+    title: string;
+    description: string;
+    publishedAt: string;
+    scheduledStartTime?: string;
+    thumbnails: {
+      high: { url: string };
+      default: { url: string };
+    };
+    channelTitle: string;
+  };
+}
+
 // Helper to get channel ID from handle
 async function getChannelId(handle: string, apiKey: string): Promise<string | null> {
   try {
@@ -93,12 +110,13 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     console.warn('KV cache read error:', kvError);
   }
 
-  // Validate API key
+  // Validate API key - return empty array instead of error if not configured
   if (!env.YOUTUBE_API_KEY) {
+    console.warn('YOUTUBE_API_KEY not configured, returning empty results');
     return new Response(
-      JSON.stringify({ error: 'YOUTUBE_API_KEY not configured' }),
+      JSON.stringify([]),
       {
-        status: 500,
+        status: 200,
         headers: {
           'Content-Type': 'application/json',
           ...corsHeaders,
@@ -157,8 +175,15 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
         }
 
         const data = await response.json();
+        
+        // Check for API errors
+        if (data.error) {
+          console.warn(`YouTube API error for ${channel.name}:`, data.error.message);
+          return [];
+        }
+        
         if (data.items && data.items.length > 0) {
-          return data.items.map((item: any) => ({
+          return data.items.map((item: YouTubeSearchItem) => ({
             ...item,
             channelName: channel.name,
           })) as LiveVideoItem[];
@@ -204,14 +229,11 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     });
   } catch (error: unknown) {
     console.error('Error fetching live videos:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    // Return empty array instead of error object to match frontend expectations
     return new Response(
-      JSON.stringify({ 
-        error: 'Failed to fetch live videos',
-        message: errorMessage,
-      }),
+      JSON.stringify([]),
       {
-        status: 500,
+        status: 200,
         headers: {
           'Content-Type': 'application/json',
           ...corsHeaders,
@@ -233,6 +255,7 @@ export const onRequestOptions: PagesFunction<Env> = async () => {
     },
   });
 };
+
 
 
 
