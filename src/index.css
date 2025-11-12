@@ -427,3 +427,40 @@ rssapp-wall a:hover {
   color: hsl(var(--primary));
   text-decoration: underline;
 }
+
+/* News Item Styles - Alternative Layout */
+.news-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #2d2d3a;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.news-item:hover {
+  background-color: #1a1a2e;
+}
+
+.source-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  margin-right: 1rem;
+  flex-shrink: 0;
+  background-color: rgba(139, 92, 246, 0.2);
+  color: #a78bfa;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.news-item .title {
+  color: #ffffff;
+  font-weight: 500;
+  flex-grow: 1;
+}
+
+.time-ago {
+  color: #a0aec0;
+  font-size: 0.8rem;
+  margin-left: 1rem;
+}

@@ -22,6 +22,7 @@ interface NewsListItemProps {
   comments?: number;
   domain?: string;
   onClick?: () => void;
+  variant?: 'default' | 'compact'; // 'default' uses news-list-item, 'compact' uses news-item
 }
 
 export default function NewsListItem({ 
@@ -36,6 +37,7 @@ export default function NewsListItem({
   comments,
   domain,
   onClick,
+  variant = 'default',
 }: NewsListItemProps) {
   // Use article object if provided, otherwise use individual props
   const articleTitle = article?.title || title || '';
@@ -67,6 +69,33 @@ export default function NewsListItem({
     onClick?.();
   };
 
+  // Compact variant with horizontal layout
+  if (variant === 'compact') {
+    return (
+      <div className="news-item">
+        {articleSource && (
+          <span className="source-badge">{articleSource}</span>
+        )}
+        <a 
+          href={articleUrl} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="title"
+          onClick={(e) => {
+            e.preventDefault();
+            handleClick();
+          }}
+        >
+          {articleTitle}
+        </a>
+        {articleTimeAgo && (
+          <span className="time-ago">{articleTimeAgo}</span>
+        )}
+      </div>
+    );
+  }
+
+  // Default variant with vertical layout
   return (
     <div className="news-list-item">
       <span className="rank">{index + 1}.</span>

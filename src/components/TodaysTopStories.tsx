@@ -202,8 +202,10 @@ const TodaysTopStories = () => {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <Zap className="h-6 w-6 text-primary" />
-              <h2 className="font-orbitron text-3xl font-bold text-glow-primary">
-                ⚡ Today's Top Stories
+              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                <span className="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+                  ⚡ The Bleeding Edge
+                </span>
               </h2>
             </div>
             <Skeleton className="h-6 w-32" />
@@ -224,8 +226,10 @@ const TodaysTopStories = () => {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <Zap className="h-6 w-6 text-primary" />
-            <h2 className="font-orbitron text-3xl font-bold text-glow-primary">
-              ⚡ Today's Top Stories
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              <span className="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+                ⚡ The Bleeding Edge
+              </span>
             </h2>
           </div>
           <div className="flex items-center gap-2">
@@ -266,6 +270,15 @@ const TodaysTopStories = () => {
               />
             );
           })}
+        </div>
+
+        <div className="mt-8 text-center">
+          <a 
+            href="/news" 
+            className="inline-block rounded-lg bg-purple-600 px-6 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
+          >
+            Explore All News
+          </a>
         </div>
       </div>
     </section>
