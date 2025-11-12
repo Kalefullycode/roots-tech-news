@@ -689,6 +689,147 @@ rssapp-wall a:hover {
   color: hsl(var(--muted-foreground) / 0.5);
 }
 
+/* Newsletter Popup Styles - Dark Futuristic Theme */
+.newsletter-popup-content {
+  background-color: #1a1a2e;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    0 0 40px hsl(var(--primary) / 0.2),
+    inset 0 0 20px hsl(var(--primary) / 0.1);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.newsletter-popup-content::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    hsl(var(--primary) / 0.1) 0%,
+    transparent 70%
+  );
+  animation: rotate 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Popup Overlay - Enhanced backdrop */
+[data-radix-dialog-overlay] {
+  background-color: rgba(13, 13, 26, 0.8) !important;
+  backdrop-filter: blur(5px);
+}
+
+/* Popup Title Styling */
+.newsletter-popup-content .popup-title,
+.newsletter-popup-content [class*="DialogTitle"] {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+/* Popup Subtitle */
+.newsletter-popup-content .popup-subtitle,
+.newsletter-popup-content [class*="DialogDescription"] {
+  color: #a0aec0;
+  margin-bottom: 2rem;
+}
+
+/* Popup Form */
+.newsletter-popup-content .popup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Popup Input Styling */
+.newsletter-popup-content .popup-input,
+.newsletter-popup-content input[type="email"] {
+  background-color: #0d0d1a;
+  border: 1px solid #2d2d3a;
+  color: #ffffff;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.newsletter-popup-content .popup-input:focus,
+.newsletter-popup-content input[type="email"]:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
+}
+
+/* Popup Button */
+.newsletter-popup-content .popup-button,
+.newsletter-popup-content button[type="submit"] {
+  background: linear-gradient(90deg, #8b5cf6, #ec4899);
+  color: #ffffff;
+  font-weight: 600;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.newsletter-popup-content .popup-button:hover,
+.newsletter-popup-content button[type="submit"]:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+.newsletter-popup-content .popup-button:disabled,
+.newsletter-popup-content button[type="submit"]:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Popup Footer */
+.newsletter-popup-content .popup-footer {
+  color: #718096;
+  font-size: 0.8rem;
+  margin-top: 1rem;
+}
+
+/* Close Button */
+.newsletter-popup-content .close-button,
+.newsletter-popup-content button[aria-label="Close"] {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #a0aec0;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  z-index: 50;
+}
+
+.newsletter-popup-content .close-button:hover,
+.newsletter-popup-content button[aria-label="Close"]:hover {
+  color: #ffffff;
+}
+
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .hybrid-news-feed {
@@ -705,5 +846,10 @@ rssapp-wall a:hover {
   
   .top-story-card .card-title {
     font-size: 1.25rem;
+  }
+  
+  .newsletter-popup-content {
+    margin: 1rem;
+    max-width: calc(100% - 2rem);
   }
 }

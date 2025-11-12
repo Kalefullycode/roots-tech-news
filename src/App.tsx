@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import PreconnectHints from "@/components/PreconnectHints";
+import NewsletterPopup from "@/components/modals/NewsletterPopup";
 import Index from "./pages/Index";
 // import EmergencyIndex from "./pages/EmergencyIndex"; // Uncomment to test
 
@@ -192,6 +193,9 @@ const App: React.FC = () => {
               />
             </Routes>
           </BrowserRouter>
+          
+          {/* Newsletter Popup - Available on all pages */}
+          <NewsletterPopup />
         </TooltipProvider>
       </QueryClientProvider>
     </HelmetProvider>
