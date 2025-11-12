@@ -83,7 +83,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          from: 'Roots Tech News <onboarding@resend.dev>',
+          from: 'Roots Tech News <newsletter@rootstechnews.com>',
           to: [email],
           subject: 'You\'ve been unsubscribed from Roots Tech News',
           html: `
