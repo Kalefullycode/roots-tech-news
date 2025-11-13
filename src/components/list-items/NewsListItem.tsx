@@ -29,28 +29,59 @@ interface SourceConfig {
   inlineColor: string; // CSS color for inline styling
 }
 
-// Helper function to map sources to colors and priorities
-const getSourceConfig = (domain?: string, source?: string): SourceConfig => {
+// Helper function to map sources to colors and priorities based on content
+const getSourceConfig = (
+  domain?: string, 
+  source?: string,
+  articleTitle?: string,
+  articleCategory?: string
+): SourceConfig => {
   if (!domain && !source) {
     return { color: 'purple', priority: 'low', inlineColor: '#a855f7' };
   }
   
   const cleanDomain = (domain || '').replace('www.', '').toLowerCase();
   const cleanSource = (source || '').toLowerCase();
+  const title = (articleTitle || '').toLowerCase();
+  const category = (articleCategory || '').toLowerCase();
   const searchText = `${cleanDomain} ${cleanSource}`;
+  
+  // Check if article is AI-related - always HIGH priority
+  const isAI = category === 'ai' || 
+               title.includes('ai') ||
+               title.includes('gpt') ||
+               title.includes('llm') ||
+               title.includes('artificial intelligence') ||
+               title.includes('openai') ||
+               title.includes('anthropic') ||
+               title.includes('deepmind') ||
+               title.includes('machine learning') ||
+               title.includes('neural network');
+
+  // Check if article is Tech-related
+  const isTech = category === 'tech' || 
+                 category === 'security' ||
+                 title.includes('tech') ||
+                 title.includes('technology') ||
+                 title.includes('cyber') ||
+                 title.includes('software') ||
+                 title.includes('hardware') ||
+                 title.includes('startup') ||
+                 title.includes('innovation');
   
   // High Priority Sources - Major publications & AI companies
   if (searchText.includes('techcrunch')) {
-    return { color: 'blue', priority: 'high', inlineColor: '#3b82f6' };
+    const baseColor = isAI ? 'purple' : 'blue';
+    return { color: baseColor, priority: isAI || isTech ? 'high' : 'high', inlineColor: isAI ? '#8b5cf6' : '#3b82f6' };
   }
   if (searchText.includes('theverge')) {
-    return { color: 'blue', priority: 'high', inlineColor: '#2563eb' };
+    return { color: 'blue', priority: isAI || isTech ? 'high' : 'high', inlineColor: '#2563eb' };
   }
   if (searchText.includes('wired')) {
-    return { color: 'green', priority: 'high', inlineColor: '#10b981' };
+    return { color: 'green', priority: isAI || isTech ? 'high' : 'high', inlineColor: '#10b981' };
   }
   if (searchText.includes('arstechnica')) {
-    return { color: 'green', priority: 'high', inlineColor: '#059669' };
+    return { color: 'green', priority: isAI || isTech ? 'high' : 'high', inlineColor: '#059669' };
   }
   if (searchText.includes('openai') || searchText.includes('anthropic')) {
     return { color: 'purple', priority: 'high', inlineColor: '#8b5cf6' };
@@ -62,41 +93,55 @@ const getSourceConfig = (domain?: string, source?: string): SourceConfig => {
     return { color: 'purple', priority: 'high', inlineColor: '#7c3aed' };
   }
   if (searchText.includes('mit') || searchText.includes('technology review')) {
-    return { color: 'cyan', priority: 'high', inlineColor: '#06b6d4' };
+    return { color: 'cyan', priority: isAI || isTech ? 'high' : 'high', inlineColor: '#06b6d4' };
   }
   if (searchText.includes('hackernews') || searchText.includes('hnrss')) {
-    return { color: 'orange', priority: 'high', inlineColor: '#f97316' };
+    return { color: 'orange', priority: isAI || isTech ? 'high' : 'high', inlineColor: '#f97316' };
   }
   if (searchText.includes('cyberinsider')) {
-    return { color: 'red', priority: 'high', inlineColor: '#ef4444' };
+    return { color: 'red', priority: isAI || isTech ? 'high' : 'high', inlineColor: '#ef4444' };
+  }
+  if (searchText.includes('reuters')) {
+    return { color: 'blue', priority: isAI || isTech ? 'high' : 'high', inlineColor: '#3b82f6' };
+  }
+  if (searchText.includes('cnbc')) {
+    return { color: 'blue', priority: isAI || isTech ? 'high' : 'high', inlineColor: '#3b82f6' };
+  }
+  if (searchText.includes('zdnet')) {
+    return { color: 'blue', priority: isAI || isTech ? 'high' : 'high', inlineColor: '#3b82f6' };
+  }
+  if (searchText.includes('techmeme')) {
+    return { color: 'blue', priority: isAI || isTech ? 'high' : 'high', inlineColor: '#3b82f6' };
   }
   
   // Medium Priority Sources
   if (searchText.includes('venturebeat')) {
-    return { color: 'pink', priority: 'medium', inlineColor: '#ec4899' };
+    return { color: 'pink', priority: isAI || isTech ? 'high' : 'medium', inlineColor: '#ec4899' };
   }
   if (searchText.includes('forbes')) {
-    return { color: 'pink', priority: 'medium', inlineColor: '#db2777' };
-  }
-  if (searchText.includes('reuters')) {
-    return { color: 'orange', priority: 'medium', inlineColor: '#ea580c' };
+    return { color: 'pink', priority: isAI || isTech ? 'high' : 'medium', inlineColor: '#db2777' };
   }
   if (searchText.includes('bloomberg')) {
-    return { color: 'orange', priority: 'medium', inlineColor: '#c2410c' };
+    return { color: 'orange', priority: isAI || isTech ? 'high' : 'medium', inlineColor: '#c2410c' };
   }
   if (searchText.includes('engadget')) {
-    return { color: 'green', priority: 'medium', inlineColor: '#34d399' };
+    return { color: 'green', priority: isAI || isTech ? 'high' : 'medium', inlineColor: '#34d399' };
   }
   if (searchText.includes('reddit')) {
-    return { color: 'orange', priority: 'medium', inlineColor: '#fb923c' };
+    return { color: 'orange', priority: isAI || isTech ? 'high' : 'medium', inlineColor: '#fb923c' };
   }
   if (searchText.includes('arxiv')) {
-    return { color: 'cyan', priority: 'medium', inlineColor: '#22d3ee' };
+    return { color: 'cyan', priority: isAI || isTech ? 'high' : 'medium', inlineColor: '#22d3ee' };
   }
   
-  // AI-focused sources (medium priority)
-  if (searchText.includes('ai') || searchText.includes('machine learning')) {
-    return { color: 'purple', priority: 'medium', inlineColor: '#a855f7' };
+  // AI articles always get HIGH priority regardless of source
+  if (isAI) {
+    return { color: 'purple', priority: 'high', inlineColor: '#8b5cf6' };
+  }
+  
+  // Tech articles get HIGH priority
+  if (isTech) {
+    return { color: 'blue', priority: 'high', inlineColor: '#3b82f6' };
   }
   
   // Low Priority - Default
@@ -141,7 +186,12 @@ export default function NewsListItem({
     onClick?.();
   };
 
-  const sourceConfig = getSourceConfig(displayDomain, article?.source || source);
+  const sourceConfig = getSourceConfig(
+    displayDomain, 
+    article?.source || source,
+    articleTitle,
+    article?.category || ''
+  );
   const badgeColorClasses = {
     purple: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
     blue: 'bg-blue-500/20 text-blue-400 border-blue-500/30',

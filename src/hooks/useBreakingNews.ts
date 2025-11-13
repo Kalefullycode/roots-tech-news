@@ -85,22 +85,55 @@ export const useBreakingNews = () => {
     );
   };
 
-  // Fetch breaking news (in production, this would call real APIs)
+  // Fetch breaking news from real RSS feeds
   const fetchBreakingNews = async () => {
     setIsLoading(true);
     
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Fetch real articles from RSS feed
+      const response = await fetch('/functions/fetch-rss');
+      if (!response.ok) throw new Error('Failed to fetch RSS feeds');
       
-      // In production, you would fetch from real news APIs like:
-      // - NewsAPI
-      // - Reuters API  
-      // - Associated Press API
-      // - Custom RSS feeds
+      const data = await response.json();
+      const articles = data.articles || [];
       
-      const freshNews = generateBreakingNews();
-      setBreakingNews(freshNews);
+      // Convert articles to breaking news format, prioritizing AI and recent news
+      const breakingNewsItems: BreakingNewsItem[] = articles
+        .slice(0, 10) // Get top 10 most recent
+        .map((article: any, index: number) => {
+          const isAI = (article.category || '').toLowerCase() === 'ai' || 
+                       (article.title || '').toLowerCase().includes('ai') ||
+                       (article.title || '').toLowerCase().includes('gpt') ||
+                       (article.title || '').toLowerCase().includes('llm');
+          
+          // Determine urgency based on recency and category
+          const articleDate = new Date(article.publishedAt);
+          const hoursAgo = (Date.now() - articleDate.getTime()) / (1000 * 60 * 60);
+          
+          let urgency: 'breaking' | 'urgent' | 'trending' = 'trending';
+          if (hoursAgo < 2) urgency = 'breaking';
+          else if (hoursAgo < 6) urgency = 'urgent';
+          
+          // Boost AI news urgency
+          if (isAI && hoursAgo < 12) urgency = 'breaking';
+          
+          return {
+            id: article.id || `news-${Date.now()}-${index}`,
+            headline: article.title || 'Breaking News',
+            timestamp: article.publishedAt || new Date().toISOString(),
+            urgency,
+            source: article.source || 'Tech News',
+            url: article.url || '#'
+          };
+        });
+      
+      // If we got real articles, use them; otherwise fallback to generated
+      if (breakingNewsItems.length > 0) {
+        setBreakingNews(breakingNewsItems);
+      } else {
+        setBreakingNews(generateBreakingNews());
+      }
+      
       setLastFetch(new Date());
     } catch (error) {
       console.error('Failed to fetch breaking news:', error);
@@ -116,13 +149,13 @@ export const useBreakingNews = () => {
     // Initial fetch
     fetchBreakingNews();
 
-    // Set up hourly updates
-    const hourlyInterval = setInterval(() => {
+    // Set up frequent updates for breaking news (every 15 minutes)
+    const updateInterval = setInterval(() => {
       fetchBreakingNews();
-    }, 60 * 60 * 1000); // Every hour
+    }, 15 * 60 * 1000); // Every 15 minutes for fresher news
 
     return () => {
-      clearInterval(hourlyInterval);
+      clearInterval(updateInterval);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -31,11 +31,41 @@ interface NewsListItemProps {
   variant?: 'default' | 'compact'; // 'default' uses news-list-item, 'compact' uses news-item
 }
 
-// Helper function to get colors and priority
-const getSourceStyle = (sourceDomain?: string, sourceName?: string): { color: string; priority: 'High' | 'Medium' | 'Low' } => {
+// Helper function to get colors and priority based on source AND content
+const getSourceStyle = (
+  sourceDomain?: string, 
+  sourceName?: string,
+  articleTitle?: string,
+  articleCategory?: string
+): { color: string; priority: 'High' | 'Medium' | 'Low' } => {
   const domain = (sourceDomain || '').toLowerCase().replace('www.', '');
   const name = (sourceName || '').toLowerCase();
+  const title = (articleTitle || '').toLowerCase();
+  const category = (articleCategory || '').toLowerCase();
   const searchText = `${domain} ${name}`;
+
+  // Check if article is AI-related - always HIGH priority
+  const isAI = category === 'ai' || 
+               title.includes('ai') ||
+               title.includes('gpt') ||
+               title.includes('llm') ||
+               title.includes('artificial intelligence') ||
+               title.includes('openai') ||
+               title.includes('anthropic') ||
+               title.includes('deepmind') ||
+               title.includes('machine learning') ||
+               title.includes('neural network');
+
+  // Check if article is Tech-related
+  const isTech = category === 'tech' || 
+                 category === 'security' ||
+                 title.includes('tech') ||
+                 title.includes('technology') ||
+                 title.includes('cyber') ||
+                 title.includes('software') ||
+                 title.includes('hardware') ||
+                 title.includes('startup') ||
+                 title.includes('innovation');
 
   const styles: Record<string, { color: string; priority: 'High' | 'Medium' | 'Low' }> = {
     'techcrunch.com': { color: '#00a400', priority: 'High' },
@@ -56,8 +86,30 @@ const getSourceStyle = (sourceDomain?: string, sourceName?: string): { color: st
     'mit': { color: '#06b6d4', priority: 'High' },
     'hackernews': { color: '#f97316', priority: 'High' },
     'hnrss': { color: '#f97316', priority: 'High' },
+    'reuters.com': { color: '#3b82f6', priority: 'High' },
+    'reuters': { color: '#3b82f6', priority: 'High' },
+    'apnews.com': { color: '#3b82f6', priority: 'High' },
+    'apnews': { color: '#3b82f6', priority: 'High' },
+    'cnbc.com': { color: '#3b82f6', priority: 'High' },
+    'cnbc': { color: '#3b82f6', priority: 'High' },
+    'zdnet.com': { color: '#3b82f6', priority: 'High' },
+    'zdnet': { color: '#3b82f6', priority: 'High' },
+    'techmeme.com': { color: '#3b82f6', priority: 'High' },
+    'techmeme': { color: '#3b82f6', priority: 'High' },
     'default': { color: '#a0aec0', priority: 'Low' },
   };
+
+  // AI articles always get HIGH priority
+  if (isAI) {
+    const baseStyle = styles[domain] || styles[searchText.split(' ')[0]] || styles['default'];
+    return { color: baseStyle.color, priority: 'High' };
+  }
+
+  // Tech articles get HIGH priority
+  if (isTech) {
+    const baseStyle = styles[domain] || styles[searchText.split(' ')[0]] || styles['default'];
+    return { color: baseStyle.color, priority: 'High' };
+  }
 
   // Check for exact domain match first
   if (styles[domain]) {
@@ -110,7 +162,12 @@ export default function NewsListItem({
   const articleComments = article?.comments ?? comments;
   const articleRank = article?.rank ?? rank ?? (index !== undefined ? index + 1 : undefined);
 
-  const sourceStyle = getSourceStyle(articleSourceDomain, articleSourceName);
+  const sourceStyle = getSourceStyle(
+    articleSourceDomain, 
+    articleSourceName,
+    articleTitle,
+    article?.category || ''
+  );
 
   const handleClick = () => {
     if (articleUrl && articleUrl !== '#' && articleUrl.startsWith('http')) {

@@ -94,9 +94,24 @@ function parseRSSXML(xmlText: string, sourceName: string, category: string): Art
           : '';
         description = description.substring(0, 200);
         
-        // Extract pubDate
-        const pubDateMatch = itemXml.match(/<pubDate[^>]*>([\s\S]*?)<\/pubDate>/i);
-        const pubDate = pubDateMatch ? pubDateMatch[1].trim() : new Date().toISOString();
+        // Extract pubDate - handle multiple date formats
+        const pubDateMatch = itemXml.match(/<pubDate[^>]*>([\s\S]*?)<\/pubDate>/i) || 
+                            itemXml.match(/<dc:date[^>]*>([\s\S]*?)<\/dc:date>/i) ||
+                            itemXml.match(/<published[^>]*>([\s\S]*?)<\/published>/i);
+        let pubDate = pubDateMatch ? pubDateMatch[1].trim() : new Date().toISOString();
+        
+        // Parse and normalize date format
+        try {
+          const parsedDate = new Date(pubDate);
+          if (!isNaN(parsedDate.getTime())) {
+            pubDate = parsedDate.toISOString();
+          } else {
+            // Fallback to current time if date is invalid
+            pubDate = new Date().toISOString();
+          }
+        } catch {
+          pubDate = new Date().toISOString();
+        }
         
         // Extract guid
         const guidMatch = itemXml.match(/<guid[^>]*>([\s\S]*?)<\/guid>/i);
@@ -160,8 +175,8 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
   };
 
-  // Cache duration: 10 minutes (600 seconds)
-  const CACHE_DURATION = 600;
+  // Cache duration: 5 minutes (300 seconds) - reduced for fresher news
+  const CACHE_DURATION = 300;
   const headers = {
     ...corsHeaders,
     'Content-Type': 'application/json',
@@ -269,11 +284,33 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
       allArticles.push(...articles);
     });
 
-    // Sort by date, newest first
+    // Sort by date, newest first - prioritize AI articles
     allArticles.sort((a, b) => {
+      // Prioritize AI articles
+      const aIsAI = (a.category || '').toLowerCase() === 'ai' || 
+                    (a.title || '').toLowerCase().includes('ai') ||
+                    (a.title || '').toLowerCase().includes('gpt') ||
+                    (a.title || '').toLowerCase().includes('llm') ||
+                    (a.title || '').toLowerCase().includes('artificial intelligence');
+      const bIsAI = (b.category || '').toLowerCase() === 'ai' || 
+                    (b.title || '').toLowerCase().includes('ai') ||
+                    (b.title || '').toLowerCase().includes('gpt') ||
+                    (b.title || '').toLowerCase().includes('llm') ||
+                    (b.title || '').toLowerCase().includes('artificial intelligence');
+      
+      if (aIsAI && !bIsAI) return -1;
+      if (!aIsAI && bIsAI) return 1;
+      
+      // Then sort by date
       const dateA = new Date(a.publishedAt).getTime();
       const dateB = new Date(b.publishedAt).getTime();
-      return dateB - dateA;
+      
+      // Handle invalid dates
+      if (isNaN(dateA) && isNaN(dateB)) return 0;
+      if (isNaN(dateA)) return 1; // Invalid dates go to end
+      if (isNaN(dateB)) return -1;
+      
+      return dateB - dateA; // Newest first
     });
 
     // Remove duplicates based on title
@@ -281,9 +318,69 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
       index === self.findIndex((a) => a.title.toLowerCase() === article.title.toLowerCase())
     );
 
+    // Filter to only show Tech/AI articles and exclude non-tech content
+    const now = Date.now();
+    const sevenDaysAgo = now - (7 * 24 * 60 * 60 * 1000);
+    
+    // Keywords that indicate non-tech content to exclude
+    const excludeKeywords = [
+      'black friday', 'coupon', 'promo code', 'deal', 'sale', 'discount',
+      'kitchenaid', 'sephora', 'target', 'best buy', 'lowes', 'whoop',
+      'marvel rivals', 'gaming', 'video game', 'playstation', 'xbox', 'nintendo'
+    ];
+    
+    const recentArticles = uniqueArticles.filter(article => {
+      const articleDate = new Date(article.publishedAt).getTime();
+      const titleLower = (article.title || '').toLowerCase();
+      const categoryLower = (article.category || '').toLowerCase();
+      const descriptionLower = (article.description || '').toLowerCase();
+      const combinedText = `${titleLower} ${descriptionLower}`;
+      
+      // Exclude articles with non-tech keywords
+      const hasExcludeKeyword = excludeKeywords.some(keyword => 
+        combinedText.includes(keyword)
+      );
+      if (hasExcludeKeyword) return false;
+      
+      // Check if it's AI/Tech content
+      const isAI = categoryLower === 'ai' || 
+                   titleLower.includes('ai') ||
+                   titleLower.includes('gpt') ||
+                   titleLower.includes('llm') ||
+                   titleLower.includes('artificial intelligence') ||
+                   titleLower.includes('openai') ||
+                   titleLower.includes('anthropic') ||
+                   titleLower.includes('deepmind') ||
+                   titleLower.includes('machine learning') ||
+                   titleLower.includes('neural network');
+      
+      const isTech = categoryLower === 'tech' || 
+                     categoryLower === 'security' ||
+                     titleLower.includes('tech') ||
+                     titleLower.includes('technology') ||
+                     titleLower.includes('cyber') ||
+                     titleLower.includes('software') ||
+                     titleLower.includes('hardware') ||
+                     titleLower.includes('startup') ||
+                     titleLower.includes('innovation');
+      
+      // Include AI articles (always, even if older)
+      if (isAI) return true;
+      
+      // Include Tech articles if recent
+      if (isTech) {
+        if (isNaN(articleDate)) return false; // Exclude invalid dates
+        return articleDate >= sevenDaysAgo; // Include recent tech articles
+      }
+      
+      // Exclude everything else
+      return false;
+    });
+    
     const responseData = {
-      articles: uniqueArticles.slice(0, 50), // Increased limit
-      count: uniqueArticles.length,
+      articles: recentArticles.slice(0, 100), // Increased limit for better coverage
+      count: recentArticles.length,
+      totalFetched: uniqueArticles.length,
       sources: RSS_SOURCES.length,
       successfulSources: RSS_SOURCES.length - fetchErrors.length,
       errors: fetchErrors.length > 0 ? fetchErrors : undefined,
