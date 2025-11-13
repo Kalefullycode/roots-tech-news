@@ -44,23 +44,74 @@ TTL: 3600
 
 ### Where to Add DNS Records:
 
-**If using Cloudflare:**
-1. Go to your Cloudflare dashboard
-2. Select `rootstechnews.com`
-3. Go to **DNS** → **Records**
-4. Click **"Add record"**
-5. Add each record as shown above
+**You're using Cloudflare (based on your Resend dashboard):**
 
-**If using other DNS providers:**
-- Follow your provider's instructions for adding TXT records
-- The process is similar across providers
+1. **Log in to Cloudflare Dashboard**
+   - Go to https://dash.cloudflare.com
+   - Sign in with your Cloudflare account
+
+2. **Select your domain**
+   - Click on `rootstechnews.com` from your domain list
+
+3. **Navigate to DNS settings**
+   - Click on **DNS** in the left sidebar
+   - Click on **Records** tab
+
+4. **Add the DKIM record (CRITICAL - Currently Failed)**
+   - Click **"Add record"** button
+   - **Type:** Select `TXT`
+   - **Name:** Enter `resend._domainkey`
+   - **Content:** Copy the FULL value from your Resend dashboard (it's a long string starting with `p=MIGfMAOGCSqGSIb3DQEB...`)
+   - **TTL:** Select `Auto`
+   - Click **"Save"**
+
+5. **Add the MX record for sending (CRITICAL - Currently Failed)**
+   - Click **"Add record"** button again
+   - **Type:** Select `MX`
+   - **Name:** Enter `send`
+   - **Mail server:** Copy the full value from Resend dashboard (e.g., `feedback-smtp.us-east-1.amazonses.com`)
+   - **Priority:** Enter `10`
+   - **TTL:** Select `Auto`
+   - Click **"Save"**
+
+6. **Add SPF record (if not already present)**
+   - Click **"Add record"** button
+   - **Type:** Select `TXT`
+   - **Name:** Enter `@` (or leave blank for root domain)
+   - **Content:** Enter `v=spf1 include:resend.com ~all`
+   - **TTL:** Select `Auto`
+   - Click **"Save"**
+
+7. **Add DMARC record (Optional but recommended)**
+   - Click **"Add record"** button
+   - **Type:** Select `TXT`
+   - **Name:** Enter `_dmarc`
+   - **Content:** Enter `v=DMARC1; p=none; rua=mailto:dmarc@rootstechnews.com`
+   - **TTL:** Select `Auto`
+   - Click **"Save"**
 
 ## Step 3: Verify Domain
 
-1. After adding DNS records, go back to Resend dashboard
-2. Click on your domain `rootstechnews.com`
-3. Click **"Verify Domain"**
-4. Wait for verification (can take a few minutes to 24 hours)
+1. **After adding DNS records in Cloudflare:**
+   - DNS propagation typically takes 5-60 minutes, but can take up to 24 hours
+   - Cloudflare usually propagates changes faster (5-15 minutes)
+
+2. **Go back to Resend dashboard:**
+   - Visit: https://resend.com/domains/91396e43-3b00-4c71-890f-0d95a7e7371d
+   - Resend will automatically check DNS records every few minutes
+   - You can also click **"Refresh"** or **"Verify"** button if available
+
+3. **Check verification status:**
+   - The status should change from **"Failed"** to **"Verified"** once DNS propagates
+   - Both sections should show **"Verified"** status:
+     - ✅ Domain Verification (DKIM)
+     - ✅ Enable Sending (SPF & DMARC)
+
+4. **If still showing Failed after 1 hour:**
+   - Double-check the record values match exactly (no extra spaces)
+   - Ensure the `resend._domainkey` TXT record name is exactly correct
+   - Verify the MX record name is `send` (not `@send` or `send.rootstechnews.com`)
+   - Check Cloudflare DNS settings - ensure records are not proxied (should be DNS only, gray cloud)
 
 **Note:** DNS propagation can take time. You can check if records are live using:
 - [MXToolbox](https://mxtoolbox.com/TXTLookup.aspx)
