@@ -365,7 +365,7 @@ rssapp-wall a:hover {
 .news-list-item .source-badge {
   display: inline-block;
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 700;
   padding: 0.2rem 0.5rem;
   border-radius: 0.375rem;
   border: 1px solid;
@@ -373,6 +373,68 @@ rssapp-wall a:hover {
   flex-shrink: 0;
   text-transform: uppercase;
   letter-spacing: 0.025em;
+  transition: all 0.2s ease;
+}
+
+/* Priority Badge Styles */
+.priority-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.priority-badge.priority-high {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+  font-size: 0.75rem;
+}
+
+.priority-badge.priority-high:hover {
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.8);
+  transform: scale(1.1);
+}
+
+.priority-badge.priority-medium {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.4);
+  font-size: 0.7rem;
+}
+
+.priority-badge.priority-medium:hover {
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+  transform: scale(1.1);
+}
+
+.priority-badge.priority-low {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  color: #ffffff;
+  box-shadow: 0 0 4px rgba(107, 114, 128, 0.3);
+  font-size: 0.5rem;
+  opacity: 0.7;
+}
+
+.priority-badge.priority-low:hover {
+  box-shadow: 0 0 8px rgba(107, 114, 128, 0.5);
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
 }
 
 .news-list-item .title {
@@ -700,6 +762,7 @@ rssapp-wall a:hover {
   position: relative;
   overflow: hidden;
   text-align: center;
+  z-index: 1001 !important;
 }
 
 .newsletter-popup-content::before {
@@ -731,6 +794,12 @@ rssapp-wall a:hover {
 [data-radix-dialog-overlay] {
   background-color: rgba(13, 13, 26, 0.8) !important;
   backdrop-filter: blur(5px);
+  z-index: 1000 !important;
+}
+
+/* Ensure dialog content is above overlay */
+[data-radix-dialog-content] {
+  z-index: 1001 !important;
 }
 
 /* Popup Title Styling */

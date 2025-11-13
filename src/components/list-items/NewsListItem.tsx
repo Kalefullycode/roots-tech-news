@@ -22,36 +22,82 @@ interface NewsListItemProps {
   onClick?: () => void;
 }
 
-// Color mapping for source badges - different colors for different domains
-const getSourceColor = (domain?: string): string => {
-  if (!domain) return 'purple';
-  
-  const cleanDomain = domain.replace('www.', '').toLowerCase();
-  
-  // Major tech publications
-  if (cleanDomain.includes('techcrunch') || cleanDomain.includes('theverge')) {
-    return 'blue';
-  }
-  if (cleanDomain.includes('wired') || cleanDomain.includes('arstechnica')) {
-    return 'green';
-  }
-  if (cleanDomain.includes('mit') || cleanDomain.includes('nature')) {
-    return 'cyan';
-  }
-  if (cleanDomain.includes('venturebeat') || cleanDomain.includes('forbes')) {
-    return 'pink';
-  }
-  if (cleanDomain.includes('reuters') || cleanDomain.includes('bloomberg')) {
-    return 'orange';
+// Source configuration with color and priority mapping
+interface SourceConfig {
+  color: string;
+  priority: 'high' | 'medium' | 'low';
+  inlineColor: string; // CSS color for inline styling
+}
+
+// Helper function to map sources to colors and priorities
+const getSourceConfig = (domain?: string, source?: string): SourceConfig => {
+  if (!domain && !source) {
+    return { color: 'purple', priority: 'low', inlineColor: '#a855f7' };
   }
   
-  // AI-focused sources
-  if (cleanDomain.includes('ai') || cleanDomain.includes('openai') || cleanDomain.includes('anthropic')) {
-    return 'purple';
+  const cleanDomain = (domain || '').replace('www.', '').toLowerCase();
+  const cleanSource = (source || '').toLowerCase();
+  const searchText = `${cleanDomain} ${cleanSource}`;
+  
+  // High Priority Sources - Major publications & AI companies
+  if (searchText.includes('techcrunch')) {
+    return { color: 'blue', priority: 'high', inlineColor: '#3b82f6' };
+  }
+  if (searchText.includes('theverge')) {
+    return { color: 'blue', priority: 'high', inlineColor: '#2563eb' };
+  }
+  if (searchText.includes('wired')) {
+    return { color: 'green', priority: 'high', inlineColor: '#10b981' };
+  }
+  if (searchText.includes('arstechnica')) {
+    return { color: 'green', priority: 'high', inlineColor: '#059669' };
+  }
+  if (searchText.includes('openai') || searchText.includes('anthropic')) {
+    return { color: 'purple', priority: 'high', inlineColor: '#8b5cf6' };
+  }
+  if (searchText.includes('google') && searchText.includes('ai')) {
+    return { color: 'purple', priority: 'high', inlineColor: '#9333ea' };
+  }
+  if (searchText.includes('deepmind')) {
+    return { color: 'purple', priority: 'high', inlineColor: '#7c3aed' };
+  }
+  if (searchText.includes('mit') || searchText.includes('technology review')) {
+    return { color: 'cyan', priority: 'high', inlineColor: '#06b6d4' };
+  }
+  if (searchText.includes('hackernews') || searchText.includes('hnrss')) {
+    return { color: 'orange', priority: 'high', inlineColor: '#f97316' };
   }
   
-  // Default
-  return 'purple';
+  // Medium Priority Sources
+  if (searchText.includes('venturebeat')) {
+    return { color: 'pink', priority: 'medium', inlineColor: '#ec4899' };
+  }
+  if (searchText.includes('forbes')) {
+    return { color: 'pink', priority: 'medium', inlineColor: '#db2777' };
+  }
+  if (searchText.includes('reuters')) {
+    return { color: 'orange', priority: 'medium', inlineColor: '#ea580c' };
+  }
+  if (searchText.includes('bloomberg')) {
+    return { color: 'orange', priority: 'medium', inlineColor: '#c2410c' };
+  }
+  if (searchText.includes('engadget')) {
+    return { color: 'green', priority: 'medium', inlineColor: '#34d399' };
+  }
+  if (searchText.includes('reddit')) {
+    return { color: 'orange', priority: 'medium', inlineColor: '#fb923c' };
+  }
+  if (searchText.includes('arxiv')) {
+    return { color: 'cyan', priority: 'medium', inlineColor: '#22d3ee' };
+  }
+  
+  // AI-focused sources (medium priority)
+  if (searchText.includes('ai') || searchText.includes('machine learning')) {
+    return { color: 'purple', priority: 'medium', inlineColor: '#a855f7' };
+  }
+  
+  // Low Priority - Default
+  return { color: 'purple', priority: 'low', inlineColor: '#9333ea' };
 };
 
 export default function NewsListItem({ 
@@ -92,7 +138,7 @@ export default function NewsListItem({
     onClick?.();
   };
 
-  const badgeColor = getSourceColor(displayDomain);
+  const sourceConfig = getSourceConfig(displayDomain, article?.source || source);
   const badgeColorClasses = {
     purple: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
     blue: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
@@ -112,9 +158,19 @@ export default function NewsListItem({
   return (
     <div className="news-list-item">
       {displayDomain && (
-        <span className={`source-badge ${badgeColorClasses[badgeColor as keyof typeof badgeColorClasses]}`}>
-          {displayDomain.replace('www.', '')}
-        </span>
+        <div className="flex items-center gap-2">
+          <span 
+            className={`source-badge ${badgeColorClasses[sourceConfig.color as keyof typeof badgeColorClasses]}`}
+            style={{ color: sourceConfig.inlineColor }}
+          >
+            {displayDomain.replace('www.', '')}
+          </span>
+          <span className={`priority-badge priority-${sourceConfig.priority}`} title={`${sourceConfig.priority} priority source`}>
+            {sourceConfig.priority === 'high' && '🔥'}
+            {sourceConfig.priority === 'medium' && '⭐'}
+            {sourceConfig.priority === 'low' && '•'}
+          </span>
+        </div>
       )}
       
       <a 
