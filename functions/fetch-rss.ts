@@ -21,7 +21,7 @@ const RSS_SOURCES = [
   { name: 'MIT Technology Review', url: 'https://www.technologyreview.com/feed/', category: 'Tech' },
   { name: 'The Verge AI', url: 'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml', category: 'AI' },
   { name: 'Ars Technica', url: 'https://feeds.arstechnica.com/arstechnica/index', category: 'Tech' },
-  { name: 'Wired', url: 'https://www.wired.com/feed/rss', category: 'Tech' },
+  { name: 'CyberInsider', url: 'https://cyberinsider.com/feed/', category: 'Security' },
   { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml', category: 'Tech' },
   // AI Company Blogs - Updated URLs
   { name: 'Meta AI', url: 'https://ai.meta.com/blog/rss/', category: 'AI' },
@@ -29,6 +29,11 @@ const RSS_SOURCES = [
   { name: 'DeepMind', url: 'https://deepmind.google/discover/blog/rss/', category: 'AI' },
   { name: 'OpenAI Blog', url: 'https://openai.com/blog/rss.xml', category: 'AI' },
   { name: 'Google AI Blog', url: 'https://blog.research.google/feeds/posts/default', category: 'AI' },
+  // Cybersecurity & AI Security Sources
+  { name: 'The Hacker News', url: 'https://feeds.feedburner.com/TheHackersNews', category: 'Security' },
+  { name: 'Krebs on Security', url: 'https://krebsonsecurity.com/feed/', category: 'Security' },
+  { name: 'Bleeping Computer', url: 'https://www.bleepingcomputer.com/feed/', category: 'Security' },
+  { name: 'Dark Reading', url: 'https://www.darkreading.com/rss.xml', category: 'Security' },
 ];
 
 interface Article {
