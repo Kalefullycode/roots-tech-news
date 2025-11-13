@@ -205,6 +205,15 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
   // SECURITY & PRIVACY
   // ============================================
   {
+    id: 'cyberinsider',
+    name: 'CyberInsider',
+    url: 'https://cyberinsider.com/feed/',
+    category: 'security',
+    updateFrequency: 15,
+    priority: 'high',
+    active: true
+  },
+  {
     id: 'krebs-security',
     name: 'Krebs on Security',
     url: 'https://krebsonsecurity.com/feed/',

@@ -67,6 +67,9 @@ const getSourceConfig = (domain?: string, source?: string): SourceConfig => {
   if (searchText.includes('hackernews') || searchText.includes('hnrss')) {
     return { color: 'orange', priority: 'high', inlineColor: '#f97316' };
   }
+  if (searchText.includes('cyberinsider')) {
+    return { color: 'red', priority: 'high', inlineColor: '#ef4444' };
+  }
   
   // Medium Priority Sources
   if (searchText.includes('venturebeat')) {
@@ -146,6 +149,7 @@ export default function NewsListItem({
     cyan: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
     pink: 'bg-pink-500/20 text-pink-400 border-pink-500/30',
     orange: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+    red: 'bg-red-500/20 text-red-400 border-red-500/30',
   };
 
   // Extract emoji from title if it starts with one, otherwise use provided emoji
