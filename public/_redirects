@@ -1,3 +1,8 @@
-# SPA Routing - Single fallback rule for all routes
-/* /index.html 200
+# Redirect .pages.dev to custom domain (must be first)
+https://roots-tech-news.pages.dev/* https://rootstechnews.com/:splat 301!
 
+# Redirect www to non-www
+https://www.rootstechnews.com/* https://rootstechnews.com/:splat 301!
+
+# SPA Routing - Single fallback rule for all routes (must be last)
+/* /index.html 200
