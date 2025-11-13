@@ -48,6 +48,13 @@ const RSS_SOURCES = [
   { name: 'Ars Technica', url: 'https://feeds.arstechnica.com/arstechnica/index', category: 'Tech' },
   { name: 'Wired', url: 'https://www.wired.com/feed/rss', category: 'Tech' },
   { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml', category: 'Tech' },
+  
+  // Cybersecurity & AI Security Sources
+  { name: 'CyberInsider', url: 'https://cyberinsider.com/feed/', category: 'Security' },
+  { name: 'The Hacker News', url: 'https://feeds.feedburner.com/TheHackersNews', category: 'Security' },
+  { name: 'Krebs on Security', url: 'https://krebsonsecurity.com/feed/', category: 'Security' },
+  { name: 'Bleeping Computer', url: 'https://www.bleepingcomputer.com/feed/', category: 'Security' },
+  { name: 'Dark Reading', url: 'https://www.darkreading.com/rss.xml', category: 'Security' },
 ];
 
 interface Article {
