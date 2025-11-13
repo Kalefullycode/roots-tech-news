@@ -113,6 +113,17 @@ const ALLOWED_DOMAINS = [
   'bleepingcomputer.com', // BleepingComputer
   'darkreading.com', // Dark Reading
   'therecord.media', // The Record
+  'cyberinsider.com', // CyberInsider
+  'www.cyberinsider.com', // CyberInsider (www)
+  'www.reuters.com', // Reuters (www)
+  'apnews.com', // Associated Press
+  'www.apnews.com', // Associated Press (www)
+  'www.cnbc.com', // CNBC (www)
+  'cnbc.com', // CNBC
+  'gizmodo.com', // Gizmodo
+  'www.gizmodo.com', // Gizmodo (www)
+  'digitaltrends.com', // Digital Trends
+  'www.digitaltrends.com', // Digital Trends (www)
   
   // Video Platforms
   'youtube.com',
@@ -132,6 +143,17 @@ const ALLOWED_DOMAINS = [
   'quantamagazine.org',
   'sciencedaily.com',
   'newscientist.com',
+  'cyberinsider.com', // CyberInsider
+  'www.cyberinsider.com', // CyberInsider (www)
+  'www.reuters.com', // Reuters (www)
+  'apnews.com', // Associated Press
+  'www.apnews.com', // Associated Press (www)
+  'www.cnbc.com', // CNBC (www)
+  'cnbc.com', // CNBC
+  'gizmodo.com', // Gizmodo
+  'www.gizmodo.com', // Gizmodo (www)
+  'digitaltrends.com', // Digital Trends
+  'www.digitaltrends.com', // Digital Trends (www)
 ];
 
 // Check if URL is from an allowed domain
