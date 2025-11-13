@@ -18,20 +18,36 @@ interface PagesFunctionContext {
 
 // Curated RSS Feed Sources - AI & Tech Focus
 // Updated with working URLs for Meta AI, Anthropic, and DeepMind
+// Includes high-frequency news sources for breaking news
 const RSS_SOURCES = [
+  // AI-Focused Sources
   { name: 'TechCrunch AI', url: 'https://techcrunch.com/category/artificial-intelligence/feed/', category: 'AI' },
   { name: 'VentureBeat AI', url: 'https://venturebeat.com/category/ai/feed/', category: 'AI' },
-  { name: 'MIT Technology Review', url: 'https://www.technologyreview.com/feed/', category: 'Tech' },
   { name: 'The Verge AI', url: 'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml', category: 'AI' },
-  { name: 'Ars Technica', url: 'https://feeds.arstechnica.com/arstechnica/index', category: 'Tech' },
-  { name: 'Wired', url: 'https://www.wired.com/feed/rss', category: 'Tech' },
-  { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml', category: 'Tech' },
   // AI Company Blogs - Updated URLs
   { name: 'Meta AI', url: 'https://ai.meta.com/blog/rss/', category: 'AI' },
   { name: 'Anthropic', url: 'https://www.anthropic.com/news/rss', category: 'AI' },
   { name: 'DeepMind', url: 'https://deepmind.google/discover/blog/rss/', category: 'AI' },
   { name: 'OpenAI Blog', url: 'https://openai.com/blog/rss.xml', category: 'AI' },
   { name: 'Google AI Blog', url: 'https://blog.research.google/feeds/posts/default', category: 'AI' },
+  
+  // High-Frequency Tech News Sources
+  { name: 'Reuters Technology', url: 'https://www.reuters.com/technology/feed/', category: 'Tech' },
+  { name: 'Associated Press Tech', url: 'https://apnews.com/hub/technology/rss', category: 'Tech' },
+  { name: 'CNBC Technology', url: 'https://www.cnbc.com/id/19854910/device/rss/rss.html', category: 'Tech' },
+  { name: 'ZDNet', url: 'https://www.zdnet.com/news/rss.xml', category: 'Tech' },
+  { name: 'TechMeme', url: 'https://www.techmeme.com/feed.xml', category: 'Tech' },
+  { name: 'Engadget', url: 'https://www.engadget.com/rss.xml', category: 'Tech' },
+  { name: 'Gizmodo', url: 'https://gizmodo.com/rss', category: 'Tech' },
+  { name: 'Mashable', url: 'https://mashable.com/feeds/rss/tech', category: 'Tech' },
+  { name: 'The Next Web', url: 'https://thenextweb.com/feed/', category: 'Tech' },
+  { name: 'Digital Trends', url: 'https://www.digitaltrends.com/feed/', category: 'Tech' },
+  
+  // Established Tech Sources
+  { name: 'MIT Technology Review', url: 'https://www.technologyreview.com/feed/', category: 'Tech' },
+  { name: 'Ars Technica', url: 'https://feeds.arstechnica.com/arstechnica/index', category: 'Tech' },
+  { name: 'Wired', url: 'https://www.wired.com/feed/rss', category: 'Tech' },
+  { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml', category: 'Tech' },
 ];
 
 interface Article {
