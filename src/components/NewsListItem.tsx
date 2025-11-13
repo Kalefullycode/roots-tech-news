@@ -3,27 +3,76 @@ interface Article {
   title: string;
   url?: string;
   source?: string;
+  sourceName?: string;
+  sourceDomain?: string;
   author?: string;
   timeAgo?: string;
   points?: number;
   comments?: number;
   publishedAt?: string;
+  rank?: number;
 }
 
 interface NewsListItemProps {
   article?: Article;
-  index: number;
+  index?: number;
   title?: string;
   url?: string;
   source?: string;
+  sourceName?: string;
+  sourceDomain?: string;
   author?: string;
   timeAgo?: string;
   points?: number;
   comments?: number;
   domain?: string;
+  rank?: number;
   onClick?: () => void;
   variant?: 'default' | 'compact'; // 'default' uses news-list-item, 'compact' uses news-item
 }
+
+// Helper function to get colors and priority
+const getSourceStyle = (sourceDomain?: string, sourceName?: string): { color: string; priority: 'High' | 'Medium' | 'Low' } => {
+  const domain = (sourceDomain || '').toLowerCase().replace('www.', '');
+  const name = (sourceName || '').toLowerCase();
+  const searchText = `${domain} ${name}`;
+
+  const styles: Record<string, { color: string; priority: 'High' | 'Medium' | 'Low' }> = {
+    'techcrunch.com': { color: '#00a400', priority: 'High' },
+    'techcrunch': { color: '#00a400', priority: 'High' },
+    'venturebeat.com': { color: '#007bff', priority: 'Medium' },
+    'venturebeat': { color: '#007bff', priority: 'Medium' },
+    'arstechnica.com': { color: '#ff4500', priority: 'High' },
+    'arstechnica': { color: '#ff4500', priority: 'High' },
+    'theverge.com': { color: '#2563eb', priority: 'High' },
+    'theverge': { color: '#2563eb', priority: 'High' },
+    'wired.com': { color: '#10b981', priority: 'High' },
+    'wired': { color: '#10b981', priority: 'High' },
+    'cyberinsider.com': { color: '#ef4444', priority: 'High' },
+    'cyberinsider': { color: '#ef4444', priority: 'High' },
+    'openai.com': { color: '#8b5cf6', priority: 'High' },
+    'openai': { color: '#8b5cf6', priority: 'High' },
+    'mit.edu': { color: '#06b6d4', priority: 'High' },
+    'mit': { color: '#06b6d4', priority: 'High' },
+    'hackernews': { color: '#f97316', priority: 'High' },
+    'hnrss': { color: '#f97316', priority: 'High' },
+    'default': { color: '#a0aec0', priority: 'Low' },
+  };
+
+  // Check for exact domain match first
+  if (styles[domain]) {
+    return styles[domain];
+  }
+
+  // Check for partial matches
+  for (const [key, value] of Object.entries(styles)) {
+    if (searchText.includes(key) && key !== 'default') {
+      return value;
+    }
+  }
+
+  return styles['default'];
+};
 
 export default function NewsListItem({ 
   article,
@@ -31,11 +80,14 @@ export default function NewsListItem({
   title,
   url,
   source,
+  sourceName,
+  sourceDomain,
   author,
   timeAgo,
   points,
   comments,
   domain,
+  rank,
   onClick,
   variant = 'default',
 }: NewsListItemProps) {
@@ -43,14 +95,8 @@ export default function NewsListItem({
   const articleTitle = article?.title || title || '';
   const articleUrl = article?.url || url || '#';
   const articleSource = article?.source || source;
-  const articleAuthor = article?.author || author;
-  const articleTimeAgo = article?.timeAgo || timeAgo;
-  const articlePoints = article?.points ?? points;
-  const articleComments = article?.comments ?? comments;
-  const articleId = article?.id;
-
-  // Extract domain from URL if not provided
-  const displayDomain = domain || (() => {
+  const articleSourceName = article?.sourceName || sourceName || articleSource;
+  const articleSourceDomain = article?.sourceDomain || sourceDomain || domain || (() => {
     if (!articleUrl || articleUrl === '#') return '';
     try {
       return new URL(articleUrl).hostname.replace('www.', '');
@@ -58,6 +104,13 @@ export default function NewsListItem({
       return '';
     }
   })();
+  const articleAuthor = article?.author || author;
+  const articleTimeAgo = article?.timeAgo || timeAgo;
+  const articlePoints = article?.points ?? points;
+  const articleComments = article?.comments ?? comments;
+  const articleRank = article?.rank ?? rank ?? (index !== undefined ? index + 1 : undefined);
+
+  const sourceStyle = getSourceStyle(articleSourceDomain, articleSourceName);
 
   const handleClick = () => {
     if (articleUrl && articleUrl !== '#' && articleUrl.startsWith('http')) {
@@ -73,9 +126,14 @@ export default function NewsListItem({
   if (variant === 'compact') {
     return (
       <div className="news-item">
-        {articleSource && (
-          <span className="source-badge">{articleSource}</span>
+        {articleSourceName && (
+          <span className="source-badge" style={{ color: sourceStyle.color }}>
+            {articleSourceName}
+          </span>
         )}
+        <span className={`priority-badge priority-${sourceStyle.priority.toLowerCase()}`}>
+          {sourceStyle.priority}
+        </span>
         <a 
           href={articleUrl} 
           target="_blank" 
@@ -95,11 +153,13 @@ export default function NewsListItem({
     );
   }
 
-  // Default variant with vertical layout
+  // Default variant with new structure
   return (
-    <div className="news-list-item">
-      <span className="rank">{index + 1}.</span>
-      <div className="content">
+    <li className="news-item">
+      {articleRank !== undefined && (
+        <span className="rank">{articleRank}.</span>
+      )}
+      <div className="story-details">
         <a 
           href={articleUrl} 
           target="_blank" 
@@ -112,25 +172,27 @@ export default function NewsListItem({
         >
           {articleTitle}
         </a>
-        {displayDomain && (
-          <span className="domain">({displayDomain})</span>
-        )}
         <div className="metadata">
+          {articleSourceName && (
+            <span className="source" style={{ color: sourceStyle.color }}>
+              {articleSourceName}
+            </span>
+          )}
+          <span className={`priority-badge priority-${sourceStyle.priority.toLowerCase()}`}>
+            {sourceStyle.priority}
+          </span>
+          {articleTimeAgo && (
+            <span className="timestamp">{articleTimeAgo}</span>
+          )}
           {articlePoints !== undefined && (
-            <span>{articlePoints} points</span>
+            <span className="points">{articlePoints} points</span>
           )}
           {articleAuthor && (
-            <span>by {articleAuthor}</span>
-          )}
-          {articleSource && !articleAuthor && (
-            <span>{articleSource}</span>
-          )}
-          {articleTimeAgo && (
-            <span>{articleTimeAgo}</span>
+            <span className="author">by {articleAuthor}</span>
           )}
           {articleComments !== undefined && articleComments > 0 && (
             <>
-              <span className="text-muted-foreground">|</span>
+              <span className="separator">|</span>
               <a 
                 href={articleUrl && articleUrl !== '#' ? `${articleUrl}#comments` : '#'}
                 onClick={(e) => {
@@ -146,7 +208,7 @@ export default function NewsListItem({
                     e.preventDefault();
                   }
                 }}
-                className="hover:text-primary transition-colors"
+                className="comments-link"
               >
                 {articleComments} {articleComments === 1 ? 'comment' : 'comments'}
               </a>
@@ -154,7 +216,7 @@ export default function NewsListItem({
           )}
         </div>
       </div>
-    </div>
+    </li>
   );
 }
 
