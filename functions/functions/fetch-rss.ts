@@ -4,6 +4,8 @@
 
 /// <reference types="@cloudflare/workers-types" />
 
+// Cloudflare Workers/Pages Cache API is available globally
+
 interface Env {
   [key: string]: unknown;
 }
@@ -17,31 +19,40 @@ interface PagesFunctionContext {
 }
 
 // Curated RSS Feed Sources - AI & Tech Focus
-// Updated with working URLs for Meta AI, Anthropic, and DeepMind
+// Updated with cutting-edge sources for latest AI and technology news
 // Includes high-frequency news sources for breaking news
 const RSS_SOURCES = [
-  // AI-Focused Sources
+  // AI-Focused Sources - Cutting Edge
   { name: 'TechCrunch AI', url: 'https://techcrunch.com/category/artificial-intelligence/feed/', category: 'AI' },
   { name: 'VentureBeat AI', url: 'https://venturebeat.com/category/ai/feed/', category: 'AI' },
   { name: 'The Verge AI', url: 'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml', category: 'AI' },
-  // AI Company Blogs - Updated URLs
+  { name: 'IEEE Spectrum AI', url: 'https://spectrum.ieee.org/rss/blog/artificial-intelligence/fulltext', category: 'AI' },
+  { name: 'AI News', url: 'https://www.artificialintelligence-news.com/feed/', category: 'AI' },
+  { name: 'Towards Data Science', url: 'https://towardsdatascience.com/feed', category: 'AI' },
+  { name: 'Hacker News AI', url: 'https://hnrss.org/newest?q=AI+OR+artificial+intelligence+OR+machine+learning', category: 'AI' },
+  // AI Company Blogs - Latest Updates
   { name: 'Meta AI', url: 'https://ai.meta.com/blog/rss/', category: 'AI' },
   { name: 'Anthropic', url: 'https://www.anthropic.com/news/rss', category: 'AI' },
   { name: 'DeepMind', url: 'https://deepmind.google/discover/blog/rss/', category: 'AI' },
   { name: 'OpenAI Blog', url: 'https://openai.com/blog/rss.xml', category: 'AI' },
   { name: 'Google AI Blog', url: 'https://blog.research.google/feeds/posts/default', category: 'AI' },
+  { name: 'NVIDIA AI', url: 'https://blogs.nvidia.com/feed/', category: 'AI' },
+  { name: 'Microsoft AI', url: 'https://blogs.microsoft.com/ai/feed/', category: 'AI' },
   
-  // High-Frequency Tech News Sources
+  // High-Frequency Tech News Sources - Real-time Updates
   { name: 'Reuters Technology', url: 'https://www.reuters.com/technology/feed/', category: 'Tech' },
   { name: 'Associated Press Tech', url: 'https://apnews.com/hub/technology/rss', category: 'Tech' },
   { name: 'CNBC Technology', url: 'https://www.cnbc.com/id/19854910/device/rss/rss.html', category: 'Tech' },
   { name: 'ZDNet', url: 'https://www.zdnet.com/news/rss.xml', category: 'Tech' },
   { name: 'TechMeme', url: 'https://www.techmeme.com/feed.xml', category: 'Tech' },
+  { name: 'Hacker News', url: 'https://hnrss.org/frontpage', category: 'Tech' },
   { name: 'Engadget', url: 'https://www.engadget.com/rss.xml', category: 'Tech' },
   { name: 'Gizmodo', url: 'https://gizmodo.com/rss', category: 'Tech' },
   { name: 'Mashable', url: 'https://mashable.com/feeds/rss/tech', category: 'Tech' },
   { name: 'The Next Web', url: 'https://thenextweb.com/feed/', category: 'Tech' },
   { name: 'Digital Trends', url: 'https://www.digitaltrends.com/feed/', category: 'Tech' },
+  { name: 'TechRadar', url: 'https://www.techradar.com/rss', category: 'Tech' },
+  { name: 'Axios Tech', url: 'https://www.axios.com/feeds/technology.rss', category: 'Tech' },
   
   // Established Tech Sources
   { name: 'MIT Technology Review', url: 'https://www.technologyreview.com/feed/', category: 'Tech' },
@@ -183,7 +194,8 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
     'Cache-Control': `public, max-age=${CACHE_DURATION}, s-maxage=${CACHE_DURATION}`,
   };
 
-  // Create cache key
+  // Create cache key - Cloudflare Pages Cache API
+  // @ts-ignore - caches.default is available in Cloudflare Workers/Pages runtime
   const cache = caches.default;
   const cacheKey = new Request(context.request.url, {
     method: 'GET',
@@ -191,7 +203,7 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
 
   // Try to get from cache first
   try {
-    const cachedResponse = await cache.match(cacheKey);
+    const cachedResponse = cache ? await cache.match(cacheKey) : null;
     if (cachedResponse) {
       console.log('Cache hit for RSS feeds');
       // Clone response to add CORS headers
@@ -313,9 +325,13 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
       return dateB - dateA; // Newest first
     });
 
-    // Remove duplicates based on title
+    // Remove duplicates based on title AND URL (more reliable)
     const uniqueArticles = allArticles.filter((article, index, self) =>
-      index === self.findIndex((a) => a.title.toLowerCase() === article.title.toLowerCase())
+      index === self.findIndex((a) => {
+        const sameTitle = a.title.toLowerCase().trim() === article.title.toLowerCase().trim();
+        const sameUrl = a.url && article.url && a.url === article.url;
+        return sameTitle || sameUrl;
+      })
     );
 
     // Filter to only show Tech/AI articles and exclude non-tech content
@@ -393,17 +409,19 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
     });
 
     // Cache the response (use waitUntil if available)
-    if (context.waitUntil) {
-      context.waitUntil(
+    if (cache) {
+      if (context.waitUntil) {
+        context.waitUntil(
+          cache.put(cacheKey, response.clone()).catch((cacheError) => {
+            console.warn('Failed to cache RSS feeds:', cacheError);
+          })
+        );
+      } else {
+        // Fallback: cache synchronously
         cache.put(cacheKey, response.clone()).catch((cacheError) => {
           console.warn('Failed to cache RSS feeds:', cacheError);
-        })
-      );
-    } else {
-      // Fallback: cache synchronously
-      cache.put(cacheKey, response.clone()).catch((cacheError) => {
-        console.warn('Failed to cache RSS feeds:', cacheError);
-      });
+        });
+      }
     }
 
     return response;

@@ -57,6 +57,7 @@ const ALLOWED_DOMAINS = [
   'www.ai.meta.com',
   'meta.com',
   'blogs.nvidia.com',
+  'nvidia.com',
   'ai.googleblog.com',
   'blog.research.google',
   'research.google',
@@ -66,12 +67,17 @@ const ALLOWED_DOMAINS = [
   // Academic & Research
   'rss.arxiv.org', // ✅ Added arXiv (AI & ML research papers)
   'arxiv.org',
+  'spectrum.ieee.org', // ✅ Added IEEE Spectrum
   
   // AI News & Analysis
   'artificialintelligence-news.com', // ✅ Added AI News
   'www.artificialintelligence-news.com',
   'towardsdatascience.com',
   'machinelearningmastery.com',
+  
+  // Additional Tech Sources
+  'techradar.com',
+  'www.techradar.com',
   
   // Podcasts
   'feeds.transistor.fm', // Cognitive Revolution
