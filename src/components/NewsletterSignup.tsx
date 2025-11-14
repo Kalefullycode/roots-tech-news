@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,7 @@ import { Mail, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function NewsletterSignup({ variant = 'inline' }: { variant?: 'inline' | 'hero' | 'sidebar' }) {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
@@ -56,11 +58,10 @@ export function NewsletterSignup({ variant = 'inline' }: { variant?: 'inline' | 
         });
       }
       
-      // Reset after 5 seconds
+      // Redirect to newsletter hub after successful subscription
       setTimeout(() => {
-        setStatus('idle');
-        setMessage('');
-      }, 5000);
+        navigate('/newsletter-hub');
+      }, 2000);
 
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';

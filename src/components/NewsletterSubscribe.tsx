@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 interface NewsletterSubscribeProps {
@@ -10,6 +11,7 @@ export default function NewsletterSubscribe({
   variant = 'hero',
   className = '' 
 }: NewsletterSubscribeProps) {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
@@ -38,7 +40,10 @@ export default function NewsletterSubscribe({
           duration: 5000,
         });
         
-        setTimeout(() => setStatus('idle'), 5000);
+        // Redirect to newsletter hub after successful subscription
+        setTimeout(() => {
+          navigate('/newsletter-hub');
+        }, 2000);
       } else {
         const errorMsg = data.error || 'Failed to subscribe. Please try again.';
         setStatus('error');

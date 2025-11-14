@@ -60,6 +60,11 @@ export default function NewsletterPage() {
           method: 'website',
         });
       }
+      
+      // Redirect to newsletter hub after successful subscription
+      setTimeout(() => {
+        navigate('/newsletter-hub');
+      }, 2000);
 
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
@@ -115,11 +120,11 @@ export default function NewsletterPage() {
                     We've sent a confirmation email to your inbox. Please check your email (and spam folder) to verify your subscription.
                   </p>
                   <div className="flex gap-4 justify-center">
+                    <Button onClick={() => navigate('/newsletter-hub')} variant="default">
+                      Go to Newsletter Hub
+                    </Button>
                     <Button onClick={() => navigate('/')} variant="outline">
                       Back to Home
-                    </Button>
-                    <Button onClick={() => { setStatus('idle'); setEmail(''); }} variant="default">
-                      Subscribe Another Email
                     </Button>
                   </div>
                 </div>

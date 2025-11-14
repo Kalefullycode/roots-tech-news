@@ -27,6 +27,7 @@ const ResourcesPage = lazy(() => import("./pages/ResourcesPage"));
 const BlogPage = lazy(() => import("./pages/BlogPage"));
 const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
 const NewsletterPage = lazy(() => import("./pages/NewsletterPage"));
+const NewsletterHubPage = lazy(() => import("./pages/NewsletterHubPage"));
 const UnsubscribePage = lazy(() => import("./pages/UnsubscribePage"));
 const NewsPage = lazy(() => import("./pages/news"));
 
@@ -172,6 +173,14 @@ const App: React.FC = () => {
                 element={
                   <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><div className="text-muted-foreground">Loading...</div></div>}>
                     <NewsletterPage />
+                  </Suspense>
+                } 
+              />
+              <Route 
+                path="/newsletter-hub" 
+                element={
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><div className="text-muted-foreground">Loading...</div></div>}>
+                    <NewsletterHubPage />
                   </Suspense>
                 } 
               />
