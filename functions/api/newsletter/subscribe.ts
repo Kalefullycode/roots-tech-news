@@ -215,8 +215,15 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
     if (!emailResponse.ok) {
       let errorText = 'Unknown error';
+      let errorJson: any = null;
       try {
         errorText = await emailResponse.text();
+        // Try to parse as JSON
+        try {
+          errorJson = JSON.parse(errorText);
+        } catch {
+          // Not JSON, use text as-is
+        }
       } catch (textError) {
         console.error('Failed to read error response:', textError);
       }
@@ -224,13 +231,26 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       console.error('Resend Email API error:', {
         status: emailResponse.status,
         statusText: emailResponse.statusText,
-        error: errorText
+        error: errorText,
+        errorJson
       });
+      
+      // Provide more specific error messages
+      let errorMessage = 'Email service error';
+      if (emailResponse.status === 401) {
+        errorMessage = 'Invalid API key - check RESEND_API_KEY environment variable';
+      } else if (emailResponse.status === 403) {
+        errorMessage = 'Domain not verified - verify send.rootstechnews.com in Resend dashboard';
+      } else if (errorJson?.message) {
+        errorMessage = errorJson.message;
+      }
       
       return new Response(
         JSON.stringify({ 
           error: 'Failed to send welcome email',
-          details: emailResponse.status === 401 ? 'Invalid API key' : 'Email service error'
+          details: errorMessage,
+          status: emailResponse.status,
+          ...(errorJson ? { resendError: errorJson } : {})
         }),
         { 
           status: emailResponse.status >= 400 && emailResponse.status < 500 ? emailResponse.status : 500,

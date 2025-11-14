@@ -21,9 +21,15 @@ Resend will provide you with DNS records that need to be added to your domain. Y
 ```
 Type: TXT
 Name: @ (or rootstechnews.com)
-Value: v=spf1 include:resend.com ~all
+Value: v=spf1 include:spf.messagingengine.com include:amazonses.com include:resend.com ~all
 TTL: 3600 (or Auto)
 ```
+
+**Note:** This SPF record includes:
+- `include:spf.messagingengine.com` - For FastMail/other email services
+- `include:amazonses.com` - For Amazon SES
+- `include:resend.com` - For Resend (REQUIRED for newsletter emails)
+- `~all` - Soft fail for all other sources
 
 #### 2. DKIM Records (TXT)
 Resend will provide specific DKIM records. They typically look like:
@@ -74,13 +80,15 @@ TTL: 3600
    - **TTL:** Select `Auto`
    - Click **"Save"**
 
-6. **Add SPF record (if not already present)**
-   - Click **"Add record"** button
+6. **Add or Update SPF record**
+   - Click **"Add record"** button (or edit existing SPF record if present)
    - **Type:** Select `TXT`
    - **Name:** Enter `@` (or leave blank for root domain)
-   - **Content:** Enter `v=spf1 include:resend.com ~all`
+   - **Content:** Enter `v=spf1 include:spf.messagingengine.com include:amazonses.com include:resend.com ~all`
    - **TTL:** Select `Auto`
    - Click **"Save"**
+   
+   **Important:** If you already have an SPF record, you MUST combine all includes into ONE record. You can only have ONE SPF record per domain.
 
 7. **Add DMARC record (Optional but recommended)**
    - Click **"Add record"** button
