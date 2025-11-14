@@ -121,7 +121,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     // Send email via Resend SDK
     try {
       const emailPayload: any = {
-        from: from || 'Roots Tech News <newsletter@rootstechnews.com>',
+        from: from || 'Roots Tech News <newsletter@send.rootstechnews.com>',
         to: recipients,
         subject: subject,
       };
