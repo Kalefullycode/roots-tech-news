@@ -1,3 +1,10 @@
+# Redirect .pages.dev to custom domain
+https://*.pages.dev/* https://rootstechnews.com/:splat 301
+https://roots-tech-news.pages.dev/* https://rootstechnews.com/:splat 301
+
+# Redirect www to root domain
+https://www.rootstechnews.com/* https://rootstechnews.com/:splat 301
+
 # SPA Routing - Single fallback rule for all routes
 /* /index.html 200
 
