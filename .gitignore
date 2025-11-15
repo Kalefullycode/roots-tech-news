@@ -3,6 +3,10 @@ node_modules/
 /.pnp
 .pnp.js
 
+# Bun lockfile - removed from git to force Cloudflare Pages to use npm
+# Keep locally for development, but Cloudflare will use package-lock.json
+bun.lockb
+
 # Production
 dist/
 dist-ssr/
