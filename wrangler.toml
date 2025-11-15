@@ -6,8 +6,8 @@ pages_build_output_dir = "dist"
 # Build Configuration
 # Note: Cloudflare Pages should use npm instead of bun to avoid lockfile issues
 # Configure in Cloudflare Dashboard → Pages → Settings → Builds & deployments
-# Build command: npm install && npm run build
-# (Using npm install instead of npm ci to ensure optional dependencies like Rollup binaries are installed)
+# Build command: npm install --include=optional && npm run build
+# (Using --include=optional flag to ensure Rollup's platform-specific binaries are installed)
 
 # Environment Variables
 # Add these in Cloudflare Pages Dashboard → Settings → Environment Variables

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "install:fix": "npm install --include=optional --legacy-peer-deps || npm install --include=optional",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "prebuild": "cp _headers public/_headers && cp _redirects public/_redirects",
