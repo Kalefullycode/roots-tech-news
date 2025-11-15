@@ -14,7 +14,8 @@
     "deploy": "npm run build && npx wrangler pages deploy dist --project-name=roots-tech-news",
     "deploy:cloudflare": "npm run build && npx wrangler pages deploy dist --project-name=roots-tech-news",
     "cf:dev": "wrangler pages dev dist",
-    "send-broadcast": "tsx scripts/send-newsletter-broadcast.ts"
+    "send-broadcast": "tsx scripts/send-newsletter-broadcast.ts",
+    "send-newsletter": "node scripts/send-newsletter.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -51,6 +52,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^3.6.0",
+    "dotenv": "^17.2.3",
     "embla-carousel-react": "^8.6.0",
     "fuse.js": "^7.1.0",
     "input-otp": "^1.4.2",
