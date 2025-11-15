@@ -93,6 +93,19 @@ function parseRSSXML(xmlText: string, sourceName: string, category: string): Art
         let description = descMatch 
           ? descMatch[1].replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1').replace(/<[^>]+>/g, '').trim()
           : '';
+        
+        // Clean up metadata and URLs from description
+        // Remove "Article URL:", "Comments URL:", "Points:", etc.
+        description = description
+          .replace(/Article URL:.*?(?=\s|$)/gi, '')
+          .replace(/Comments URL:.*?(?=\s|$)/gi, '')
+          .replace(/Points:\s*\d+/gi, '')
+          .replace(/#\s*Comments:\s*\d+/gi, '')
+          .replace(/\]\]>/g, '')
+          .replace(/https?:\/\/[^\s]+/g, '') // Remove all URLs
+          .replace(/\s+/g, ' ') // Normalize whitespace
+          .trim();
+        
         description = description.substring(0, 200);
         
         // Extract pubDate - handle multiple date formats
