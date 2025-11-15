@@ -95,9 +95,10 @@ export default function NewsletterPopup() {
   return (
     <>
       <Dialog open={isOpen} onOpenChange={handleClose}>
-        <DialogContent className="newsletter-popup-content border-0 p-0 overflow-hidden max-w-[600px]">
-          {/* Background Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-pink-900/20 to-purple-900/20 pointer-events-none" />
+        <DialogContent className="newsletter-popup-content border-2 border-purple-500/50 p-0 overflow-hidden max-w-[600px] bg-[#1a1a2e] shadow-2xl shadow-purple-500/20 [&>button]:hidden">
+          {/* Animated Purple Border Glow */}
+          <div className="absolute inset-0 border-2 border-purple-500/30 rounded-lg animate-pulse" />
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 pointer-events-none" />
           
           {/* Animated Background Pattern */}
           <div className="absolute inset-0 opacity-10">
@@ -107,7 +108,7 @@ export default function NewsletterPopup() {
           {/* Close Button */}
           <button
             onClick={handleClose}
-            className="absolute right-4 top-4 z-50 rounded-full p-2 hover:bg-white/10 transition-colors text-muted-foreground hover:text-foreground"
+            className="absolute right-4 top-4 z-50 rounded-full p-2 hover:bg-purple-500/20 transition-colors text-muted-foreground hover:text-purple-400 border border-purple-500/30 hover:border-purple-500/60"
             aria-label="Close"
           >
             <X className="h-5 w-5" />
@@ -119,14 +120,14 @@ export default function NewsletterPopup() {
               <div className="flex justify-center mb-4">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-xl opacity-50 animate-pulse" />
-                  <div className="relative w-20 h-20 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center border-2 border-purple-400/30">
+                  <div className="relative w-20 h-20 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center border-2 border-purple-400/50 shadow-lg shadow-purple-500/50">
                     <Zap className="w-10 h-10 text-white" />
                   </div>
                   <Sparkles className="absolute -top-2 -right-2 w-6 h-6 text-yellow-400 animate-pulse" />
                 </div>
               </div>
               
-              <DialogTitle className="font-orbitron text-3xl md:text-4xl font-black mb-3 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+              <DialogTitle className="font-orbitron text-3xl md:text-4xl font-black mb-3 text-glow-gradient">
                 Join the Digital Frontier
               </DialogTitle>
               
@@ -139,11 +140,11 @@ export default function NewsletterPopup() {
             {status === 'success' ? (
               <div className="text-center py-8">
                 <div className="flex justify-center mb-4">
-                  <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center">
+                  <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center border-2 border-green-500/50">
                     <CheckCircle className="w-8 h-8 text-green-400" />
                   </div>
                 </div>
-                <h3 className="font-orbitron text-xl font-bold text-foreground mb-2">
+                <h3 className="font-orbitron text-xl font-bold text-foreground mb-2 text-glow-gradient">
                   Welcome Aboard! 🚀
                 </h3>
                 <p className="text-muted-foreground">
@@ -153,14 +154,14 @@ export default function NewsletterPopup() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-purple-400 z-10" />
                   <Input
                     type="email"
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={status === 'loading'}
-                    className="pl-12 h-14 text-base bg-card/50 border-border/50 focus:border-primary/50 focus:ring-primary/20"
+                    className="pl-12 h-14 text-base bg-card/50 border-purple-500/30 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50 focus:ring-offset-2 focus:ring-offset-[#1a1a2e] text-foreground placeholder:text-muted-foreground/50 transition-all newsletter-input"
                     required
                   />
                 </div>
@@ -174,7 +175,7 @@ export default function NewsletterPopup() {
                 <Button
                   type="submit"
                   disabled={status === 'loading'}
-                  className="w-full h-14 text-base font-orbitron font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 hover:from-purple-500 hover:via-pink-500 hover:to-purple-500 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all"
+                  className="w-full h-14 text-base font-orbitron font-bold newsletter-button"
                 >
                   {status === 'loading' ? (
                     <>
