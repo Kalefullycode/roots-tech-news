@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { ArrowLeft, TrendingUp, Calendar, Users, Loader2, AlertCircle } from 'lucide-react';
 import ArticleCard from '@/components/ArticleCard';
 import { getCategoryBySlug, articleMatchesCategory, CATEGORIES } from '@/config/categories';
+import { cleanDescription } from '@/utils/cleanDescription';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -126,7 +127,7 @@ const CategorySlugPage = () => {
   // Format articles for ArticleCard component
   const formattedArticles = displayArticles.map((article) => ({
     title: article.title,
-    excerpt: article.description || 'Click to read more about this exciting development.',
+    excerpt: cleanDescription(article.description) || 'Click to read more about this exciting development.',
     category: article.source || categoryData.title,
     date: new Date(article.publishedAt).toLocaleDateString('en-US', {
       year: 'numeric',

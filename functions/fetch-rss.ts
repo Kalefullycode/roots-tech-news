@@ -97,13 +97,31 @@ function parseRSSXML(xmlText: string, sourceName: string, category: string): Art
         // Clean up metadata and URLs from description
         // Remove "Article URL:", "Comments URL:", "Points:", etc.
         description = description
-          .replace(/Article URL:.*?(?=\s|$)/gi, '')
-          .replace(/Comments URL:.*?(?=\s|$)/gi, '')
+          // Remove "Article URL:" patterns (with or without https://)
+          .replace(/Article URL:\s*https?:\/\/[^\s]+/gi, '')
+          .replace(/Article URL:.*?(?=\s|$|\n)/gi, '')
+          // Remove "Comments URL:" patterns
+          .replace(/Comments URL:\s*https?:\/\/[^\s]+/gi, '')
+          .replace(/Comments URL:.*?(?=\s|$|\n)/gi, '')
+          // Remove "Points:" patterns
           .replace(/Points:\s*\d+/gi, '')
+          // Remove comment counts
           .replace(/#\s*Comments:\s*\d+/gi, '')
+          .replace(/\d+\s*(comment|comments)/gi, '')
+          // Remove CDATA tags
           .replace(/\]\]>/g, '')
-          .replace(/https?:\/\/[^\s]+/g, '') // Remove all URLs
-          .replace(/\s+/g, ' ') // Normalize whitespace
+          .replace(/<!\[CDATA\[/g, '')
+          // Remove all URLs (http://, https://)
+          .replace(/https?:\/\/[^\s\)]+/g, '')
+          // Remove email addresses
+          .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '')
+          // Remove common metadata patterns
+          .replace(/Read more.*/gi, '')
+          .replace(/Continue reading.*/gi, '')
+          .replace(/Source:.*/gi, '')
+          .replace(/Via:.*/gi, '')
+          // Normalize whitespace
+          .replace(/\s+/g, ' ')
           .trim();
         
         description = description.substring(0, 200);

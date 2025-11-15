@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cleanDescription } from "@/utils/cleanDescription";
 import ArticleCard from "./ArticleCard";
 import aiArticle from "@/assets/ai-article.webp";
 import startupArticle from "@/assets/startup-article.webp";
@@ -101,9 +102,10 @@ const LatestDiscoveries = () => {
       category = categories[index % categories.length];
     }
 
+    const cleanedDesc = cleanDescription(article.description || article.contentSnippet || '');
     return {
       title: article.title || `Discovery ${index + 1}`,
-      excerpt: article.description?.substring(0, 150) || article.contentSnippet?.substring(0, 150) || "Click to read more about this exciting development in technology.",
+      excerpt: cleanedDesc.substring(0, 150) || "Click to read more about this exciting development in technology.",
       category: category,
       date: new Date(article.publishedAt || article.pubDate || new Date()).toLocaleString('en-US', {
         hour: 'numeric',

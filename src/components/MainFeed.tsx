@@ -2,6 +2,7 @@ import ArticleCard from "./ArticleCard";
 import LiveNewsIndicator from "./LiveNewsIndicator";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cleanDescription } from "@/utils/cleanDescription";
 import aiArticle from "@/assets/ai-article.webp";
 import startupArticle from "@/assets/startup-article.webp";
 import securityArticle from "@/assets/security-article.webp";
@@ -91,7 +92,7 @@ const MainFeed = () => {
   
   const formatArticle = (article: ArticleInput) => ({
     title: article.title,
-    excerpt: article.description || "Click to read more about this exciting development in technology.",
+    excerpt: cleanDescription(article.description) || "Click to read more about this exciting development in technology.",
     category: article.category || "Tech",
     date: new Date(article.publishedAt).toLocaleString('en-US', {
       hour: 'numeric',
@@ -101,7 +102,7 @@ const MainFeed = () => {
     }),
     imageUrl: article.urlToImage || gadgetArticle,
     url: article.url || "#"
-  });
+  }));
 
   const featuredArticle = articles.length > 0 ? formatArticle(articles[0]) : null;
   const regularArticles = articles.slice(1, 9).map(formatArticle);
