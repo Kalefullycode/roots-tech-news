@@ -100,7 +100,7 @@ const Footer = () => {
         <div className="border-t border-card-border pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-muted-foreground text-sm font-roboto">
-              © 2024 RootsTechNews. All rights reserved. Built with love and innovation.
+              © 2025 RootsTechNews. All rights reserved. Built with love and innovation.
             </p>
             <div className="flex items-center gap-6 text-sm">
               <button 
