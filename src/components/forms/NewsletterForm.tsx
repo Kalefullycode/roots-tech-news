@@ -61,13 +61,21 @@ export default function NewsletterForm({
           <h4 className="font-semibold text-sm">Stay Updated</h4>
         </div>
         <form onSubmit={handleSubmit} className="space-y-3">
+          <label htmlFor="newsletter-compact-email" className="sr-only">
+            Email address
+          </label>
           <Input
+            id="newsletter-compact-email"
             type="email"
+            name="email"
             placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={status === 'loading' || status === 'success'}
             className="w-full"
+            aria-label="Email address for newsletter subscription"
+            aria-required="true"
+            aria-invalid={status === 'error'}
             required
           />
           <Button 
@@ -124,13 +132,21 @@ export default function NewsletterForm({
       <>
         <div className={className}>
         <form onSubmit={handleSubmit} className="flex gap-3">
+          <label htmlFor="newsletter-inline-email" className="sr-only">
+            Email address
+          </label>
           <Input
+            id="newsletter-inline-email"
             type="email"
+            name="email"
             placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={status === 'loading' || status === 'success'}
             className="flex-1"
+            aria-label="Email address for newsletter subscription"
+            aria-required="true"
+            aria-invalid={status === 'error'}
             required
           />
           <Button 
@@ -181,11 +197,15 @@ export default function NewsletterForm({
           <Input
             id="newsletter-email"
             type="email"
+            name="email"
             placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={status === 'loading' || status === 'success'}
             className="w-full"
+            aria-label="Email address for newsletter subscription"
+            aria-required="true"
+            aria-invalid={status === 'error'}
             required
           />
         </div>

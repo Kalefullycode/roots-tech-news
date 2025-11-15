@@ -154,14 +154,22 @@ export default function NewsletterPopup() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-purple-400 z-10" />
+                  <label htmlFor="newsletter-popup-email" className="sr-only">
+                    Email address
+                  </label>
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-purple-400 z-10" aria-hidden="true" />
                   <Input
+                    id="newsletter-popup-email"
                     type="email"
+                    name="email"
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={status === 'loading'}
                     className="pl-12 h-14 text-base bg-card/50 border-purple-500/30 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50 focus:ring-offset-2 focus:ring-offset-[#1a1a2e] text-foreground placeholder:text-muted-foreground/50 transition-all newsletter-input"
+                    aria-label="Email address for newsletter subscription"
+                    aria-required="true"
+                    aria-invalid={status === 'error'}
                     required
                   />
                 </div>

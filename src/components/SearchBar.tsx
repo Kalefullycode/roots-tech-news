@@ -174,9 +174,14 @@ const SearchBar = ({
           <Search className="h-5 w-5 text-muted-foreground" />
         </div>
         
+        <label htmlFor="search-input" className="sr-only">
+          Search AI & tech news
+        </label>
         <Input
+          id="search-input"
           ref={inputRef}
-          type="text"
+          type="search"
+          name="search"
           placeholder="Search AI & tech news..."
           value={query}
           onChange={(e) => {
@@ -197,6 +202,9 @@ const SearchBar = ({
             }
           }}
           className="pl-10 pr-20 h-12 text-base bg-background/60 backdrop-blur-sm border-border/60 focus:border-primary/70 rounded-xl"
+          aria-label="Search AI & tech news"
+          aria-expanded={showResults || showSuggestions}
+          aria-controls={showResults || showSuggestions ? "search-results" : undefined}
         />
         
         <div className="absolute inset-y-0 right-0 flex items-center gap-2 pr-3">
