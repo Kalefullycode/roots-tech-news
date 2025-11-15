@@ -60,6 +60,7 @@ const ContactPage = () => {
                   </label>
                   <Input
                     id="firstName"
+                    name="firstName"
                     type="text"
                     placeholder="Your first name"
                     required
@@ -72,6 +73,7 @@ const ContactPage = () => {
                   </label>
                   <Input
                     id="lastName"
+                    name="lastName"
                     type="text"
                     placeholder="Your last name"
                     required
@@ -86,6 +88,7 @@ const ContactPage = () => {
                 </label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="your.email@example.com"
                   required
@@ -99,6 +102,7 @@ const ContactPage = () => {
                 </label>
                 <Input
                   id="subject"
+                  name="subject"
                   type="text"
                   placeholder="What's this about?"
                   required
@@ -112,6 +116,7 @@ const ContactPage = () => {
                 </label>
                 <Textarea
                   id="message"
+                  name="message"
                   placeholder="Tell us more about your inquiry..."
                   rows={6}
                   required

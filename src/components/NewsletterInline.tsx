@@ -70,13 +70,19 @@ export function NewsletterInline() {
         </p>
 
         <form onSubmit={handleSubmit} className="flex gap-3 max-w-md mx-auto">
+          <label htmlFor="newsletter-inline-email" className="sr-only">
+            Email address
+          </label>
           <Input
+            id="newsletter-inline-email"
+            name="email"
             type="email"
             placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={status === 'loading' || status === 'success'}
             className="flex-1"
+            aria-label="Email address for newsletter subscription"
             required
           />
           <Button

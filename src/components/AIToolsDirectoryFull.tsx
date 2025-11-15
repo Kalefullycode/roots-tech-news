@@ -38,13 +38,19 @@ const AIToolsDirectoryFull = () => {
         <div className="flex flex-col lg:flex-row gap-4 mb-8">
           {/* Search */}
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <label htmlFor="ai-tools-search-input" className="sr-only">
+              Search AI tools
+            </label>
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" aria-hidden="true" />
             <Input
-              type="text"
+              id="ai-tools-search-input"
+              name="search"
+              type="search"
               placeholder="Search tools by name, feature, or category..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 h-12 bg-input border-border focus:border-primary text-base"
+              aria-label="Search AI tools by name, feature, or category"
             />
           </div>
 

@@ -110,12 +110,14 @@ export default function UnsubscribePage() {
                       </label>
                       <Input
                         id="email"
+                        name="email"
                         type="email"
                         placeholder="you@example.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         disabled={status === 'loading'}
                         className="w-full h-12 text-lg"
+                        aria-label="Email address to unsubscribe"
                         required
                       />
                     </div>

@@ -225,13 +225,19 @@ const Sidebar = () => {
           </div>
         ) : (
           <form onSubmit={handleNewsletterSubmit} className="space-y-3">
+            <label htmlFor="sidebar-newsletter-email" className="sr-only">
+              Email address
+            </label>
             <Input 
+              id="sidebar-newsletter-email"
+              name="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email" 
               className="bg-input border-border focus:border-neon-blue"
               disabled={isSubmitting}
+              aria-label="Email address for newsletter subscription"
               required
             />
             <Button 

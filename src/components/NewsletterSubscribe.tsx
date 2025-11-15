@@ -102,7 +102,12 @@ export default function NewsletterSubscribe({
 
       <form onSubmit={handleSubscribe} className="mb-6">
         <div className="flex flex-col sm:flex-row gap-3">
+          <label htmlFor="newsletter-subscribe-email" className="sr-only">
+            Email address
+          </label>
           <input
+            id="newsletter-subscribe-email"
+            name="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -110,6 +115,7 @@ export default function NewsletterSubscribe({
             required
             disabled={status === 'loading'}
             className="flex-1 px-6 py-4 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50 disabled:opacity-50"
+            aria-label="Email address for newsletter subscription"
           />
           <button
             type="submit"

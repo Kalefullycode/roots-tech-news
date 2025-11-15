@@ -86,13 +86,19 @@ export function NewsletterSignup({ variant = 'inline' }: { variant?: 'inline' | 
     return (
       <div className="max-w-2xl mx-auto">
         <form onSubmit={handleSubmit} className="flex gap-3">
+          <label htmlFor="newsletter-signup-hero-email" className="sr-only">
+            Email address
+          </label>
           <Input
+            id="newsletter-signup-hero-email"
+            name="email"
             type="email"
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={status === 'loading' || status === 'success'}
             className="flex-1 h-14 text-lg"
+            aria-label="Email address for newsletter subscription"
             required
           />
           <Button 
@@ -142,13 +148,19 @@ export function NewsletterSignup({ variant = 'inline' }: { variant?: 'inline' | 
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-3">
+          <label htmlFor="newsletter-signup-sidebar-email" className="sr-only">
+            Email address
+          </label>
           <Input
+            id="newsletter-signup-sidebar-email"
+            name="email"
             type="email"
             placeholder="your@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={status === 'loading' || status === 'success'}
             className="w-full"
+            aria-label="Email address for newsletter subscription"
             required
           />
           <Button 
@@ -193,13 +205,19 @@ export function NewsletterSignup({ variant = 'inline' }: { variant?: 'inline' | 
         </p>
 
         <form onSubmit={handleSubmit} className="flex gap-3 max-w-md mx-auto">
+          <label htmlFor="newsletter-signup-inline-email" className="sr-only">
+            Email address
+          </label>
           <Input
+            id="newsletter-signup-inline-email"
+            name="email"
             type="email"
             placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={status === 'loading' || status === 'success'}
             className="flex-1"
+            aria-label="Email address for newsletter subscription"
             required
           />
           <Button 

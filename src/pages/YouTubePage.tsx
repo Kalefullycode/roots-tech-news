@@ -231,13 +231,19 @@ const YouTubePage = () => {
               {/* Search - Only show if not using RSS.app */}
               {!useRSSApp && (
                 <form onSubmit={handleSearch} className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <label htmlFor="youtube-search-input" className="sr-only">
+                    Search videos
+                  </label>
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" aria-hidden="true" />
                   <Input
-                    type="text"
+                    id="youtube-search-input"
+                    name="search"
+                    type="search"
                     placeholder="Search videos by title, channel, or description..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10 h-12 bg-gray-800 border-purple-500/30 focus:border-purple-500 text-base text-white placeholder-gray-500"
+                    aria-label="Search videos by title, channel, or description"
                   />
                 </form>
               )}
