@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowRight } from "lucide-react";
+import { cleanDescription } from "@/utils/cleanDescription";
 import aiArticle from "@/assets/ai-article.webp";
 
 async function fetchArticles() {
@@ -40,10 +41,13 @@ const FeaturedStory = () => {
 
     // For now, use the first article as featured (in production, use engagement metrics)
     const featured = newsArticles[0];
+    const rawDescription = featured.description || featured.contentSnippet || '';
+    const cleanedDescription = cleanDescription(rawDescription).substring(0, 200);
+    
     return {
       id: featured.id || "featured-1",
       title: featured.title || "Featured Story",
-      description: featured.description?.substring(0, 200) || "Read the full story to discover more about this exciting development.",
+      description: cleanedDescription || "Read the full story to discover more about this exciting development.",
       url: featured.url || "#",
       image: featured.image || aiArticle,
       category: featured.category || "Tech",

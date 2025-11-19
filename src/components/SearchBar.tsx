@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useQuery } from '@tanstack/react-query';
+import { cleanDescription } from '@/utils/cleanDescription';
 import SearchService from '@/services/SearchService';
 
 interface SearchBarProps {
@@ -334,7 +335,7 @@ const SearchBar = ({
                     <ExternalLink className="h-3 w-3 text-muted-foreground flex-shrink-0 mt-0.5" />
                   </h4>
                   <p className="text-muted-foreground text-xs line-clamp-2 mb-2">
-                    {article.description}
+                    {cleanDescription(article.description)}
                   </p>
                   <div className="flex items-center gap-2 text-xs">
                     <Badge variant="secondary" className="text-xs">
