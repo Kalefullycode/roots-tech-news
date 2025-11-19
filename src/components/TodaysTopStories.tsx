@@ -150,28 +150,140 @@ const TodaysTopStories = () => {
   // Always use articles - prioritize real RSS data, fallback to curated articles
   const allArticles = (newsArticles && newsArticles.length > 0) ? newsArticles : fallbackArticles;
   
-  // Sort articles: AI first, then by recency
-  const sortedArticles = [...allArticles].sort((a, b) => {
-    // Prioritize AI articles
-    const aIsAI = (a.category || '').toLowerCase().includes('ai') || 
-                  (a.title || '').toLowerCase().includes('ai') ||
-                  (a.title || '').toLowerCase().includes('gpt') ||
-                  (a.title || '').toLowerCase().includes('llm');
-    const bIsAI = (b.category || '').toLowerCase().includes('ai') || 
-                  (b.title || '').toLowerCase().includes('ai') ||
-                  (b.title || '').toLowerCase().includes('gpt') ||
-                  (b.title || '').toLowerCase().includes('llm');
+  // Enhanced categorization function
+  const categorizeArticle = (article: any): string => {
+    // Defensive checks for null/undefined
+    if (!article || typeof article !== 'object') {
+      return 'Tech'; // Default category
+    }
     
-    if (aIsAI && !bIsAI) return -1;
-    if (!aIsAI && bIsAI) return 1;
+    const title = (article.title || '').toLowerCase();
+    const category = (article.category || '').toLowerCase();
+    const description = (article.description || article.contentSnippet || '').toLowerCase();
+    const source = (article.source?.name || article.source || '').toLowerCase();
+    const combinedText = `${title} ${description} ${source}`;
     
-    // Then sort by date
-    const aDate = new Date(a.publishedAt || a.pubDate || new Date()).getTime();
-    const bDate = new Date(b.publishedAt || b.pubDate || new Date()).getTime();
-    return bDate - aDate;
-  });
-
-  const topStories = sortedArticles.slice(0, 30);
+    // AI Category
+    if (category === 'ai' || 
+        combinedText.includes('ai') ||
+        combinedText.includes('artificial intelligence') ||
+        combinedText.includes('gpt') ||
+        combinedText.includes('llm') ||
+        combinedText.includes('machine learning') ||
+        combinedText.includes('neural network') ||
+        combinedText.includes('openai') ||
+        combinedText.includes('anthropic') ||
+        combinedText.includes('deepmind') ||
+        combinedText.includes('claude') ||
+        combinedText.includes('gemini')) {
+      return 'AI';
+    }
+    
+    // Security Category
+    if (category === 'security' ||
+        combinedText.includes('cyber') ||
+        combinedText.includes('security') ||
+        combinedText.includes('hack') ||
+        combinedText.includes('breach') ||
+        combinedText.includes('vulnerability') ||
+        combinedText.includes('malware') ||
+        combinedText.includes('ransomware') ||
+        combinedText.includes('phishing')) {
+      return 'Security';
+    }
+    
+    // Tech Category
+    if (category === 'tech' ||
+        combinedText.includes('tech') ||
+        combinedText.includes('technology') ||
+        combinedText.includes('software') ||
+        combinedText.includes('hardware') ||
+        combinedText.includes('gadget') ||
+        combinedText.includes('device') ||
+        combinedText.includes('chip') ||
+        combinedText.includes('processor')) {
+      return 'Tech';
+    }
+    
+    // Startups Category
+    if (category === 'startups' ||
+        combinedText.includes('startup') ||
+        combinedText.includes('funding') ||
+        combinedText.includes('series') ||
+        combinedText.includes('venture capital') ||
+        combinedText.includes('raised') ||
+        combinedText.includes('unicorn')) {
+      return 'Startups';
+    }
+    
+    // Default to Tech if no match
+    return 'Tech';
+  };
+  
+  // Categorize all articles (only once)
+  const categorizedArticles = allArticles.map(article => ({
+    ...article,
+    category: categorizeArticle(article)
+  }));
+  
+  // Group articles by category (use the category property, don't recalculate)
+  const articlesByCategory = {
+    AI: categorizedArticles.filter(a => a.category === 'AI'),
+    Security: categorizedArticles.filter(a => a.category === 'Security'),
+    Tech: categorizedArticles.filter(a => a.category === 'Tech'),
+    Startups: categorizedArticles.filter(a => a.category === 'Startups')
+  };
+  
+  // Interleave articles from different categories for balanced display
+  const interleavedArticles: any[] = [];
+  const interleavedIds = new Set<string | number>(); // Track IDs to avoid duplicates
+  const maxPerCategory = 8; // Max articles per category in top 30
+  
+  for (let i = 0; i < maxPerCategory; i++) {
+    // Add one from each category in rotation
+    const categories = [
+      articlesByCategory.AI[i],
+      articlesByCategory.Security[i],
+      articlesByCategory.Tech[i],
+      articlesByCategory.Startups[i]
+    ];
+    
+    categories.forEach(article => {
+      if (article) {
+        const articleId = article.id || `article-${interleavedArticles.length}`;
+        if (!interleavedIds.has(articleId)) {
+          interleavedIds.add(articleId);
+          interleavedArticles.push(article);
+        }
+      }
+    });
+  }
+  
+  // Fill remaining slots with most recent articles
+  const remainingSlots = 30 - interleavedArticles.length;
+  if (remainingSlots > 0) {
+    const remainingArticles = categorizedArticles
+      .filter(a => {
+        const articleId = a.id || `article-${categorizedArticles.indexOf(a)}`;
+        return !interleavedIds.has(articleId);
+      })
+      .sort((a, b) => {
+        const aDate = new Date(a.publishedAt || a.pubDate || new Date()).getTime();
+        const bDate = new Date(b.publishedAt || b.pubDate || new Date()).getTime();
+        return bDate - aDate;
+      })
+      .slice(0, remainingSlots);
+    
+    remainingArticles.forEach(article => {
+      const articleId = article.id || `article-${interleavedArticles.length}`;
+      if (!interleavedIds.has(articleId)) {
+        interleavedIds.add(articleId);
+        interleavedArticles.push(article);
+      }
+    });
+  }
+  
+  const topStories = interleavedArticles.slice(0, 30);
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
@@ -265,8 +377,20 @@ const TodaysTopStories = () => {
                 title={article.title || 'Untitled Article'}
                 url={articleUrl}
                 source={source}
+                sourceName={source}
                 timeAgo={timeAgo}
                 domain={domain}
+                article={{
+                  id: article.id,
+                  title: article.title || 'Untitled Article',
+                  url: articleUrl,
+                  source: source,
+                  sourceName: source,
+                  sourceDomain: domain,
+                  timeAgo: timeAgo,
+                  publishedAt: article.publishedAt || article.pubDate,
+                  category: article.category
+                }}
               />
             );
           })}

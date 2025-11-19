@@ -11,6 +11,7 @@ interface Article {
   comments?: number;
   publishedAt?: string;
   rank?: number;
+  category?: string;
 }
 
 interface NewsListItemProps {
@@ -189,18 +190,21 @@ export default function NewsListItem({
         <span className={`priority-badge priority-${sourceStyle.priority.toLowerCase()}`}>
           {sourceStyle.priority}
         </span>
-        <a 
-          href={articleUrl} 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="title"
-          onClick={(e) => {
-            e.preventDefault();
-            handleClick();
+        <span 
+          className="title cursor-pointer hover:text-primary transition-colors"
+          onClick={handleClick}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleClick();
+            }
           }}
+          role="button"
+          tabIndex={0}
+          aria-label={`Read article: ${articleTitle}`}
         >
           {articleTitle}
-        </a>
+        </span>
         {articleTimeAgo && (
           <span className="time-ago">{articleTimeAgo}</span>
         )}
@@ -215,18 +219,21 @@ export default function NewsListItem({
         <span className="rank">{articleRank}.</span>
       )}
       <div className="story-details">
-        <a 
-          href={articleUrl} 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="title"
-          onClick={(e) => {
-            e.preventDefault();
-            handleClick();
+        <span 
+          className="title cursor-pointer hover:text-primary transition-colors"
+          onClick={handleClick}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleClick();
+            }
           }}
+          role="button"
+          tabIndex={0}
+          aria-label={`Read article: ${articleTitle}`}
         >
           {articleTitle}
-        </a>
+        </span>
         <div className="metadata">
           {articleSourceName && (
             <span className="source" style={{ color: sourceStyle.color }}>
@@ -248,10 +255,22 @@ export default function NewsListItem({
           {articleComments !== undefined && articleComments > 0 && (
             <>
               <span className="separator">|</span>
-              <a 
-                href={articleUrl && articleUrl !== '#' ? `${articleUrl}#comments` : '#'}
+              <span 
                 onClick={(e) => {
                   if (articleUrl && articleUrl !== '#') {
+                    e.stopPropagation();
+                    if (articleUrl.startsWith('http')) {
+                      window.open(`${articleUrl}#comments`, '_blank', 'noopener,noreferrer');
+                    } else {
+                      window.location.href = `${articleUrl}#comments`;
+                    }
+                  }
+                }}
+                className="comments-link cursor-pointer hover:text-primary transition-colors"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if ((e.key === 'Enter' || e.key === ' ') && articleUrl && articleUrl !== '#') {
                     e.preventDefault();
                     e.stopPropagation();
                     if (articleUrl.startsWith('http')) {
@@ -259,14 +278,11 @@ export default function NewsListItem({
                     } else {
                       window.location.href = `${articleUrl}#comments`;
                     }
-                  } else {
-                    e.preventDefault();
                   }
                 }}
-                className="comments-link"
               >
                 {articleComments} {articleComments === 1 ? 'comment' : 'comments'}
-              </a>
+              </span>
             </>
           )}
         </div>

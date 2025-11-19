@@ -224,19 +224,22 @@ export default function NewsListItem({
         </div>
       )}
       
-      <a 
-        href={articleUrl} 
-        className="title"
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={(e) => {
-          e.preventDefault();
-          handleClick();
+      <span 
+        className="title cursor-pointer hover:text-primary transition-colors"
+        onClick={handleClick}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleClick();
+          }
         }}
+        role="button"
+        tabIndex={0}
+        aria-label={`Read article: ${titleWithoutEmoji}`}
       >
         {emojiPrefix && `${emojiPrefix} `}
         {titleWithoutEmoji}
-      </a>
+      </span>
       
       {articleTimeAgo && (
         <span className="time-ago">{articleTimeAgo}</span>
