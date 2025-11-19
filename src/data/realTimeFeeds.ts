@@ -11,71 +11,285 @@ export interface RSSFeed {
 
 export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
   // ============================================
-  // AI NEWS - HIGHEST PRIORITY (Real-time)
+  // BREAKING NEWS SOURCES (Hourly Updates)
+  // ============================================
+  {
+    id: 'reuters-technology',
+    name: 'Reuters Technology',
+    url: 'https://www.reuters.com/technology/feed/',
+    category: 'tech-news',
+    updateFrequency: 60, // Hourly
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'ap-news-tech',
+    name: 'Associated Press Tech',
+    url: 'https://apnews.com/hub/technology/rss',
+    category: 'tech-news',
+    updateFrequency: 60, // Hourly
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'cnbc-technology',
+    name: 'CNBC Technology',
+    url: 'https://www.cnbc.com/id/19854910/device/rss/rss.html',
+    category: 'tech-news',
+    updateFrequency: 60, // Hourly
+    priority: 'high',
+    active: true
+  },
+
+  // ============================================
+  // HIGH-FREQUENCY TECH NEWS (Multiple Daily Updates)
+  // ============================================
+  {
+    id: 'engadget',
+    name: 'Engadget',
+    url: 'https://www.engadget.com/rss.xml',
+    category: 'tech-news',
+    updateFrequency: 10, // 5-10x daily
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'zdnet',
+    name: 'ZDNet',
+    url: 'https://www.zdnet.com/news/rss.xml',
+    category: 'tech-news',
+    updateFrequency: 10, // 5-10x daily
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'gizmodo',
+    name: 'Gizmodo',
+    url: 'https://gizmodo.com/rss',
+    category: 'tech-news',
+    updateFrequency: 10, // 5-10x daily
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'mashable-tech',
+    name: 'Mashable Tech',
+    url: 'https://mashable.com/feeds/rss/tech',
+    category: 'tech-news',
+    updateFrequency: 10, // 5-10x daily
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'thenextweb',
+    name: 'The Next Web',
+    url: 'https://thenextweb.com/feed/',
+    category: 'tech-news',
+    updateFrequency: 10, // 5-10x daily
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'digital-trends',
+    name: 'Digital Trends',
+    url: 'https://www.digitaltrends.com/feed/',
+    category: 'tech-news',
+    updateFrequency: 10, // 5-10x daily
+    priority: 'high',
+    active: true
+  },
+
+  // ============================================
+  // AI-SPECIFIC NEWS SOURCES (Daily Updates)
+  // ============================================
+  {
+    id: 'techcrunch-ai',
+    name: 'TechCrunch AI',
+    url: 'https://techcrunch.com/category/artificial-intelligence/feed/',
+    category: 'ai',
+    updateFrequency: 10,
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'venturebeat-ai',
+    name: 'VentureBeat AI',
+    url: 'https://venturebeat.com/category/ai/feed/',
+    category: 'ai',
+    updateFrequency: 10,
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'theverge-ai',
+    name: 'The Verge AI',
+    url: 'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml',
+    category: 'ai',
+    updateFrequency: 10,
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'ai-news',
+    name: 'AI News',
+    url: 'https://www.artificialintelligence-news.com/feed/',
+    category: 'ai',
+    updateFrequency: 10,
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'unite-ai',
+    name: 'Unite.AI',
+    url: 'https://www.unite.ai/feed/',
+    category: 'ai',
+    updateFrequency: 10,
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'synced-review',
+    name: 'SyncedReview',
+    url: 'https://syncedreview.com/feed/',
+    category: 'ai',
+    updateFrequency: 10,
+    priority: 'high',
+    active: true
+  },
+
+  // ============================================
+  // AI COMPANY BLOGS (Weekly Updates)
   // ============================================
   {
     id: 'openai-blog',
     name: 'OpenAI Blog',
     url: 'https://openai.com/blog/rss.xml',
     category: 'ai',
-    updateFrequency: 15,
+    updateFrequency: 60, // Weekly
     priority: 'high',
-    active: false // RSS feed may not be available - disabled to prevent errors
+    active: true
+  },
+  {
+    id: 'meta-ai',
+    name: 'Meta AI',
+    url: 'https://ai.meta.com/blog/rss/',
+    category: 'ai',
+    updateFrequency: 60, // Weekly
+    priority: 'high',
+    active: true
   },
   {
     id: 'anthropic-news',
-    name: 'Anthropic News',
+    name: 'Anthropic',
     url: 'https://www.anthropic.com/news/rss',
     category: 'ai',
-    updateFrequency: 15,
-    priority: 'high',
-    active: false // RSS feed may not be available - disabled to prevent errors
-  },
-  {
-    id: 'google-ai',
-    name: 'Google AI Blog',
-    url: 'https://blog.research.google/feeds/posts/default', // UPDATED URL
-    category: 'ai',
-    updateFrequency: 15,
+    updateFrequency: 60, // Weekly
     priority: 'high',
     active: true
   },
   {
     id: 'deepmind',
-    name: 'DeepMind Blog',
+    name: 'DeepMind',
     url: 'https://deepmind.google/discover/blog/rss/',
     category: 'ai',
-    updateFrequency: 30,
+    updateFrequency: 60, // Weekly
     priority: 'high',
-    active: false // RSS feed may not be available - disabled to prevent errors
+    active: true
   },
   {
-    id: 'meta-ai',
-    name: 'Meta AI Blog',
-    url: 'https://ai.meta.com/blog/rss/',
+    id: 'google-ai',
+    name: 'Google AI Blog',
+    url: 'https://blog.research.google/feeds/posts/default',
     category: 'ai',
-    updateFrequency: 30,
+    updateFrequency: 60, // Weekly
     priority: 'high',
-    active: false // RSS feed may not be available - disabled to prevent errors
+    active: true
   },
 
   // ============================================
-  // TECH NEWS - HIGH FREQUENCY
+  // CYBERSECURITY NEWS (Daily Updates)
   // ============================================
   {
-    id: 'techcrunch',
-    name: 'TechCrunch',
-    url: 'https://techcrunch.com/feed/',
+    id: 'cyberinsider',
+    name: 'CyberInsider',
+    url: 'https://cyberinsider.com/feed/',
+    category: 'security',
+    updateFrequency: 10,
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'hacker-news-security',
+    name: 'The Hacker News',
+    url: 'https://feeds.feedburner.com/TheHackersNews',
+    category: 'security',
+    updateFrequency: 10,
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'cybernews',
+    name: 'CyberNews',
+    url: 'https://cybernews.com/feed/',
+    category: 'security',
+    updateFrequency: 10,
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'wired-security',
+    name: 'Wired Security',
+    url: 'https://www.wired.com/feed/category/security/',
+    category: 'security',
+    updateFrequency: 10,
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'krebs-security',
+    name: 'Krebs on Security',
+    url: 'https://krebsonsecurity.com/feed/',
+    category: 'security',
+    updateFrequency: 10,
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'bleeping-computer',
+    name: 'Bleeping Computer',
+    url: 'https://www.bleepingcomputer.com/feed/',
+    category: 'security',
+    updateFrequency: 10,
+    priority: 'high',
+    active: true
+  },
+  {
+    id: 'dark-reading',
+    name: 'Dark Reading',
+    url: 'https://www.darkreading.com/rss.xml',
+    category: 'security',
+    updateFrequency: 10,
+    priority: 'high',
+    active: true
+  },
+
+  // ============================================
+  // GENERAL TECH NEWS (Daily Updates)
+  // ============================================
+  {
+    id: 'mit-technology-review',
+    name: 'MIT Technology Review',
+    url: 'https://www.technologyreview.com/feed/',
     category: 'tech-news',
     updateFrequency: 10,
     priority: 'high',
     active: true
   },
   {
-    id: 'techcrunch-ai',
-    name: 'TechCrunch AI',
-    url: 'https://techcrunch.com/category/artificial-intelligence/feed/',
-    category: 'ai',
+    id: 'arstechnica',
+    name: 'Ars Technica',
+    url: 'https://feeds.arstechnica.com/arstechnica/index',
+    category: 'tech-news',
     updateFrequency: 10,
     priority: 'high',
     active: true
@@ -90,35 +304,17 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
     active: true
   },
   {
-    id: 'wired',
-    name: 'Wired',
-    url: 'https://www.wired.com/feed/rss',
+    id: 'techcrunch',
+    name: 'TechCrunch',
+    url: 'https://techcrunch.com/feed/',
     category: 'tech-news',
-    updateFrequency: 15,
+    updateFrequency: 10,
     priority: 'high',
-    active: true
-  },
-  {
-    id: 'arstechnica',
-    name: 'Ars Technica',
-    url: 'https://feeds.arstechnica.com/arstechnica/index',
-    category: 'tech-news',
-    updateFrequency: 15,
-    priority: 'high',
-    active: true
-  },
-  {
-    id: 'engadget',
-    name: 'Engadget',
-    url: 'https://www.engadget.com/rss.xml',
-    category: 'tech-news',
-    updateFrequency: 15,
-    priority: 'medium',
     active: true
   },
 
   // ============================================
-  // HACKER NEWS & REDDIT (Real-time)
+  // HACKER NEWS (Real-time News Aggregator)
   // ============================================
   {
     id: 'hackernews-frontpage',
@@ -136,24 +332,6 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
     category: 'ai',
     updateFrequency: 10,
     priority: 'high',
-    active: true
-  },
-  {
-    id: 'reddit-machinelearning',
-    name: 'Reddit - Machine Learning',
-    url: 'https://www.reddit.com/r/MachineLearning/.rss',
-    category: 'ai',
-    updateFrequency: 15,
-    priority: 'medium',
-    active: true
-  },
-  {
-    id: 'reddit-artificial',
-    name: 'Reddit - Artificial',
-    url: 'https://www.reddit.com/r/artificial/.rss',
-    category: 'ai',
-    updateFrequency: 15,
-    priority: 'medium',
     active: true
   },
 
@@ -197,37 +375,6 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
     url: 'https://techcrunch.com/category/startups/feed/',
     category: 'startups',
     updateFrequency: 15,
-    priority: 'medium',
-    active: true
-  },
-
-  // ============================================
-  // SECURITY & PRIVACY
-  // ============================================
-  {
-    id: 'cyberinsider',
-    name: 'CyberInsider',
-    url: 'https://cyberinsider.com/feed/',
-    category: 'security',
-    updateFrequency: 15,
-    priority: 'high',
-    active: true
-  },
-  {
-    id: 'krebs-security',
-    name: 'Krebs on Security',
-    url: 'https://krebsonsecurity.com/feed/',
-    category: 'security',
-    updateFrequency: 30,
-    priority: 'medium',
-    active: true
-  },
-  {
-    id: 'schneier',
-    name: 'Schneier on Security',
-    url: 'https://www.schneier.com/feed/atom/',
-    category: 'security',
-    updateFrequency: 60,
     priority: 'medium',
     active: true
   },

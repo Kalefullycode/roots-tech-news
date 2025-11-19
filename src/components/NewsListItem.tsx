@@ -94,8 +94,6 @@ const getSourceStyle = (
     'cnbc': { color: '#3b82f6', priority: 'High' },
     'zdnet.com': { color: '#3b82f6', priority: 'High' },
     'zdnet': { color: '#3b82f6', priority: 'High' },
-    'techmeme.com': { color: '#3b82f6', priority: 'High' },
-    'techmeme': { color: '#3b82f6', priority: 'High' },
     'default': { color: '#a0aec0', priority: 'Low' },
   };
 

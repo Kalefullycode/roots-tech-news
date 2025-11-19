@@ -44,7 +44,6 @@ const RSS_SOURCES = [
   { name: 'Associated Press Tech', url: 'https://apnews.com/hub/technology/rss', category: 'Tech' },
   { name: 'CNBC Technology', url: 'https://www.cnbc.com/id/19854910/device/rss/rss.html', category: 'Tech' },
   { name: 'ZDNet', url: 'https://www.zdnet.com/news/rss.xml', category: 'Tech' },
-  { name: 'TechMeme', url: 'https://www.techmeme.com/feed.xml', category: 'Tech' },
   { name: 'Hacker News', url: 'https://hnrss.org/frontpage', category: 'Tech' },
   { name: 'Engadget', url: 'https://www.engadget.com/rss.xml', category: 'Tech' },
   { name: 'Gizmodo', url: 'https://gizmodo.com/rss', category: 'Tech' },
@@ -63,6 +62,8 @@ const RSS_SOURCES = [
   // Cybersecurity & AI Security Sources
   { name: 'CyberInsider', url: 'https://cyberinsider.com/feed/', category: 'Security' },
   { name: 'The Hacker News', url: 'https://feeds.feedburner.com/TheHackersNews', category: 'Security' },
+  { name: 'CyberNews', url: 'https://cybernews.com/feed/', category: 'Security' },
+  { name: 'Wired Security', url: 'https://www.wired.com/feed/category/security/', category: 'Security' },
   { name: 'Krebs on Security', url: 'https://krebsonsecurity.com/feed/', category: 'Security' },
   { name: 'Bleeping Computer', url: 'https://www.bleepingcomputer.com/feed/', category: 'Security' },
   { name: 'Dark Reading', url: 'https://www.darkreading.com/rss.xml', category: 'Security' },

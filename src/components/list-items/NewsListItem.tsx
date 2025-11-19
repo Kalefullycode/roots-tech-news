@@ -110,9 +110,6 @@ const getSourceConfig = (
   if (searchText.includes('zdnet')) {
     return { color: 'blue', priority: isAI || isTech ? 'high' : 'high', inlineColor: '#3b82f6' };
   }
-  if (searchText.includes('techmeme')) {
-    return { color: 'blue', priority: isAI || isTech ? 'high' : 'high', inlineColor: '#3b82f6' };
-  }
   
   // Medium Priority Sources
   if (searchText.includes('venturebeat')) {

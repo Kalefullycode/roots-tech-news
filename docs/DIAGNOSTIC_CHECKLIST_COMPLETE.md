@@ -89,7 +89,6 @@
 ### Real-Time News Sources
 - ✅ **Status**: CONFIGURED
 - **Sources Include**:
-  - Techmeme (real-time aggregator)
   - Hacker News (community-driven)
   - TechCrunch, The Verge, Ars Technica
   - Multiple AI research and company blogs

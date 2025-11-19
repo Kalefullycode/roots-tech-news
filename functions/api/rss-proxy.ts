@@ -103,7 +103,6 @@ const ALLOWED_DOMAINS = [
   'reuters.com', // Reuters
   
   // Daily Tech News Sources
-  'techmeme.com', // Techmeme
   '9to5mac.com', // 9to5Mac
   '9to5google.com', // 9to5Google
   'androidauthority.com', // Android Authority
@@ -121,6 +120,10 @@ const ALLOWED_DOMAINS = [
   'therecord.media', // The Record
   'cyberinsider.com', // CyberInsider
   'www.cyberinsider.com', // CyberInsider (www)
+  'cybernews.com', // CyberNews
+  'www.cybernews.com', // CyberNews (www)
+  'thehackernews.com', // The Hacker News
+  'www.thehackernews.com', // The Hacker News (www)
   'www.reuters.com', // Reuters (www)
   'apnews.com', // Associated Press
   'www.apnews.com', // Associated Press (www)
