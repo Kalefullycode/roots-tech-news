@@ -1,4 +1,5 @@
 import { NewsArticle } from './NewsService';
+import TechNewsFeedManager from './TechNewsFeedManager';
 
 interface DevToArticle {
   title: string;
@@ -183,6 +184,18 @@ class FreeNewsService {
    */
   async loadAllFeeds(): Promise<NewsArticle[]> {
     try {
+      // Try TechNewsFeedManager first (includes RSS feeds with CORS proxies)
+      try {
+        const rssArticles = await TechNewsFeedManager.loadAllFeeds();
+        if (rssArticles.length > 0) {
+          console.log(`✅ Loaded ${rssArticles.length} articles from RSS feeds`);
+          return rssArticles;
+        }
+      } catch (error) {
+        console.warn('TechNewsFeedManager failed, falling back to direct APIs:', error);
+      }
+
+      // Fallback to direct API calls
       const [devtoAI, devtoTech, hn, redditTech, redditAI] = await Promise.all([
         this.loadDevTo('ai', 15),
         this.loadDevTo('technology', 10),
