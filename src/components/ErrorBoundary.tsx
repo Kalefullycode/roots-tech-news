@@ -1,4 +1,5 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { incrementErrorCount, shouldClearCache, reloadWithCacheClear } from '@/utils/cacheClear';
 
 interface Props {
   children: ReactNode;
@@ -30,6 +31,19 @@ class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    
+    // Track error count for cache clearing
+    incrementErrorCount();
+    
+    // Check if this is React Error #31 (object rendering)
+    const isObjectRenderError = error.message?.includes('Objects are not valid as a React child') ||
+                                 error.message?.includes('object with keys');
+    
+    if (isObjectRenderError) {
+      console.error('⚠️ React Error #31 detected: Object being rendered as React child');
+      console.error('This is often caused by browser cache issues. Try clearing your cache.');
+    }
+    
     this.setState({
       error,
       errorInfo,
@@ -38,6 +52,10 @@ class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
+      // Safely extract error message to prevent rendering objects
+      const errorMessage = this.state.error?.message || this.state.error?.toString() || 'Unknown error';
+      const errorName = this.state.error?.name || 'Error';
+      
       return (
         <div style={{
           padding: '20px',
@@ -58,9 +76,9 @@ class ErrorBoundary extends Component<Props, State> {
               overflow: 'auto'
             }}>
               <h3 style={{ color: '#ffff00', margin: '0 0 10px 0' }}>Error Details:</h3>
-              <pre style={{ margin: 0, color: '#ff6b6b' }}>
-                {this.state.error.toString()}
-              </pre>
+              <div style={{ margin: 0, color: '#ff6b6b' }}>
+                <strong>{errorName}:</strong> {errorMessage}
+              </div>
               
               {this.state.errorInfo && (
                 <details style={{ marginTop: '10px' }}>
@@ -80,7 +98,7 @@ class ErrorBoundary extends Component<Props, State> {
             </div>
           )}
           
-          <div style={{ marginTop: '20px' }}>
+          <div style={{ marginTop: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
             <button
               onClick={() => window.location.reload()}
               style={{
@@ -96,6 +114,37 @@ class ErrorBoundary extends Component<Props, State> {
             >
               🔄 Reload Page
             </button>
+            
+            {shouldClearCache() && (
+              <button
+                onClick={() => {
+                  reloadWithCacheClear();
+                }}
+                style={{
+                  padding: '10px 20px',
+                  background: '#ff6b6b',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  fontFamily: 'monospace',
+                  fontWeight: 'bold'
+                }}
+              >
+                🗑️ Clear Cache & Reload
+              </button>
+            )}
+          </div>
+          
+          <div style={{ marginTop: '20px', padding: '15px', background: '#000', borderRadius: '5px' }}>
+            <h4 style={{ color: '#ffff00', margin: '0 0 10px 0' }}>Troubleshooting Steps:</h4>
+            <ol style={{ color: '#888', margin: 0, paddingLeft: '20px', lineHeight: '1.8' }}>
+              <li>Clear your browser cache (Ctrl+Shift+Delete / Cmd+Shift+Delete)</li>
+              <li>Disable browser extensions (especially ad blockers)</li>
+              <li>Try an incognito/private window</li>
+              <li>Hard refresh: Ctrl+F5 (Windows) or Cmd+Shift+R (Mac)</li>
+              <li>Check browser console (F12) for detailed errors</li>
+            </ol>
           </div>
           
           <p style={{ color: '#ffff00', marginTop: '20px' }}>

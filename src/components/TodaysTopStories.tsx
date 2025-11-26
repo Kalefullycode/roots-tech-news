@@ -116,16 +116,29 @@ const fallbackArticles = [
 const TodaysTopStories = () => {
   const [lastUpdate, setLastUpdate] = useState<string>("Just now");
 
-  const { data: newsArticles, isLoading } = useQuery({
+  const { data: newsArticles, isLoading } = useQuery<Array<{
+    id: string;
+    title: string;
+    description: string;
+    category: string;
+    publishedAt: string;
+    urlToImage?: string;
+    url: string;
+    source: { id: string; name: string };
+  }>>({
     queryKey: ['top-stories'],
     queryFn: fetchArticles,
     refetchInterval: 900000, // Refresh every 15 minutes
     staleTime: 60000,
-    retry: 2,
-    onSuccess: () => {
+    retry: 2
+  });
+
+  // Update last update time when data loads
+  useEffect(() => {
+    if (newsArticles && newsArticles.length > 0) {
       setLastUpdate("Just now");
     }
-  });
+  }, [newsArticles]);
 
   // Update "last updated" text every minute
   useEffect(() => {
@@ -142,7 +155,16 @@ const TodaysTopStories = () => {
 
 
   // Always use articles - prioritize real RSS data, fallback to curated articles
-  const allArticles = (newsArticles && newsArticles.length > 0) ? newsArticles : fallbackArticles;
+  const allArticles: Array<{
+    id?: string;
+    title?: string;
+    description?: string;
+    category?: string;
+    publishedAt?: string;
+    urlToImage?: string;
+    url?: string;
+    source?: { id?: string; name?: string } | string;
+  }> = (newsArticles && Array.isArray(newsArticles) && newsArticles.length > 0) ? newsArticles : fallbackArticles;
   
   // Enhanced categorization function
   const categorizeArticle = (article: { title?: string; category?: string; description?: string; contentSnippet?: string; source?: { name?: string } | string }): string => {
@@ -349,7 +371,14 @@ const TodaysTopStories = () => {
         {/* Stories List - Hacker News Style */}
         <div className="news-list-container bg-card/30 rounded-lg p-4 border border-border/50">
           {topStories.map((article: { id?: string; title?: string; url?: string; link?: string; source?: { name?: string } | string; publishedAt?: string; pubDate?: string; category?: string }, index: number) => {
-            const source = article.source?.name || article.source || 'Tech News';
+            // Safely extract source name - prevent rendering objects
+            let source: string = 'Tech News';
+            if (typeof article.source === 'string') {
+              source = article.source;
+            } else if (article.source && typeof article.source === 'object' && 'name' in article.source) {
+              source = article.source.name || 'Tech News';
+            }
+            
             const timeAgo = formatTime(article.publishedAt || article.pubDate || new Date().toISOString());
             
             // Get valid URL - prefer url over link, ensure it's a valid URL
@@ -378,12 +407,12 @@ const TodaysTopStories = () => {
                   id: article.id,
                   title: article.title || 'Untitled Article',
                   url: articleUrl,
-                  source: source,
-                  sourceName: source,
+                  source: source, // Ensure this is always a string
+                  sourceName: source, // Ensure this is always a string
                   sourceDomain: domain,
                   timeAgo: timeAgo,
                   publishedAt: article.publishedAt || article.pubDate,
-                  category: article.category
+                  category: typeof article.category === 'string' ? article.category : undefined
                 }}
               />
             );

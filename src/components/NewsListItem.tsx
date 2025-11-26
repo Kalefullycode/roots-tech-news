@@ -1,4 +1,5 @@
 import React from 'react';
+import { safeSourceName, safeString } from '@/utils/safeRender';
 
 interface Article {
   id?: string;
@@ -145,10 +146,11 @@ export default function NewsListItem({
   variant = 'default',
 }: NewsListItemProps) {
   // Use article object if provided, otherwise use individual props
-  const articleTitle = article?.title || title || '';
+  // Safely extract values to prevent rendering objects
+  const articleTitle = safeString(article?.title || title || '');
   const articleUrl = article?.url || url || '#';
   const articleSource = article?.source || source;
-  const articleSourceName = article?.sourceName || sourceName || articleSource;
+  const articleSourceName = safeSourceName(article?.sourceName || sourceName || articleSource);
   const articleSourceDomain = article?.sourceDomain || sourceDomain || domain || (() => {
     if (!articleUrl || articleUrl === '#') return '';
     try {
