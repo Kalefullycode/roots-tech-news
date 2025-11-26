@@ -83,7 +83,7 @@
   <body>
     <div id="root">
       <!-- Loading indicator shown before JavaScript loads -->
-      <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); font-family: 'Orbitron', monospace; color: #00d9ff;">
+      <div id="loading" class="loading-screen" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); font-family: 'Orbitron', monospace; color: #00d9ff;">
         <div style="text-align: center;">
           <div style="font-size: 48px; margin-bottom: 20px; animation: pulse 2s ease-in-out infinite;">
             🚀
@@ -109,6 +109,8 @@
         }
       </style>
     </div>
+    <!-- Loading screen fix script - loads early to prevent stuck loading screens -->
+    <script src="/loading-fix.js"></script>
     <script type="module" src="src/main.tsx"></script>
   </body>
 </html>
