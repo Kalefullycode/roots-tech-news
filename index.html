@@ -79,6 +79,18 @@
       }
     }
     </script>
+    
+    <!-- Process.env polyfill for browser compatibility -->
+    <script>
+      window.process = window.process || {};
+      window.process.env = window.process.env || {};
+      // Set NODE_ENV based on hostname (development for localhost, production otherwise)
+      window.process.env.NODE_ENV = (window.location.hostname === 'localhost' || 
+                                     window.location.hostname === '127.0.0.1' || 
+                                     window.location.hostname.includes('.local')) 
+                                     ? 'development' 
+                                     : 'production';
+    </script>
   </head>
   <body>
     <div id="root">

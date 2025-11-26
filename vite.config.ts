@@ -40,7 +40,9 @@ export default defineConfig(({ mode }) => ({
       polyfill: false, // Reduce bundle size by not including polyfill
     },
     cssCodeSplit: false, // Combine CSS into single file to reduce request chains
-    minify: true, // Use default esbuild minifier for dead code elimination
+    // Disable minification in development mode
+    minify: mode === 'production' ? 'esbuild' : false,
+    sourcemap: process.env.GENERATE_SOURCEMAP !== 'false', // Respect GENERATE_SOURCEMAP env var
   },
   // Ensure proper cache headers for production
   preview: {
