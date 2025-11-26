@@ -4,13 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import NewsListItem from "@/components/NewsListItem";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-
-async function fetchArticles() {
-  const response = await fetch('/functions/fetch-rss');
-  if (!response.ok) throw new Error('Failed to fetch articles');
-  const data = await response.json();
-  return data.articles;
-}
+import { fetchArticles } from "@/utils/fetchArticles";
 
 // Format time ago helper
 function formatTimeAgo(dateString: string): string {

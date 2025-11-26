@@ -90,12 +90,9 @@ export const useBreakingNews = () => {
     setIsLoading(true);
     
     try {
-      // Fetch real articles from RSS feed
-      const response = await fetch('/functions/fetch-rss');
-      if (!response.ok) throw new Error('Failed to fetch RSS feeds');
-      
-      const data = await response.json();
-      const articles = data.articles || [];
+      // Fetch real articles from free news sources
+      const { fetchArticles } = await import('@/utils/fetchArticles');
+      const articles = await fetchArticles();
       
       // Convert articles to breaking news format, prioritizing AI and recent news
       const breakingNewsItems: BreakingNewsItem[] = articles

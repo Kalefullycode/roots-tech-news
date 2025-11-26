@@ -21,19 +21,23 @@ interface Article {
 }
 
 // Fetch articles filtered by category
+import { fetchArticlesByCategory } from '@/utils/fetchArticles';
+
 async function fetchCategoryArticles(category: string): Promise<Article[]> {
-  const response = await fetch('/functions/fetch-rss');
-  if (!response.ok) throw new Error('Failed to fetch articles');
-  const data = await response.json();
+  // Use free news sources filtered by category
+  const articles = await fetchArticlesByCategory(category);
   
-  // Filter articles by category (AI, Tech, etc.)
-  const categoryLower = category.toLowerCase();
-  return data.articles.filter((article: Article) => {
-    const articleCategory = article.category.toLowerCase();
-    return articleCategory.includes(categoryLower) || 
-           article.title.toLowerCase().includes(categoryLower) ||
-           article.description.toLowerCase().includes(categoryLower);
-  });
+  // Convert to expected format
+  return articles.map(article => ({
+    id: article.id,
+    title: article.title,
+    description: article.description,
+    category: article.category,
+    publishedAt: article.publishedAt,
+    url: article.url,
+    source: article.source.name,
+    sourceDomain: article.source.id
+  }));
 }
 
 const CategoryPage = () => {

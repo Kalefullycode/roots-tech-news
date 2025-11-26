@@ -6,14 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowRight } from "lucide-react";
 import { cleanDescription } from "@/utils/cleanDescription";
+import { fetchArticles } from "@/utils/fetchArticles";
 import aiArticle from "@/assets/ai-article.webp";
-
-async function fetchArticles() {
-  const response = await fetch('/functions/fetch-rss');
-  if (!response.ok) throw new Error('Failed to fetch articles');
-  const data = await response.json();
-  return data.articles;
-}
 
 const FeaturedStory = () => {
   const { data: newsArticles, isLoading } = useQuery({

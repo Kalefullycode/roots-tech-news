@@ -1,6 +1,7 @@
 import { NewsArticle } from './NewsService';
 import ContentFilter from './ContentFilter';
 import { REAL_TIME_RSS_FEEDS } from '@/data/realTimeFeeds';
+import FreeNewsService from './FreeNewsService';
 
 interface RSSFeed {
   url: string;
@@ -209,6 +210,20 @@ class EnhancedRSSService {
       );
     }
 
+    // Fallback to free news sources if RSS feeds fail
+    console.log('📡 RSS feeds failed, falling back to free news sources...');
+    try {
+      const freeArticles = await FreeNewsService.loadAllFeeds();
+      if (freeArticles.length > 0) {
+        console.log(`✅ Loaded ${freeArticles.length} articles from free sources`);
+        return ContentFilter.filterAndSort(freeArticles).sort((a, b) => 
+          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+        );
+      }
+    } catch (error) {
+      console.warn('Free news sources also failed:', error);
+    }
+
     // Return empty array if no articles - components should have fallbacks
     return [];
   }
@@ -231,6 +246,20 @@ class EnhancedRSSService {
         allArticles.push(...result.value);
       }
     });
+
+    // If RSS feeds failed, use free sources
+    if (allArticles.length === 0) {
+      try {
+        const freeArticles = await FreeNewsService.loadByCategory(category);
+        if (freeArticles.length > 0) {
+          return ContentFilter.filterAndSort(freeArticles).sort((a, b) => 
+            new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+          );
+        }
+      } catch (error) {
+        console.warn(`Free news sources failed for category ${category}:`, error);
+      }
+    }
 
     // Filter out non-AI/tech content
     const filteredArticles = ContentFilter.filterAndSort(allArticles);

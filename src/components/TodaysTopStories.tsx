@@ -3,17 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Zap } from "lucide-react";
 import NewsListItem from "./NewsListItem";
+import { fetchArticles } from "@/utils/fetchArticles";
 import aiArticle from "@/assets/ai-article.webp";
 import startupArticle from "@/assets/startup-article.webp";
 import securityArticle from "@/assets/security-article.webp";
 import gadgetArticle from "@/assets/gadget-article.webp";
-
-async function fetchArticles() {
-  const response = await fetch('/functions/fetch-rss');
-  if (!response.ok) throw new Error('Failed to fetch articles');
-  const data = await response.json();
-  return data.articles;
-}
 
 // Fallback articles with detailed summaries - November 2025 tech news
 const fallbackArticles = [

@@ -22,12 +22,8 @@ interface SearchFilters {
 }
 
 // Fetch all articles for searching
-async function fetchAllArticles() {
-  const response = await fetch('/functions/fetch-rss');
-  if (!response.ok) throw new Error('Failed to fetch articles');
-  const data = await response.json();
-  return data.articles;
-}
+import { fetchArticles } from '@/utils/fetchArticles';
+const fetchAllArticles = fetchArticles;
 
 const SearchBar = ({ 
   onSearch, 

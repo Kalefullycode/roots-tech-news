@@ -19,11 +19,22 @@ interface Article {
   timeAgo?: string;
 }
 
-async function fetchArticles(): Promise<Article[]> {
-  const response = await fetch('/functions/fetch-rss');
-  if (!response.ok) throw new Error('Failed to fetch articles');
-  const data = await response.json();
-  return data.articles || [];
+import { fetchArticles } from '@/utils/fetchArticles';
+
+// Re-export with correct return type
+async function fetchArticlesTyped(): Promise<Article[]> {
+  const articles = await fetchArticlesTyped();
+  return articles.map(article => ({
+    id: article.id,
+    title: article.title,
+    description: article.description,
+    category: article.category,
+    publishedAt: article.publishedAt,
+    url: article.url,
+    source: article.source.name,
+    sourceDomain: article.source.id,
+    timeAgo: ''
+  }));
 }
 
 const formatTime = (dateString: string) => {

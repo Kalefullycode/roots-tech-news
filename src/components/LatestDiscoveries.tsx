@@ -2,17 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cleanDescription } from "@/utils/cleanDescription";
 import ArticleCard from "./ArticleCard";
+import { fetchArticles } from "@/utils/fetchArticles";
 import aiArticle from "@/assets/ai-article.webp";
 import startupArticle from "@/assets/startup-article.webp";
 import securityArticle from "@/assets/security-article.webp";
 import gadgetArticle from "@/assets/gadget-article.webp";
-
-async function fetchArticles() {
-  const response = await fetch('/functions/fetch-rss');
-  if (!response.ok) throw new Error('Failed to fetch articles');
-  const data = await response.json();
-  return data.articles;
-}
 
 const LatestDiscoveries = () => {
   const { data: newsArticles, isLoading } = useQuery({

@@ -21,14 +21,30 @@ interface Article {
   image: string;
 }
 
-// Fetch articles from RSS endpoint
-async function fetchArticles(): Promise<Article[]> {
-  const response = await fetch('/functions/fetch-rss');
-  if (!response.ok) {
-    throw new Error(`Failed to fetch articles: ${response.status} ${response.statusText}`);
+// Fetch articles from free news sources
+import { fetchArticlesByCategory } from '@/utils/fetchArticles';
+
+async function fetchArticles(category?: string): Promise<Article[]> {
+  try {
+    const articles = category 
+      ? await fetchArticlesByCategory(category)
+      : await import('@/utils/fetchArticles').then(m => m.fetchArticles());
+    
+    return articles.map(article => ({
+      id: article.id,
+      title: article.title,
+      description: article.description,
+      category: article.category,
+      publishedAt: article.publishedAt,
+      url: article.url,
+      source: article.source.name,
+      sourceDomain: article.source.id,
+      image: article.urlToImage || ''
+    }));
+  } catch (error) {
+    console.error('Failed to fetch articles:', error);
+    return [];
   }
-  const data = await response.json();
-  return data.articles || [];
 }
 
 // Filter articles by category
