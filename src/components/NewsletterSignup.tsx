@@ -52,8 +52,8 @@ export function NewsletterSignup({ variant = 'inline' }: { variant?: 'inline' | 
       });
       
       // Track conversion
-      if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('event', 'newsletter_signup', {
+      if (typeof window !== 'undefined' && 'gtag' in window && typeof (window as { gtag?: (...args: unknown[]) => void }).gtag === 'function') {
+        (window as { gtag: (...args: unknown[]) => void }).gtag('event', 'newsletter_signup', {
           method: 'website',
         });
       }

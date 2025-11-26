@@ -78,9 +78,10 @@ export class NewsletterManager {
             audienceId: this.audienceId,
           });
           contactId = contact.data?.id;
-        } catch (contactError: any) {
+        } catch (contactError: unknown) {
           // If contact already exists, that's okay - continue with email send
-          if (!contactError.message?.includes('already exists') && !contactError.message?.includes('409')) {
+          const errorMessage = contactError instanceof Error ? contactError.message : String(contactError);
+          if (!errorMessage.includes('already exists') && !errorMessage.includes('409')) {
             console.warn('Failed to add contact to audience:', contactError);
           }
         }
@@ -94,11 +95,12 @@ export class NewsletterManager {
         message: 'Successfully subscribed! Check your email for confirmation.',
         contactId
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Subscription error:', error);
       
       // Check if already subscribed
-      if (error.message?.includes('already exists') || error.message?.includes('409')) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes('already exists') || errorMessage.includes('409')) {
         return { 
           success: false, 
           message: 'This email is already subscribed.' 
@@ -562,7 +564,7 @@ export class NewsletterManager {
         audienceId: this.audienceId,
         audienceName: audience.data?.name || 'Unknown'
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to get stats:', error);
       return {
         totalSubscribers: 0,

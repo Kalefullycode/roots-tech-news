@@ -312,7 +312,7 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
 
     // Try to get from cache first (Cloudflare Cache API)
     const cache = caches.default;
-    let cachedResponse = await cache.match(cacheKey);
+    const cachedResponse = await cache.match(cacheKey);
 
     if (cachedResponse) {
       console.log(`Cache hit for: ${decodedFeedUrl}`);

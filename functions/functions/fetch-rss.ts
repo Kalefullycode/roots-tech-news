@@ -109,10 +109,10 @@ function parseRSSXML(xmlText: string, sourceName: string, category: string): Art
         // Remove "Article URL:", "Comments URL:", "Points:", etc.
         description = description
           // Remove "Article URL:" patterns (with or without https://)
-          .replace(/Article URL:\s*https?:\/\/[^\s\)]+/gi, '')
+          .replace(/Article URL:\s*https?:\/\/[^\s)]+/gi, '')
           .replace(/Article URL:.*?(?=\s|$|\n|Comments|Points)/gi, '')
           // Remove "Comments URL:" patterns
-          .replace(/Comments URL:\s*https?:\/\/[^\s\)]+/gi, '')
+          .replace(/Comments URL:\s*https?:\/\/[^\s)]+/gi, '')
           .replace(/Comments URL:.*?(?=\s|$|\n|Points)/gi, '')
           // Remove "Points:" patterns
           .replace(/Points:\s*\d+/gi, '')
@@ -124,8 +124,8 @@ function parseRSSXML(xmlText: string, sourceName: string, category: string): Art
           .replace(/\]\]>/g, '')
           .replace(/<!\[CDATA\[/g, '')
           // Remove all URLs (http://, https://) - more comprehensive
-          .replace(/https?:\/\/[^\s\)]+/g, '')
-          .replace(/www\.[^\s\)]+/g, '')
+          .replace(/https?:\/\/[^\s)]+/g, '')
+          .replace(/www\.[^\s)]+/g, '')
           // Remove email addresses
           .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '')
           // Remove common metadata patterns
@@ -135,7 +135,7 @@ function parseRSSXML(xmlText: string, sourceName: string, category: string): Art
           .replace(/Via:.*/gi, '')
           .replace(/View original.*/gi, '')
           // Remove any remaining URL-like patterns
-          .replace(/[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/[^\s\)]*)?/g, '')
+          .replace(/[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/[^\s)]*)?/g, '')
           // Normalize whitespace
           .replace(/\s+/g, ' ')
           .trim();
@@ -232,7 +232,7 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
   };
 
   // Create cache key - Cloudflare Pages Cache API
-  // @ts-ignore - caches.default is available in Cloudflare Workers/Pages runtime
+  // @ts-expect-error - caches.default is available in Cloudflare Workers/Pages runtime
   const cache = caches.default;
   const cacheKey = new Request(context.request.url, {
     method: 'GET',

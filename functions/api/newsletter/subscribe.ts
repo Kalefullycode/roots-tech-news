@@ -215,7 +215,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
     if (!emailResponse.ok) {
       let errorText = 'Unknown error';
-      let errorJson: any = null;
+      let errorJson: unknown = null;
       try {
         errorText = await emailResponse.text();
         // Try to parse as JSON

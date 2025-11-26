@@ -90,19 +90,21 @@ const MainFeed = () => {
     source?: { id?: string; name?: string };
   }
   
-  const formatArticle = (article: ArticleInput) => ({
-    title: article.title,
-    excerpt: cleanDescription(article.description) || "Click to read more about this exciting development in technology.",
-    category: article.category || "Tech",
-    date: new Date(article.publishedAt).toLocaleString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      day: 'numeric',
-      month: 'short'
-    }),
-    imageUrl: article.urlToImage || gadgetArticle,
-    url: article.url || "#"
-  }));
+  const formatArticle = (article: ArticleInput) => {
+    return {
+      title: article.title,
+      excerpt: cleanDescription(article.description) || "Click to read more about this exciting development in technology.",
+      category: article.category || "Tech",
+      date: new Date(article.publishedAt).toLocaleString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        day: 'numeric',
+        month: 'short'
+      }),
+      imageUrl: article.urlToImage || gadgetArticle,
+      url: article.url || "#"
+    };
+  };
 
   const featuredArticle = articles.length > 0 ? formatArticle(articles[0]) : null;
   const regularArticles = articles.slice(1, 9).map(formatArticle);

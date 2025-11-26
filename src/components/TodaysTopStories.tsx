@@ -151,7 +151,7 @@ const TodaysTopStories = () => {
   const allArticles = (newsArticles && newsArticles.length > 0) ? newsArticles : fallbackArticles;
   
   // Enhanced categorization function
-  const categorizeArticle = (article: any): string => {
+  const categorizeArticle = (article: { title?: string; category?: string; description?: string; contentSnippet?: string; source?: { name?: string } | string }): string => {
     // Defensive checks for null/undefined
     if (!article || typeof article !== 'object') {
       return 'Tech'; // Default category
@@ -160,7 +160,7 @@ const TodaysTopStories = () => {
     const title = (article.title || '').toLowerCase();
     const category = (article.category || '').toLowerCase();
     const description = (article.description || article.contentSnippet || '').toLowerCase();
-    const source = (article.source?.name || article.source || '').toLowerCase();
+    const source = typeof article.source === 'string' ? article.source.toLowerCase() : (article.source?.name || '').toLowerCase();
     const combinedText = `${title} ${description} ${source}`;
     
     // AI Category
@@ -235,7 +235,7 @@ const TodaysTopStories = () => {
   };
   
   // Interleave articles from different categories for balanced display
-  const interleavedArticles: any[] = [];
+  const interleavedArticles: Array<{ title?: string; category?: string; description?: string; contentSnippet?: string; source?: { name?: string } | string; url?: string; id?: string; publishedAt?: string }> = [];
   const interleavedIds = new Set<string | number>(); // Track IDs to avoid duplicates
   const maxPerCategory = 8; // Max articles per category in top 30
   

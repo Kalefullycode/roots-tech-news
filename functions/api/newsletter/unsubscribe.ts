@@ -176,7 +176,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       }
     );
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Unsubscribe error:', error);
     
     return new Response(
