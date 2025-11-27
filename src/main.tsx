@@ -22,6 +22,17 @@ try {
     throw new Error("Root element not found - check if index.html has <div id='root'></div>");
   }
 
+  // Remove loading screen immediately when React mounts
+  const loadingScreen = document.getElementById('loading') || document.querySelector('.loading-screen');
+  if (loadingScreen) {
+    loadingScreen.style.display = 'none';
+    loadingScreen.style.visibility = 'hidden';
+    loadingScreen.style.opacity = '0';
+    setTimeout(() => {
+      loadingScreen.remove();
+    }, 100);
+  }
+  
   const root = createRoot(container);
   root.render(
     <React.StrictMode>
@@ -32,6 +43,14 @@ try {
   );
   
   console.log('✅ React app mounted successfully');
+  
+  // Final check to ensure loading screen is gone
+  setTimeout(() => {
+    const remainingLoading = document.getElementById('loading') || document.querySelector('.loading-screen');
+    if (remainingLoading) {
+      remainingLoading.remove();
+    }
+  }, 500);
 } catch (error) {
   console.error('❌ Failed to mount React app:', error);
   

@@ -394,6 +394,22 @@
 
         displayArticles() {
 
+            // Always remove loading screen first
+
+            const loadingScreen = document.getElementById('loading') || 
+
+                                 document.querySelector('.loading-screen');
+
+            if (loadingScreen) {
+
+                loadingScreen.style.display = 'none';
+
+                loadingScreen.remove();
+
+            }
+
+            
+
             // Only display if React app hasn't loaded or if there's an error
 
             // Check if React root is empty or has error
@@ -402,7 +418,9 @@
 
             const hasReactContent = reactRoot && reactRoot.children.length > 0 && 
 
-                                   !reactRoot.querySelector('.error-boundary, .error-screen');
+                                   !reactRoot.querySelector('.error-boundary, .error-screen') &&
+
+                                   reactRoot.children.length > 1; // More than just loading screen
 
             
 
@@ -411,6 +429,22 @@
             if (hasReactContent) {
 
                 console.log('✅ React app is running, skipping RSS fix display');
+
+                
+
+                // Make sure any existing RSS container is hidden
+
+                const existingContainer = document.getElementById('roots-news-container');
+
+                if (existingContainer) {
+
+                    existingContainer.style.display = 'none';
+
+                    existingContainer.remove();
+
+                }
+
+                
 
                 return;
 
@@ -497,6 +531,24 @@
                         min-height: 100vh;
 
                         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+                        position: relative;
+
+                        z-index: 1;
+
+                    }
+
+                    
+
+                    /* Ensure loading screen is hidden */
+
+                    #loading, .loading-screen {
+
+                        display: none !important;
+
+                        visibility: hidden !important;
+
+                        opacity: 0 !important;
 
                     }
 
@@ -982,19 +1034,83 @@
 
     
 
-    // Load feeds when DOM is ready
+    // Remove loading screen immediately
+
+    function removeLoadingScreen() {
+
+        const loadingScreen = document.getElementById('loading') || 
+
+                             document.querySelector('.loading-screen');
+
+        if (loadingScreen) {
+
+            loadingScreen.style.display = 'none';
+
+            loadingScreen.style.visibility = 'hidden';
+
+            loadingScreen.style.opacity = '0';
+
+            setTimeout(() => {
+
+                loadingScreen.remove();
+
+            }, 300);
+
+        }
+
+    }
+
+    
+
+    // Remove loading screen immediately and on DOM ready
+
+    removeLoadingScreen();
+
+    
+
+    // Load feeds when DOM is ready (but only if React isn't working)
 
     if (document.readyState === 'loading') {
 
         document.addEventListener('DOMContentLoaded', () => {
 
-            setTimeout(() => newsService.loadAllFeeds(), 1000);
+            removeLoadingScreen();
+
+            setTimeout(() => {
+
+                // Check if React has loaded before showing RSS fix
+
+                const reactRoot = document.getElementById('root');
+
+                const hasReactContent = reactRoot && reactRoot.children.length > 1;
+
+                if (!hasReactContent) {
+
+                    newsService.loadAllFeeds();
+
+                }
+
+            }, 1000);
 
         });
 
     } else {
 
-        setTimeout(() => newsService.loadAllFeeds(), 1000);
+        removeLoadingScreen();
+
+        setTimeout(() => {
+
+            const reactRoot = document.getElementById('root');
+
+            const hasReactContent = reactRoot && reactRoot.children.length > 1;
+
+            if (!hasReactContent) {
+
+                newsService.loadAllFeeds();
+
+            }
+
+        }, 1000);
 
     }
 

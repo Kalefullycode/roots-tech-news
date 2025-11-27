@@ -119,6 +119,13 @@
           0%, 100% { opacity: 1; transform: scale(1); }
           50% { opacity: 0.6; transform: scale(1.05); }
         }
+        /* Force hide loading screen after React loads */
+        #root:has(> :not(#loading)) #loading,
+        #root:has(> :not(.loading-screen)) .loading-screen {
+          display: none !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
+        }
       </style>
     </div>
     <!-- Loading screen fix script - loads early to prevent stuck loading screens -->

@@ -156,17 +156,27 @@
 
         
 
+        // Force hide immediately
+
+        element.style.display = 'none';
+
+        element.style.visibility = 'hidden';
+
+        element.style.opacity = '0';
+
+        element.style.pointerEvents = 'none';
+
+        element.style.zIndex = '-1';
+
+        
+
         // Try to fade out gracefully
 
         element.style.transition = `opacity ${CONFIG.fadeOutDuration}ms ease-out`;
 
-        element.style.opacity = '0';
-
         
 
         setTimeout(() => {
-
-            element.style.display = 'none';
 
             element.remove(); // Completely remove from DOM
 
@@ -523,6 +533,52 @@
         });
 
     }
+
+    
+
+    // Add CSS to force hide loading screen
+
+    function addLoadingScreenCSS() {
+
+        const style = document.createElement('style');
+
+        style.id = 'roots-loading-fix-css';
+
+        style.textContent = `
+
+            #loading, .loading-screen {
+
+                display: none !important;
+
+                visibility: hidden !important;
+
+                opacity: 0 !important;
+
+                pointer-events: none !important;
+
+                z-index: -1 !important;
+
+            }
+
+            
+
+            #root > #loading, #root > .loading-screen {
+
+                display: none !important;
+
+            }
+
+        `;
+
+        document.head.appendChild(style);
+
+    }
+
+    
+
+    // Add CSS immediately
+
+    addLoadingScreenCSS();
 
     
 
