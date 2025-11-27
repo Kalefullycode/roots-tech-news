@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Clock, Sparkles, ExternalLink } from 'lucide-react';
+import { Clock, Sparkles } from 'lucide-react';
 import EnhancedRSSService from '@/services/EnhancedRSSService';
 import { NewsArticle } from '@/services/NewsService';
 import DarkArticleCard from '@/components/cards/DarkArticleCard';
@@ -88,7 +86,7 @@ const AINewsSection = () => {
   return (
     <section className="py-12 px-4 bg-gradient-to-b from-black to-dark-900">
       <div className="container mx-auto">
-        <div className="flex items-center justify-between mb-8 pb-4 border-b border-primary-500/20">
+        <div className="mb-8 pb-4 border-b border-primary-500/20">
           <div className="flex items-center gap-4">
             <div className="relative">
               <Sparkles className="h-8 w-8 text-primary-500" />
@@ -101,15 +99,6 @@ const AINewsSection = () => {
               <p className="text-gray-400 text-sm mt-1">Latest developments in AI, machine learning, and neural networks</p>
             </div>
           </div>
-          <Link to="/category/ai">
-            <Button 
-              variant="outline" 
-              className="bg-primary-500/15 border-primary-500/30 text-primary-400 hover:bg-primary-500/25 hidden md:flex"
-            >
-              View All AI News
-              <ExternalLink className="h-4 w-4 ml-2" />
-            </Button>
-          </Link>
         </div>
 
         {aiArticles.length > 0 ? (
@@ -130,18 +119,6 @@ const AINewsSection = () => {
                   />
                 );
               })}
-            </div>
-            
-            <div className="text-center">
-              <Link to="/category/ai">
-                <Button 
-                  size="lg"
-                  className="bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white shadow-glow"
-                >
-                  Explore All AI News
-                  <ExternalLink className="h-5 w-5 ml-2" />
-                </Button>
-              </Link>
             </div>
           </>
         ) : (
