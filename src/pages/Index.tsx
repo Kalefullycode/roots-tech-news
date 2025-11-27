@@ -11,7 +11,7 @@ const Header = lazy(() => import("@/components/Header"));
 const FeaturedStory = lazy(() => import("@/components/FeaturedStory"));
 const LatestDiscoveries = lazy(() => import("@/components/LatestDiscoveries"));
 const TodaysTopStories = lazy(() => import("@/components/TodaysTopStories"));
-const DailyAINews = lazy(() => import("@/components/DailyAINews"));
+const AINewsSection = lazy(() => import("@/components/AINewsSection"));
 const NewsletterSubscribe = lazy(() => import("@/components/NewsletterSubscribe"));
 const AIToolsSidebar = lazy(() => import("@/components/AIToolsSidebar"));
 const Sidebar = lazy(() => import("@/components/Sidebar"));
@@ -116,15 +116,10 @@ const Index = () => {
             <TodaysTopStories />
           </Suspense>
 
-          {/* Container for standard content */}
-          <div className="container mx-auto px-4">
-            {/* SECTION 4: DAILY AI BRIEFING */}
-            <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg mb-8" />}>
-              <div className="py-8">
-                <DailyAINews />
-              </div>
-            </Suspense>
-          </div>
+          {/* SECTION 4: AI NEWS */}
+          <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
+            <AINewsSection />
+          </Suspense>
 
           {/* SECTION 5: NEWSLETTER SIGNUP */}
           <section className="py-16 px-4">
