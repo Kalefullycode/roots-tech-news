@@ -7,6 +7,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import NewsletterSubscribe from '@/components/NewsletterSubscribe';
 
@@ -26,6 +27,11 @@ export function Header() {
     { name: 'Blog', href: '/blog', icon: '📝' },
   ];
 
+  const aiNewsMenu = [
+    { name: 'All AI News', href: '/category/ai', icon: '📰', description: 'Latest AI developments' },
+    { name: 'Daily Briefing', href: '/ai/daily-briefing', icon: '⚡', description: '60-second AI updates' },
+  ];
+
   const isActive = (path: string) => {
     if (path === '/') {
       return location.pathname === '/';
@@ -34,45 +40,59 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <nav className="container flex h-16 items-center justify-between px-4">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-800/50 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+      <nav className="container flex h-16 items-center justify-between px-6">
         {/* Logo */}
-        <Link to="/" className="flex items-center space-x-2">
-          <span className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+        <Link to="/" className="flex items-center space-x-2 group">
+          <span className="text-xl font-display font-bold bg-gradient-to-r from-primary-500 via-secondary-500 to-primary-500 bg-clip-text text-transparent group-hover:from-primary-400 group-hover:via-secondary-400 transition-all">
             Roots Tech News
           </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-1">
+        <div className="hidden md:flex items-center gap-1">
           {/* AI News Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 group border ${
                   isActive('/category/ai') || isActive('/ai/daily-briefing')
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                    ? 'bg-primary/20 text-primary border-primary/30'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-accent/50 border-transparent'
                 }`}
               >
-                <span className="mr-1">🤖</span>
-                AI News
-                <ChevronDown className="ml-1 h-3 w-3" />
+                <span className="text-base">{'🤖'}</span>
+                <span>AI News</span>
+                <ChevronDown className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100 transition-opacity" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-56">
-              <DropdownMenuItem asChild>
-                <Link to="/category/ai" className="cursor-pointer">
-                  <span className="mr-2">📰</span>
-                  All AI News
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/ai/daily-briefing" className="cursor-pointer">
-                  <span className="mr-2">⚡</span>
-                  Daily AI Briefing
-                </Link>
-              </DropdownMenuItem>
+            <DropdownMenuContent 
+              align="start" 
+              className="w-64 bg-popover/95 backdrop-blur-xl border border-border/50 shadow-2xl rounded-xl p-2 mt-2"
+            >
+              {aiNewsMenu.map((item, index) => (
+                <div key={item.href}>
+                  <DropdownMenuItem asChild>
+                    <Link 
+                      to={item.href} 
+                      className="cursor-pointer text-foreground hover:text-primary rounded-lg px-3 py-2.5 flex items-start gap-3 group/item transition-colors"
+                    >
+                      <span className="text-xl mt-0.5">{item.icon}</span>
+                      <div className="flex-1">
+                        <div className="font-medium text-sm group-hover/item:text-primary transition-colors">
+                          {item.name}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-0.5">
+                          {item.description}
+                        </div>
+                      </div>
+                    </Link>
+                  </DropdownMenuItem>
+                  {index < aiNewsMenu.length - 1 && (
+                    <DropdownMenuSeparator className="my-1 bg-border/50" />
+                  )}
+                </div>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -80,18 +100,19 @@ export function Header() {
             <Link
               key={item.name}
               to={item.href}
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 border ${
                 isActive(item.href)
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                  ? 'bg-primary/20 text-primary border-primary/30'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-accent/50 border-transparent'
               }`}
             >
-              <span className="mr-1">{item.icon}</span>
-              {item.name}
+              <span className="text-base">{item.icon}</span>
+              <span>{item.name}</span>
             </Link>
           ))}
+          
           {/* Newsletter Subscribe Button */}
-          <div className="ml-2">
+          <div className="ml-3 pl-3 border-l border-border/50">
             <NewsletterSubscribe variant="compact" />
           </div>
         </div>
@@ -111,37 +132,33 @@ export function Header() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t bg-background">
-          <div className="container px-4 py-4 space-y-2">
+        <div className="md:hidden border-t border-border/50 bg-popover/95 backdrop-blur-xl">
+          <div className="container px-4 pt-4 pb-6 space-y-2">
             {/* AI News Section */}
-            <div className="space-y-1 pb-2 border-b border-border/30">
-              <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">
+            <div className="space-y-2 pb-4 border-b border-border/50">
+              <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 AI News
               </div>
-              <Link
-                to="/category/ai"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive('/category/ai')
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-                }`}
-              >
-                <span className="mr-2">📰</span>
-                All AI News
-              </Link>
-              <Link
-                to="/ai/daily-briefing"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive('/ai/daily-briefing')
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-                }`}
-              >
-                <span className="mr-2">⚡</span>
-                Daily AI Briefing
-              </Link>
+              {aiNewsMenu.map((item) => (
+                <Link
+                  key={item.href}
+                  to={item.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`block px-4 py-3 rounded-lg transition-all border ${
+                    isActive(item.href)
+                      ? 'bg-primary/20 text-primary border-primary/30'
+                      : 'text-foreground hover:text-primary hover:bg-accent/50 border-transparent'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-xl">{item.icon}</span>
+                    <div>
+                      <div className="font-medium text-sm">{item.name}</div>
+                      <div className="text-xs text-muted-foreground mt-0.5">{item.description}</div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
             </div>
             
             {navigation.map((item) => (
@@ -149,18 +166,19 @@ export function Header() {
                 key={item.name}
                 to={item.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`block px-4 py-3 rounded-lg transition-all flex items-center gap-3 border ${
                   isActive(item.href)
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                    ? 'bg-primary/20 text-primary border-primary/30'
+                    : 'text-foreground hover:text-primary hover:bg-accent/50 border-transparent'
                 }`}
               >
-                <span className="mr-2">{item.icon}</span>
-                {item.name}
+                <span className="text-xl">{item.icon}</span>
+                <span className="font-medium text-sm">{item.name}</span>
               </Link>
             ))}
+            
             {/* Newsletter Subscribe Button for Mobile */}
-            <div className="pt-2">
+            <div className="pt-4 border-t border-border/50">
               <NewsletterSubscribe variant="compact" />
             </div>
           </div>
