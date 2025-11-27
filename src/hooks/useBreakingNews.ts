@@ -114,12 +114,23 @@ export const useBreakingNews = () => {
           // Boost AI news urgency
           if (isAI && hoursAgo < 12) urgency = 'breaking';
           
+          // Ensure source is always a string, not an object
+          let sourceName = 'Tech News';
+          if (article.source) {
+            if (typeof article.source === 'string') {
+              sourceName = article.source;
+            } else if (typeof article.source === 'object' && article.source !== null) {
+              // Handle object with name property
+              sourceName = (article.source as any).name || 'Tech News';
+            }
+          }
+          
           return {
             id: article.id || `news-${Date.now()}-${index}`,
             headline: article.title || 'Breaking News',
             timestamp: article.publishedAt || new Date().toISOString(),
             urgency,
-            source: article.source || 'Tech News',
+            source: sourceName,
             url: article.url || '#'
           };
         });

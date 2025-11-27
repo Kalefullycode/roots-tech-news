@@ -32,10 +32,20 @@ export function setupFetchInterceptor(): void {
       ) {
         console.log('🚫 Blocked broken RSS request:', url);
 
-        // Return empty successful response to prevent errors
+        // Return empty XML response for RSS feeds to prevent XML parsing errors
+        const isRSSRequest = urlLower.includes('rss') || urlLower.includes('feed') || urlLower.includes('xml');
+        const emptyRSSXML = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Replaced Feed</title>
+    <description>This feed has been replaced with working alternatives</description>
+    <items></items>
+  </channel>
+</rss>`;
+        
         return Promise.resolve(
           new Response(
-            JSON.stringify({
+            isRSSRequest ? emptyRSSXML : JSON.stringify({
               items: [],
               articles: [],
               status: 'replaced',
@@ -44,7 +54,7 @@ export function setupFetchInterceptor(): void {
             {
               status: 200,
               headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': isRSSRequest ? 'application/xml' : 'application/json',
                 'X-RSS-Intercepted': 'true'
               }
             }

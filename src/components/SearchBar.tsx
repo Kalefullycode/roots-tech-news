@@ -53,24 +53,38 @@ const SearchBar = ({
     title: string;
     description: string;
     category: string;
-    source: string;
+    source: string | { id: string; name: string };
     url: string;
-    image: string;
+    image?: string;
+    urlToImage?: string;
     publishedAt: string;
   }
 
+  // Helper to safely get source name
+  const getSourceName = (source: string | { id: string; name: string } | undefined): string => {
+    if (!source) return 'Tech News';
+    if (typeof source === 'string') return source;
+    return source.name || 'Tech News';
+  };
+
   const searchResults = articles && query.trim().length > 2
-    ? (articles as Article[])
+    ? (articles as any[])
+        .map((article) => ({
+          ...article,
+          source: getSourceName(article.source),
+          image: article.image || article.urlToImage || ''
+        }))
         .filter((article) => {
           const searchText = `${article.title} ${article.description}`.toLowerCase();
           const matchesQuery = searchText.includes(query.toLowerCase());
           
+          const sourceName = getSourceName(article.source);
           const matchesCategory = !filters.category || 
             article.category?.toLowerCase().includes(filters.category.toLowerCase()) ||
-            article.source?.toLowerCase().includes(filters.category.toLowerCase());
+            sourceName.toLowerCase().includes(filters.category.toLowerCase());
           
           const matchesSource = !filters.source || 
-            article.source?.toLowerCase().includes(filters.source.toLowerCase());
+            sourceName.toLowerCase().includes(filters.source.toLowerCase());
           
           return matchesQuery && matchesCategory && matchesSource;
         })
@@ -79,11 +93,11 @@ const SearchBar = ({
 
   // Extract available categories and sources from articles
   const dynamicCategories = articles
-    ? Array.from(new Set((articles as Article[]).map((a) => a.category))).slice(0, 10)
+    ? Array.from(new Set((articles as any[]).map((a) => a.category))).slice(0, 10)
     : availableCategories;
   
   const dynamicSources = articles
-    ? Array.from(new Set((articles as Article[]).map((a) => a.source))).slice(0, 10)
+    ? Array.from(new Set((articles as any[]).map((a) => getSourceName(a.source)))).slice(0, 10)
     : availableSources;
 
   useEffect(() => {

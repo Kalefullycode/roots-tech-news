@@ -85,7 +85,9 @@ const DailyAINews = () => {
         const stories = aiNews.slice(0, 4).map((article: NewsArticle, index: number) => ({
           title: article.title,
           time: getTimeAgo(new Date(article.publishedAt)),
-          source: article.source.name,
+          source: typeof article.source === 'string' 
+            ? article.source 
+            : (article.source?.name || 'Tech News'),
           impact: index === 0 ? "High" : index < 3 ? "Medium" : "Low",
           category: article.category || 'Tech',
           url: article.url

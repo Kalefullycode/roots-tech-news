@@ -103,7 +103,9 @@ const RealTimeNewsTicker = () => {
               className="flex items-center gap-3 hover:opacity-80 transition-opacity overflow-hidden"
             >
               <span className="font-orbitron text-sm font-semibold text-foreground whitespace-nowrap">
-                {currentNews.source.name}:
+                {typeof currentNews.source === 'string' 
+                  ? currentNews.source 
+                  : (currentNews.source?.name || 'Tech News')}:
               </span>
               <span className="text-sm text-muted-foreground truncate">
                 {currentNews.title}

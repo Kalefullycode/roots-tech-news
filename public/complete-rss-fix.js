@@ -64,23 +64,53 @@
 
             
 
-            // Return empty but valid response
+            // Return empty but valid XML response for RSS feeds to prevent XML parsing errors
 
-            return Promise.resolve(new Response(JSON.stringify({
+            const isRSSRequest = url.includes('rss') || url.includes('feed') || url.includes('xml');
 
-                items: [],
+            const emptyRSSXML = `<?xml version="1.0" encoding="UTF-8"?>
 
-                articles: [],
+<rss version="2.0">
 
-                feed: { title: 'Replaced Feed', items: [] }
+  <channel>
 
-            }), {
+    <title>Replaced Feed</title>
 
-                status: 200,
+    <description>This feed has been replaced with working alternatives</description>
 
-                headers: { 'Content-Type': 'application/json' }
+    <items></items>
 
-            }));
+  </channel>
+
+</rss>`;
+
+            
+
+            return Promise.resolve(new Response(
+
+                isRSSRequest ? emptyRSSXML : JSON.stringify({
+
+                    items: [],
+
+                    articles: [],
+
+                    feed: { title: 'Replaced Feed', items: [] }
+
+                }), 
+
+                {
+
+                    status: 200,
+
+                    headers: { 
+
+                        'Content-Type': isRSSRequest ? 'application/xml' : 'application/json'
+
+                    }
+
+                }
+
+            ));
 
         }
 
@@ -364,6 +394,30 @@
 
         displayArticles() {
 
+            // Only display if React app hasn't loaded or if there's an error
+
+            // Check if React root is empty or has error
+
+            const reactRoot = document.getElementById('root');
+
+            const hasReactContent = reactRoot && reactRoot.children.length > 0 && 
+
+                                   !reactRoot.querySelector('.error-boundary, .error-screen');
+
+            
+
+            // Don't interfere with React if it's working
+
+            if (hasReactContent) {
+
+                console.log('✅ React app is running, skipping RSS fix display');
+
+                return;
+
+            }
+
+            
+
             // Remove any error screens
 
             const errorScreen = document.querySelector('.error-screen, #error-boundary');
@@ -376,7 +430,7 @@
 
             
 
-            // Find or create main container
+            // Find or create main container (only if React isn't working)
 
             let container = document.getElementById('roots-news-container');
 
