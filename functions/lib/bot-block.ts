@@ -20,7 +20,7 @@ const AI_CRAWLER_USER_AGENTS = [
   'ImagesiftBot',
   'PetalBot',
   'meta-externalagent',
-  'ia_archiver'
+  'ia_archiver',
 ];
 
 export function isAICrawler(userAgent: string): boolean {

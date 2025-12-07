@@ -39,5 +39,5 @@ User-agent: *
 Disallow: /api/
 Disallow: /functions/
 
-# Sitemap (add your sitemap URL here when available)
-# Sitemap: https://rootstechnews.com/sitemap.xml
+# Sitemap location (uncomment and update with your sitemap URL when available)
+# Sitemap: https://example.com/sitemap.xml
