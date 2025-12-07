@@ -1,5 +1,6 @@
 import { NewsArticle } from './NewsService';
 import TechNewsFeedManager from './TechNewsFeedManager';
+import { fetchViaProxy } from '@/lib/fetchViaProxy';
 
 interface DevToArticle {
   title: string;
@@ -146,7 +147,8 @@ class FreeNewsService {
     }
 
     try {
-      const response = await fetch(`https://www.reddit.com/r/${subreddit}/top.json?limit=${limit}`);
+      // Use fetchViaProxy to avoid CORS issues with Reddit API
+      const response = await fetchViaProxy(`https://www.reddit.com/r/${subreddit}/top.json?limit=${limit}`);
       
       if (!response.ok) {
         return [];

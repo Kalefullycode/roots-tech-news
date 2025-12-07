@@ -1,4 +1,5 @@
 import { NewsArticle } from './NewsService';
+import { fetchViaProxy } from '@/lib/fetchViaProxy';
 
 interface FeedConfig {
   name: string;
@@ -118,13 +119,6 @@ class TechNewsFeedManager {
     ]
   };
 
-  // CORS proxy options (free services)
-  corsProxies = [
-    'https://api.allorigins.win/raw?url=',
-    'https://cors.bridged.cc/',
-    'https://cors-proxy.htmldriven.com/?url='
-  ];
-
   // Cache configuration
   cache = {
     enabled: true,
@@ -175,7 +169,7 @@ class TechNewsFeedManager {
     }));
   }
 
-  // Load RSS feed with CORS proxy
+  // Load RSS feed with our RSS proxy
   private async loadRSSFeed(feed: FeedConfig): Promise<Article[]> {
     const cacheKey = `feed_${feed.name}`;
 
@@ -185,35 +179,28 @@ class TechNewsFeedManager {
       if (cached) return cached;
     }
 
-    // Try loading with CORS proxy
-    for (const proxy of this.corsProxies) {
-      try {
-        const response = await fetch(proxy + encodeURIComponent(feed.url), {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/rss+xml, application/xml, text/xml, application/atom+xml'
-          }
-        }).catch(() => null);
+    // Use our RSS proxy via the helper
+    try {
+      const response = await fetchViaProxy(feed.url);
 
-        if (response && response.ok) {
-          const text = await response.text();
-          const articles = this.parseRSS(text, feed);
+      if (response.ok) {
+        const text = await response.text();
+        const articles = this.parseRSS(text, feed);
 
-          // Cache successful response
-          if (this.cache.enabled && articles.length > 0) {
-            this.saveToCache(cacheKey, articles);
-          }
-
-          return articles;
+        // Cache successful response
+        if (this.cache.enabled && articles.length > 0) {
+          this.saveToCache(cacheKey, articles);
         }
-      } catch (error) {
-        continue; // Try next proxy
-      }
-    }
 
-    // If all proxies fail, return empty array
-    console.warn(`All proxies failed for ${feed.name}`);
-    return [];
+        return articles;
+      } else {
+        console.warn(`Failed to load ${feed.name}: ${response.status} ${response.statusText}`);
+        return [];
+      }
+    } catch (error) {
+      console.error(`Error loading ${feed.name}:`, error);
+      return [];
+    }
   }
 
   // Load JSON API feed

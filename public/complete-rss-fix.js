@@ -38,8 +38,6 @@
 
             'htmldriven.com',
 
-            '/api/rss-proxy',
-
             'openai.com/blog/rss',
 
             'news.mit.edu/rss',
