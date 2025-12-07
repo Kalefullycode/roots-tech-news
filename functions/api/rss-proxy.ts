@@ -169,22 +169,16 @@ const ALLOWED_DOMAINS = [
 
 // Check if URL is from an allowed domain
 // In production: Uses RSS_WHITELIST env var if set
-// In development: Uses hardcoded ALLOWED_DOMAINS list or allows all if no whitelist
-function isAllowedDomain(url: string, env: Env, isDev: boolean): boolean {
+// In development: Uses hardcoded ALLOWED_DOMAINS list
+function isAllowedDomain(url: string, env: Env): boolean {
   try {
     const urlObj = new URL(url);
     const hostname = urlObj.hostname.toLowerCase();
     
-    // Get whitelist from environment or use default
+    // Get whitelist from environment or use default hardcoded list
     const whitelist = env.RSS_WHITELIST 
       ? env.RSS_WHITELIST.split(',').map(d => d.trim().toLowerCase())
       : ALLOWED_DOMAINS;
-    
-    // In development with no RSS_WHITELIST, allow all domains
-    if (isDev && !env.RSS_WHITELIST) {
-      console.log(`[DEV MODE] Allowing all domains: ${hostname}`);
-      return true;
-    }
     
     return whitelist.some(domain => 
       hostname === domain || hostname.endsWith(`.${domain}`)
@@ -194,12 +188,18 @@ function isAllowedDomain(url: string, env: Env, isDev: boolean): boolean {
   }
 }
 
+// Helper function to determine CORS origin
+function getCorsOrigin(requestOrigin: string, allowOrigin: string, allowedOrigins: string[]): string {
+  if (allowOrigin === '*') {
+    return '*';
+  }
+  // If request origin is in allowed list, use it; otherwise use configured ALLOW_ORIGIN
+  return allowedOrigins.includes(requestOrigin) ? requestOrigin : allowOrigin;
+}
+
 // Main request handler
 export async function onRequestGet(context: PagesFunctionContext): Promise<Response> {
   const { request, env } = context;
-  
-  // Determine if running in development mode
-  const isDev = !env.RSS_WHITELIST; // If no RSS_WHITELIST set, assume dev mode
   
   // Block AI crawlers at edge
   try {
@@ -210,9 +210,9 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
     // No-op if util not available
   }
   
-  // CORS headers - use ALLOW_ORIGIN env var or default to '*'
-  // In production, set ALLOW_ORIGIN to your site's origin for security
-  const allowOrigin = env.ALLOW_ORIGIN || '*';
+  // CORS headers - use ALLOW_ORIGIN env var or default to first allowed origin for security
+  // In production, set ALLOW_ORIGIN to your site's origin
+  const allowOrigin = env.ALLOW_ORIGIN || 'https://rootstechnews.com';
   
   const allowedOrigins = [
     'https://rootstechnews.com',
@@ -222,7 +222,7 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
   ];
   
   const origin = request.headers.get('Origin') || '';
-  const corsOrigin = allowOrigin === '*' ? '*' : (allowedOrigins.includes(origin) ? origin : allowedOrigins[0]);
+  const corsOrigin = getCorsOrigin(origin, allowOrigin, allowedOrigins);
   
   const corsHeaders = {
     'Access-Control-Allow-Origin': corsOrigin,
@@ -306,7 +306,7 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
     }
 
     // Security check: Validate domain
-    if (!isAllowedDomain(decodedFeedUrl, env, isDev)) {
+    if (!isAllowedDomain(decodedFeedUrl, env)) {
       console.warn(`Blocked request to unauthorized domain: ${parsedFeedUrl.hostname}`);
       return new Response(
         JSON.stringify({ 
@@ -534,8 +534,8 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
 export async function onRequestOptions(context: PagesFunctionContext) {
   const { request, env } = context;
   
-  // Use ALLOW_ORIGIN env var or default to '*'
-  const allowOrigin = env.ALLOW_ORIGIN || '*';
+  // Use ALLOW_ORIGIN env var or default to first allowed origin for security
+  const allowOrigin = env.ALLOW_ORIGIN || 'https://rootstechnews.com';
   
   const allowedOrigins = [
     'https://rootstechnews.com',
@@ -545,7 +545,7 @@ export async function onRequestOptions(context: PagesFunctionContext) {
   ];
   
   const origin = request.headers.get('Origin') || '';
-  const corsOrigin = allowOrigin === '*' ? '*' : (allowedOrigins.includes(origin) ? origin : allowedOrigins[0]);
+  const corsOrigin = getCorsOrigin(origin, allowOrigin, allowedOrigins);
   
   return new Response(null, {
     status: 204,

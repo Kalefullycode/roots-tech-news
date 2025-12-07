@@ -69,13 +69,17 @@ export async function fetchViaProxy(feedUrl: string): Promise<Response> {
       const contentType = response.headers.get('content-type') || '';
       if (contentType.includes('application/json')) {
         try {
-          const errorData = await response.json();
+          // Clone response to avoid consuming body
+          const errorData = await response.clone().json();
           const errorMessage = errorData.error || errorData.message || 'Unknown error';
           throw new Error(
             `RSS Proxy error (${response.status}): ${errorMessage} for URL: ${feedUrl}`
           );
         } catch (jsonError) {
-          // If JSON parsing fails, use generic error
+          // If JSON parsing fails, log and use generic error
+          if (jsonError instanceof Error && !jsonError.message.includes('RSS Proxy error')) {
+            console.warn('Failed to parse error response as JSON:', jsonError.message);
+          }
           throw new Error(
             `RSS Proxy error: ${response.status} ${response.statusText} for URL: ${feedUrl}`
           );

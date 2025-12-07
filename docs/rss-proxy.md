@@ -85,12 +85,12 @@ RSS_WHITELIST=reddit.com,techcrunch.com,theverge.com,youtube.com,dev.to,news.yco
 - Prevents proxy abuse
 - Reduces attack surface
 
-**Development Mode:** If `RSS_WHITELIST` is not set, the proxy allows all domains (dev mode). The hardcoded whitelist is used as a fallback.
+**Development Mode:** If `RSS_WHITELIST` is not set, the proxy uses the hardcoded whitelist (100+ trusted domains). To allow all domains in development, you can set `RSS_WHITELIST=*` (not recommended for production).
 
 #### `ALLOW_ORIGIN` (Recommended for Production)
 
 **Type:** String  
-**Default:** `*` (allow all origins)  
+**Default:** `https://rootstechnews.com` (production domain)  
 **Description:** Value for the `Access-Control-Allow-Origin` header
 
 **Examples:**
@@ -108,7 +108,9 @@ ALLOW_ORIGIN=*
 **Why set this:**
 - Security - prevents other sites from using your proxy
 - Should be set to your production domain
-- Use `*` only in development
+- Use `*` only in development for convenience
+
+**Note:** For development convenience, you can set `ALLOW_ORIGIN=*` to allow all origins. This is not recommended for production.
 
 ### Setting Environment Variables in Cloudflare
 
