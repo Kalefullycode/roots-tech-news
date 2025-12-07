@@ -5,19 +5,22 @@ const AI_CRAWLER_USER_AGENTS = [
   'anthropic-ai',
   'Claude-Web',
   'ClaudeBot',
+  'ClaudeWebBot',
   'cohere-ai',
   'Omgilibot',
   'FacebookBot',
-  'Applebot',
   'Applebot-Extended',
   'Google-Extended',
+  'GoogleOther',
   'PerplexityBot',
+  'Perplexity-ai',
   'YouBot',
   'Bytespider',
   'Diffbot',
   'ImagesiftBot',
   'PetalBot',
-  'meta-externalagent'
+  'meta-externalagent',
+  'ia_archiver'
 ];
 
 export function isAICrawler(userAgent: string): boolean {
