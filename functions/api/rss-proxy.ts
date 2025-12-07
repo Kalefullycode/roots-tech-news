@@ -6,6 +6,8 @@
 
 interface Env {
   RESEND_API_KEY?: string;
+  RSS_WHITELIST?: string; // Comma-separated list of allowed domains for production
+  ALLOW_ORIGIN?: string; // Access-Control-Allow-Origin header value (default '*')
   [key: string]: unknown;
 }
 
@@ -166,12 +168,25 @@ const ALLOWED_DOMAINS = [
 ];
 
 // Check if URL is from an allowed domain
-function isAllowedDomain(url: string): boolean {
+// In production: Uses RSS_WHITELIST env var if set
+// In development: Uses hardcoded ALLOWED_DOMAINS list or allows all if no whitelist
+function isAllowedDomain(url: string, env: Env, isDev: boolean): boolean {
   try {
     const urlObj = new URL(url);
     const hostname = urlObj.hostname.toLowerCase();
     
-    return ALLOWED_DOMAINS.some(domain => 
+    // Get whitelist from environment or use default
+    const whitelist = env.RSS_WHITELIST 
+      ? env.RSS_WHITELIST.split(',').map(d => d.trim().toLowerCase())
+      : ALLOWED_DOMAINS;
+    
+    // In development with no RSS_WHITELIST, allow all domains
+    if (isDev && !env.RSS_WHITELIST) {
+      console.log(`[DEV MODE] Allowing all domains: ${hostname}`);
+      return true;
+    }
+    
+    return whitelist.some(domain => 
       hostname === domain || hostname.endsWith(`.${domain}`)
     );
   } catch (error) {
@@ -181,7 +196,10 @@ function isAllowedDomain(url: string): boolean {
 
 // Main request handler
 export async function onRequestGet(context: PagesFunctionContext): Promise<Response> {
-  const { request } = context;
+  const { request, env } = context;
+  
+  // Determine if running in development mode
+  const isDev = !env.RSS_WHITELIST; // If no RSS_WHITELIST set, assume dev mode
   
   // Block AI crawlers at edge
   try {
@@ -192,7 +210,10 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
     // No-op if util not available
   }
   
-  // CORS headers - restrict to allowed origins
+  // CORS headers - use ALLOW_ORIGIN env var or default to '*'
+  // In production, set ALLOW_ORIGIN to your site's origin for security
+  const allowOrigin = env.ALLOW_ORIGIN || '*';
+  
   const allowedOrigins = [
     'https://rootstechnews.com',
     'https://www.rootstechnews.com',
@@ -201,7 +222,7 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
   ];
   
   const origin = request.headers.get('Origin') || '';
-  const corsOrigin = allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+  const corsOrigin = allowOrigin === '*' ? '*' : (allowedOrigins.includes(origin) ? origin : allowedOrigins[0]);
   
   const corsHeaders = {
     'Access-Control-Allow-Origin': corsOrigin,
@@ -285,7 +306,7 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
     }
 
     // Security check: Validate domain
-    if (!isAllowedDomain(decodedFeedUrl)) {
+    if (!isAllowedDomain(decodedFeedUrl, env, isDev)) {
       console.warn(`Blocked request to unauthorized domain: ${parsedFeedUrl.hostname}`);
       return new Response(
         JSON.stringify({ 
@@ -337,11 +358,11 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
 
     let response: Response;
     try {
-      // Use realistic browser headers to avoid 403 errors from some sites
+      // Use descriptive User-Agent to avoid being rejected by providers like Reddit
       response = await fetch(decodedFeedUrl, {
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+          'User-Agent': 'RootsTechNews/1.0 (https://rootstechnews.com; RSS Feed Aggregator) Mozilla/5.0',
+          'Accept': 'application/rss+xml, application/xml, text/xml, application/json, */*',
           'Accept-Language': 'en-US,en;q=0.9',
           'Cache-Control': 'no-cache',
           'Referer': 'https://rootstechnews.com/',
@@ -511,7 +532,11 @@ export async function onRequestGet(context: PagesFunctionContext): Promise<Respo
 
 // Handle OPTIONS requests for CORS preflight
 export async function onRequestOptions(context: PagesFunctionContext) {
-  const { request } = context;
+  const { request, env } = context;
+  
+  // Use ALLOW_ORIGIN env var or default to '*'
+  const allowOrigin = env.ALLOW_ORIGIN || '*';
+  
   const allowedOrigins = [
     'https://rootstechnews.com',
     'https://www.rootstechnews.com',
@@ -520,7 +545,7 @@ export async function onRequestOptions(context: PagesFunctionContext) {
   ];
   
   const origin = request.headers.get('Origin') || '';
-  const corsOrigin = allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+  const corsOrigin = allowOrigin === '*' ? '*' : (allowedOrigins.includes(origin) ? origin : allowedOrigins[0]);
   
   return new Response(null, {
     status: 204,
