@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import ErrorBoundary from './components/ErrorBoundary';
 import './index.css';
-import './utils/fetchInterceptor'; // Block broken RSS proxy requests
+// import './utils/fetchInterceptor'; // disabled to stop blocking feeds
 
 // Global error handler for unhandled errors
 window.onerror = function(message, source, lineno, colno, error) {
