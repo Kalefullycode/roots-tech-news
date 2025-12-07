@@ -1,3 +1,51 @@
-# Block all bots and crawlers
-User-agent: *
+# Enhanced robots.txt - Block AI crawlers, allow legitimate search engines
+
+# Block AI Crawlers and Scrapers
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: CCBot
+User-agent: anthropic-ai
+User-agent: Claude-Web
+User-agent: ClaudeBot
+User-agent: ClaudeWebBot
+User-agent: Google-Extended
+User-agent: GoogleOther
+User-agent: PerplexityBot
+User-agent: Perplexity-ai
+User-agent: Applebot-Extended
+User-agent: Omgilibot
+User-agent: FacebookBot
+User-agent: ia_archiver
+User-agent: cohere-ai
+User-agent: YouBot
+User-agent: Bytespider
+User-agent: Diffbot
+User-agent: ImagesiftBot
+User-agent: PetalBot
+User-agent: meta-externalagent
 Disallow: /
+
+# SEO/Scraping bots - Add delay
+User-agent: AhrefsBot
+User-agent: SemrushBot
+User-agent: MJ12bot
+User-agent: DotBot
+Crawl-delay: 10
+
+# Block access to API endpoints and functions for all bots
+User-agent: *
+Disallow: /api/
+Disallow: /functions/
+
+# Allow legitimate search engines
+User-agent: Googlebot
+User-agent: Bingbot
+User-agent: Slurp
+User-agent: DuckDuckBot
+User-agent: Baiduspider
+User-agent: YandexBot
+User-agent: facebot
+Allow: /
+
+# Sitemap (add your sitemap URL here when available)
+# Sitemap: https://rootstechnews.com/sitemap.xml
