@@ -1,6 +1,6 @@
 # Enhanced robots.txt - Block AI crawlers, allow legitimate search engines
 
-# Block AI Crawlers and Scrapers
+# Block AI Crawlers and Scrapers - Complete Disallow
 User-agent: GPTBot
 User-agent: ChatGPT-User
 User-agent: CCBot
@@ -25,27 +25,19 @@ User-agent: PetalBot
 User-agent: meta-externalagent
 Disallow: /
 
-# SEO/Scraping bots - Add delay
+# SEO/Scraping bots - Crawl delay
 User-agent: AhrefsBot
 User-agent: SemrushBot
 User-agent: MJ12bot
 User-agent: DotBot
 Crawl-delay: 10
-
-# Block access to API endpoints and functions for all bots
-User-agent: *
 Disallow: /api/
 Disallow: /functions/
 
-# Allow legitimate search engines
-User-agent: Googlebot
-User-agent: Bingbot
-User-agent: Slurp
-User-agent: DuckDuckBot
-User-agent: Baiduspider
-User-agent: YandexBot
-User-agent: facebot
-Allow: /
+# Default rule - Block API endpoints for all other bots
+User-agent: *
+Disallow: /api/
+Disallow: /functions/
 
 # Sitemap (add your sitemap URL here when available)
 # Sitemap: https://rootstechnews.com/sitemap.xml
