@@ -146,7 +146,9 @@ class FreeNewsService {
     }
 
     try {
-      const response = await fetch(`https://www.reddit.com/r/${subreddit}/top.json?limit=${limit}`);
+      // Use our Reddit proxy to avoid CORS issues
+      const proxyUrl = `/api/reddit-proxy?subreddit=${subreddit}&sort=top&limit=${limit}`;
+      const response = await fetch(proxyUrl);
       
       if (!response.ok) {
         return [];

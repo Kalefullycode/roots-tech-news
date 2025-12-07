@@ -118,12 +118,8 @@ class TechNewsFeedManager {
     ]
   };
 
-  // CORS proxy options (free services)
-  corsProxies = [
-    'https://api.allorigins.win/raw?url=',
-    'https://cors.bridged.cc/',
-    'https://cors-proxy.htmldriven.com/?url='
-  ];
+  // Use our Cloudflare Pages Function RSS proxy instead of third-party CORS proxies
+  // This is more reliable and faster
 
   // Cache configuration
   cache = {
@@ -175,7 +171,7 @@ class TechNewsFeedManager {
     }));
   }
 
-  // Load RSS feed with CORS proxy
+  // Load RSS feed using our Cloudflare Pages Function RSS proxy
   private async loadRSSFeed(feed: FeedConfig): Promise<Article[]> {
     const cacheKey = `feed_${feed.name}`;
 
@@ -185,34 +181,39 @@ class TechNewsFeedManager {
       if (cached) return cached;
     }
 
-    // Try loading with CORS proxy
-    for (const proxy of this.corsProxies) {
-      try {
-        const response = await fetch(proxy + encodeURIComponent(feed.url), {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/rss+xml, application/xml, text/xml, application/atom+xml'
-          }
-        }).catch(() => null);
-
-        if (response && response.ok) {
-          const text = await response.text();
-          const articles = this.parseRSS(text, feed);
-
-          // Cache successful response
-          if (this.cache.enabled && articles.length > 0) {
-            this.saveToCache(cacheKey, articles);
-          }
-
-          return articles;
+    try {
+      // Use our Cloudflare Pages Function RSS proxy
+      const proxyUrl = `/api/rss-proxy?url=${encodeURIComponent(feed.url)}`;
+      const response = await fetch(proxyUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/rss+xml, application/xml, text/xml, application/atom+xml'
         }
-      } catch (error) {
-        continue; // Try next proxy
+      });
+
+      if (response && response.ok) {
+        const text = await response.text();
+        
+        // Check if response is JSON error (from rss-proxy error handling)
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json') || (text.trim().startsWith('{') && text.includes('error'))) {
+          return [];
+        }
+        
+        const articles = this.parseRSS(text, feed);
+
+        // Cache successful response
+        if (this.cache.enabled && articles.length > 0) {
+          this.saveToCache(cacheKey, articles);
+        }
+
+        return articles;
       }
+    } catch (error) {
+      console.warn(`Failed to load RSS feed ${feed.name}:`, error);
     }
 
-    // If all proxies fail, return empty array
-    console.warn(`All proxies failed for ${feed.name}`);
+    // Return empty array on failure
     return [];
   }
 
@@ -227,6 +228,27 @@ class TechNewsFeedManager {
     }
 
     try {
+      // Use Reddit proxy for Reddit API calls
+      if (api.name.includes('Reddit')) {
+        const subreddit = api.url.match(/\/r\/([^/]+)/)?.[1] || 'technology';
+        const limit = parseInt(api.url.match(/limit=(\d+)/)?.[1] || '10', 10);
+        const proxyUrl = `/api/reddit-proxy?subreddit=${subreddit}&sort=top&limit=${limit}`;
+        
+        const response = await fetch(proxyUrl);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        const articles = this.parseJSON(data, api);
+
+        // Cache successful response
+        if (this.cache.enabled && articles.length > 0) {
+          this.saveToCache(cacheKey, articles);
+        }
+
+        return articles;
+      }
+
+      // Direct fetch for other APIs (DEV.to, etc.)
       const response = await fetch(api.url);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
 

@@ -13,6 +13,7 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
   // ============================================
   // BREAKING NEWS SOURCES (Hourly Updates)
   // ============================================
+  // DISABLED: Paywalled/broken feeds
   {
     id: 'reuters-technology',
     name: 'Reuters Technology',
@@ -20,7 +21,7 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
     category: 'tech-news',
     updateFrequency: 60, // Hourly
     priority: 'high',
-    active: true
+    active: false // DISABLED: Paywalled
   },
   {
     id: 'ap-news-tech',
@@ -29,7 +30,7 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
     category: 'tech-news',
     updateFrequency: 60, // Hourly
     priority: 'high',
-    active: true
+    active: false // DISABLED: Format changed
   },
   {
     id: 'cnbc-technology',
@@ -38,12 +39,13 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
     category: 'tech-news',
     updateFrequency: 60, // Hourly
     priority: 'high',
-    active: true
+    active: false // DISABLED: Broken RSS feed
   },
 
   // ============================================
   // HIGH-FREQUENCY TECH NEWS (Multiple Daily Updates)
   // ============================================
+  // DISABLED: Broken/dead feeds
   {
     id: 'engadget',
     name: 'Engadget',
@@ -51,7 +53,7 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
     category: 'tech-news',
     updateFrequency: 10, // 5-10x daily
     priority: 'high',
-    active: true
+    active: false // DISABLED: Dead feed
   },
   {
     id: 'zdnet',
@@ -60,7 +62,7 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
     category: 'tech-news',
     updateFrequency: 10, // 5-10x daily
     priority: 'high',
-    active: true
+    active: false // DISABLED: Dead feed
   },
   {
     id: 'gizmodo',
@@ -69,7 +71,7 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
     category: 'tech-news',
     updateFrequency: 10, // 5-10x daily
     priority: 'high',
-    active: true
+    active: false // DISABLED: Blocked
   },
   {
     id: 'mashable-tech',
@@ -78,7 +80,7 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
     category: 'tech-news',
     updateFrequency: 10, // 5-10x daily
     priority: 'high',
-    active: true
+    active: false // DISABLED: Dead feed
   },
   {
     id: 'thenextweb',
@@ -176,7 +178,7 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
     category: 'ai',
     updateFrequency: 60, // Weekly
     priority: 'high',
-    active: true
+    active: false // DISABLED: RSS feed doesn't exist
   },
   {
     id: 'anthropic-news',
@@ -194,7 +196,7 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
     category: 'ai',
     updateFrequency: 60, // Weekly
     priority: 'high',
-    active: true
+    active: false // DISABLED: Format changed, often fails
   },
   {
     id: 'google-ai',
@@ -203,7 +205,7 @@ export const REAL_TIME_RSS_FEEDS: RSSFeed[] = [
     category: 'ai',
     updateFrequency: 60, // Weekly
     priority: 'high',
-    active: true
+    active: false // DISABLED: Often fails
   },
 
   // ============================================
