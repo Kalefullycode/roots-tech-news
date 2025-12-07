@@ -64,8 +64,19 @@ async function getChannelId(handle: string, apiKey: string): Promise<string | nu
 }
 
 export const onRequestGet: PagesFunction<Env> = async (context) => {
+  // Restrict CORS to allowed origins only
+  const allowedOrigins = [
+    'https://rootstechnews.com',
+    'https://www.rootstechnews.com',
+    'http://localhost:5173',
+    'http://localhost:3000',
+  ];
+  
+  const origin = context.request.headers.get('Origin') || '';
+  const corsOrigin = allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+  
   const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': corsOrigin,
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
   };
@@ -230,11 +241,21 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 };
 
 // Handle OPTIONS for CORS preflight
-export const onRequestOptions: PagesFunction<Env> = async () => {
+export const onRequestOptions: PagesFunction<Env> = async (context) => {
+  const allowedOrigins = [
+    'https://rootstechnews.com',
+    'https://www.rootstechnews.com',
+    'http://localhost:5173',
+    'http://localhost:3000',
+  ];
+  
+  const origin = context.request.headers.get('Origin') || '';
+  const corsOrigin = allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+  
   return new Response(null, {
     status: 204,
     headers: {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': corsOrigin,
       'Access-Control-Allow-Headers': 'Content-Type',
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
       'Access-Control-Max-Age': '86400',

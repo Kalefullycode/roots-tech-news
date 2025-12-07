@@ -13,6 +13,8 @@ pages_build_output_dir = "dist"
 # Add these in Cloudflare Pages Dashboard → Settings → Environment Variables
 # RESEND_API_KEY: Your Resend API key (starts with re_)
 # RESEND_AUDIENCE_ID (optional): Resend Audience ID for managing subscribers
+# ADMIN_API_KEY: Strong random key (32+ chars) for protecting admin endpoints (/api/newsletter/broadcast, /api/newsletter/stats)
+# YOUTUBE_API_KEY (optional): YouTube Data API key for video feeds
 
 # KV Namespace binding for RSS feed caching
 [[kv_namespaces]]

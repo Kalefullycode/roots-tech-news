@@ -1,3 +1,7 @@
+# Enforce HTTPS - Redirect HTTP to HTTPS
+http://rootstechnews.com/* https://rootstechnews.com/:splat 301
+http://www.rootstechnews.com/* https://rootstechnews.com/:splat 301
+
 # Redirect .pages.dev to custom domain
 https://*.pages.dev/* https://rootstechnews.com/:splat 301
 https://roots-tech-news.pages.dev/* https://rootstechnews.com/:splat 301
