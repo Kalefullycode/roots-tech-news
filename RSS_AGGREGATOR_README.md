@@ -30,7 +30,7 @@ The server-side implementation runs on Cloudflare Pages Functions and provides:
       "title": "Article Title",
       "description": "Article summary...",
       "url": "https://example.com/article",
-      "publishedAt": "2025-12-12T10:30:00Z",
+      "publishedAt": "2024-12-12T10:30:00Z",
       "source": "TechCrunch",
       "category": "Tech",
       "image": "https://example.com/image.jpg"
@@ -41,7 +41,7 @@ The server-side implementation runs on Cloudflare Pages Functions and provides:
   "sources": 32,
   "successfulSources": 30,
   "errors": ["Source1: timeout", "Source2: 404"],
-  "lastUpdated": "2025-12-12T10:35:00Z"
+  "lastUpdated": "2024-12-12T10:35:00Z"
 }
 ```
 

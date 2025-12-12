@@ -61,15 +61,31 @@ function parseRSSWithDOMParser(xmlText: string, sourceName: string): RSSArticle[
         const title = item.querySelector('title')?.textContent || 'Untitled';
         const link = item.querySelector('link')?.textContent || '';
         const description = item.querySelector('description')?.textContent || '';
-        const author = item.querySelector('author, dc\\:creator, creator')?.textContent || undefined;
+        
+        // Extract author - try multiple possible tags for better compatibility
+        let author: string | undefined;
+        const authorElement = item.querySelector('author');
+        if (authorElement) {
+          author = authorElement.textContent || undefined;
+        } else {
+          // Try dc:creator with namespace-agnostic selector
+          const creatorElement = item.querySelector('[*|creator]') || item.querySelector('creator');
+          if (creatorElement) {
+            author = creatorElement.textContent || undefined;
+          }
+        }
         
         // Extract pubDate from various possible tags
-        const pubDateElement = item.querySelector('pubDate, dc\\:date, date, published');
+        const pubDateElement = item.querySelector('pubDate') || 
+                               item.querySelector('[*|date]') || 
+                               item.querySelector('date') || 
+                               item.querySelector('published');
         const pubDate = pubDateElement?.textContent || new Date().toISOString();
         
         // Extract image from various sources
         let image: string | undefined;
-        const mediaContent = item.querySelector('media\\:content, content');
+        // Try media:content with namespace-agnostic selector
+        const mediaContent = item.querySelector('[*|content]') || item.querySelector('content');
         if (mediaContent) {
           image = mediaContent.getAttribute('url') || undefined;
         }
@@ -198,7 +214,8 @@ function cleanDescription(description: string): string {
   return description
     .replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1')
     .replace(/<[^>]+>/g, '')
-    .replace(/https?:\/\/[^\s)]+/g, '')
+    // Remove URLs more carefully to avoid matching content in parentheses
+    .replace(/https?:\/\/[^\s<>]+/g, '')
     .replace(/Article URL:.*?(?=\s|$|\n)/gi, '')
     .replace(/Comments URL:.*?(?=\s|$|\n)/gi, '')
     .replace(/Points:\s*\d+/gi, '')
