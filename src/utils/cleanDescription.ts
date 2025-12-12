@@ -8,11 +8,11 @@ export function cleanDescription(description: string | undefined | null): string
 
   return description
     // Remove "Article URL:" patterns (with or without https://)
-    .replace(/Article URL:\s*https?:\/\/[^\s\)]+/gi, '')
+    .replace(/Article URL:\s*https?:\/\/[^\s)]+/gi, '')
     .replace(/Article URL:.*?(?=\s|$|\n|Comments|Points)/gi, '')
     
     // Remove "Comments URL:" patterns
-    .replace(/Comments URL:\s*https?:\/\/[^\s\)]+/gi, '')
+    .replace(/Comments URL:\s*https?:\/\/[^\s)]+/gi, '')
     .replace(/Comments URL:.*?(?=\s|$|\n|Points)/gi, '')
     
     // Remove "Points:" patterns
@@ -28,8 +28,8 @@ export function cleanDescription(description: string | undefined | null): string
     .replace(/<!\[CDATA\[/g, '')
     
     // Remove all URLs (http://, https://) - more comprehensive
-    .replace(/https?:\/\/[^\s\)]+/g, '')
-    .replace(/www\.[^\s\)]+/g, '')
+    .replace(/https?:\/\/[^\s)]+/g, '')
+    .replace(/www\.[^\s)]+/g, '')
     
     // Remove email addresses
     .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '')
@@ -42,7 +42,7 @@ export function cleanDescription(description: string | undefined | null): string
     .replace(/View original.*/gi, '')
     
     // Remove any remaining URL-like patterns
-    .replace(/[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/[^\s\)]*)?/g, '')
+    .replace(/[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/[^\s)]*)?/g, '')
     
     // Normalize whitespace
     .replace(/\s+/g, ' ')
