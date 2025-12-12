@@ -93,7 +93,10 @@ export default function VideoAggregationPage() {
         observer.unobserve(currentTarget);
       }
     };
-  }, [displayedVideos.length, videos.length, isLoadingMore, videos]);
+    // videos is intentionally not in deps - when filters change, displayedVideos is reset,
+    // causing this effect to re-run with the new videos array via displayedVideos.length change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [displayedVideos.length, videos.length, isLoadingMore]);
 
   const handleFiltersChange = useCallback((newFilters: Partial<VideoAggregationFilters>) => {
     setFilters((prev) => ({ ...prev, ...newFilters }));
