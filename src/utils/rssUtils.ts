@@ -14,13 +14,34 @@ export interface RSSArticle {
 }
 
 /**
- * Parse RSS XML using native DOMParser
- * Works in browser environments
+ * Parse RSS XML using native DOMParser (browser) or regex (Node.js)
+ * Works in both browser and Node.js environments
  * @param xmlText - Raw XML string from RSS feed
  * @param sourceName - Name of the RSS source
  * @returns Array of parsed articles
  */
 export function parseRSSXML(xmlText: string, sourceName: string): RSSArticle[] {
+  const articles: RSSArticle[] = [];
+  
+  try {
+    // Check if DOMParser is available (browser environment)
+    if (typeof DOMParser !== 'undefined') {
+      return parseRSSWithDOMParser(xmlText, sourceName);
+    } else {
+      // Fallback to regex parsing for Node.js
+      return parseRSSWithRegex(xmlText, sourceName);
+    }
+  } catch (error) {
+    console.error(`Error parsing RSS XML from ${sourceName}:`, error);
+  }
+  
+  return articles;
+}
+
+/**
+ * Parse RSS XML using DOMParser (browser environment)
+ */
+function parseRSSWithDOMParser(xmlText: string, sourceName: string): RSSArticle[] {
   const articles: RSSArticle[] = [];
   
   try {
@@ -79,7 +100,77 @@ export function parseRSSXML(xmlText: string, sourceName: string): RSSArticle[] {
       }
     });
   } catch (error) {
-    console.error(`Error parsing RSS XML from ${sourceName}:`, error);
+    console.error(`Error parsing RSS with DOMParser from ${sourceName}:`, error);
+  }
+  
+  return articles;
+}
+
+/**
+ * Parse RSS XML using regex (Node.js environment)
+ */
+function parseRSSWithRegex(xmlText: string, sourceName: string): RSSArticle[] {
+  const articles: RSSArticle[] = [];
+  
+  try {
+    // Extract items using regex
+    const itemRegex = /<item[^>]*>([\s\S]*?)<\/item>/gi;
+    const items = xmlText.match(itemRegex) || [];
+    
+    for (const itemXml of items) {
+      try {
+        // Extract title
+        const titleMatch = itemXml.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+        const title = titleMatch ? cleanText(titleMatch[1]) : 'Untitled';
+        
+        // Extract link
+        const linkMatch = itemXml.match(/<link[^>]*>([\s\S]*?)<\/link>/i);
+        const link = linkMatch ? cleanText(linkMatch[1]) : '';
+        
+        // Extract description
+        const descMatch = itemXml.match(/<description[^>]*>([\s\S]*?)<\/description>/i);
+        const description = descMatch ? cleanDescription(descMatch[1]) : undefined;
+        
+        // Extract author
+        const authorMatch = itemXml.match(/<(?:author|dc:creator|creator)[^>]*>([\s\S]*?)<\/(?:author|dc:creator|creator)>/i);
+        const author = authorMatch ? cleanText(authorMatch[1]) : undefined;
+        
+        // Extract pubDate
+        const pubDateMatch = itemXml.match(/<(?:pubDate|dc:date|date|published)[^>]*>([\s\S]*?)<\/(?:pubDate|dc:date|date|published)>/i);
+        const pubDate = pubDateMatch ? normalizeDate(cleanText(pubDateMatch[1])) : new Date().toISOString();
+        
+        // Extract image
+        let image: string | undefined;
+        const mediaContentMatch = itemXml.match(/<media:content[^>]+url=["']([^"']+)["']/i);
+        if (mediaContentMatch) {
+          image = mediaContentMatch[1];
+        } else {
+          const enclosureMatch = itemXml.match(/<enclosure[^>]+url=["']([^"']+)["']/i);
+          if (enclosureMatch) {
+            image = enclosureMatch[1];
+          } else {
+            const imgMatch = itemXml.match(/<img[^>]+src=["']([^"']+)["']/i);
+            if (imgMatch) {
+              image = imgMatch[1];
+            }
+          }
+        }
+        
+        articles.push({
+          title,
+          link: link.trim(),
+          pubDate,
+          source: sourceName,
+          description,
+          author,
+          image
+        });
+      } catch (itemError) {
+        console.warn(`Error parsing RSS item from ${sourceName}:`, itemError);
+      }
+    }
+  } catch (error) {
+    console.error(`Error parsing RSS with regex from ${sourceName}:`, error);
   }
   
   return articles;
