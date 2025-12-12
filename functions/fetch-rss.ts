@@ -16,10 +16,20 @@ interface Env {
 // Curated RSS Feed Sources - AI & Tech Focus
 // Updated with working URLs for Meta AI, Anthropic, and DeepMind
 // Includes high-frequency news sources for breaking news
+// Added specific feeds from requirements
 const RSS_SOURCES = [
+  // Required Feeds from Problem Statement
+  { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml', category: 'Tech' },
+  { name: 'TechCrunch', url: 'https://feeds.feedburner.com/TechCrunch', category: 'Tech' },
+  { name: 'Ars Technica', url: 'https://feeds.arstechnica.com/arstechnica/index', category: 'Tech' },
+  { name: 'VentureBeat AI', url: 'https://feeds.feedburner.com/venturebeat/SZYF', category: 'AI' },
+  { name: 'MIT Technology Review', url: 'https://www.technologyreview.com/feed', category: 'Tech' },
+  { name: 'Wired', url: 'https://www.wired.com/feed/rss', category: 'Tech' },
+  { name: 'Cyber Insider', url: 'https://cyberinsider.com/feed/', category: 'Security' },
+  { name: 'Cybernews', url: 'https://cybernews.com/feed/', category: 'Security' },
+  
   // AI-Focused Sources
   { name: 'TechCrunch AI', url: 'https://techcrunch.com/category/artificial-intelligence/feed/', category: 'AI' },
-  { name: 'VentureBeat AI', url: 'https://venturebeat.com/category/ai/feed/', category: 'AI' },
   { name: 'The Verge AI', url: 'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml', category: 'AI' },
   { name: 'AI News', url: 'https://www.artificialintelligence-news.com/feed/', category: 'AI' },
   // AI Company Blogs - Updated URLs
@@ -40,16 +50,8 @@ const RSS_SOURCES = [
   { name: 'The Next Web', url: 'https://thenextweb.com/feed/', category: 'Tech' },
   { name: 'Digital Trends', url: 'https://www.digitaltrends.com/feed/', category: 'Tech' },
   
-  // Established Tech Sources
-  { name: 'MIT Technology Review', url: 'https://www.technologyreview.com/feed/', category: 'Tech' },
-  { name: 'Ars Technica', url: 'https://feeds.arstechnica.com/arstechnica/index', category: 'Tech' },
-  { name: 'Wired', url: 'https://www.wired.com/feed/rss', category: 'Tech' },
-  { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml', category: 'Tech' },
-  
   // Cybersecurity & AI Security Sources
-  { name: 'CyberInsider', url: 'https://cyberinsider.com/feed/', category: 'Security' },
   { name: 'The Hacker News', url: 'https://feeds.feedburner.com/TheHackersNews', category: 'Security' },
-  { name: 'CyberNews', url: 'https://cybernews.com/feed/', category: 'Security' },
   { name: 'Wired Security', url: 'https://www.wired.com/feed/category/security/', category: 'Security' },
   { name: 'Krebs on Security', url: 'https://krebsonsecurity.com/feed/', category: 'Security' },
   { name: 'Bleeping Computer', url: 'https://www.bleepingcomputer.com/feed/', category: 'Security' },

@@ -12,11 +12,16 @@ class RSSService {
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
   private readonly RSS_FEEDS: RSSFeed[] = [
-    { url: 'https://techcrunch.com/feed/', name: 'TechCrunch', category: 'Startups' },
+    // Required Feeds from Problem Statement
+    { url: 'https://www.theverge.com/rss/index.xml', name: 'The Verge', category: 'Tech' },
+    { url: 'https://feeds.feedburner.com/TechCrunch', name: 'TechCrunch', category: 'Tech' },
     { url: 'https://feeds.arstechnica.com/arstechnica/index', name: 'Ars Technica', category: 'Tech' },
-    { url: 'https://www.theverge.com/rss/index.xml', name: 'The Verge', category: 'Gadgets' },
-    { url: 'https://www.technologyreview.com/feed/', name: 'MIT Technology Review', category: 'AI' },
-    { url: 'https://feeds.feedburner.com/venturebeat/SZYF', name: 'VentureBeat', category: 'Startups' },
+    { url: 'https://feeds.feedburner.com/venturebeat/SZYF', name: 'VentureBeat AI', category: 'AI' },
+    { url: 'https://www.technologyreview.com/feed', name: 'MIT Technology Review', category: 'AI' },
+    { url: 'https://www.wired.com/feed/rss', name: 'Wired', category: 'Tech' },
+    { url: 'https://cyberinsider.com/feed/', name: 'Cyber Insider', category: 'Security' },
+    { url: 'https://cybernews.com/feed/', name: 'Cybernews', category: 'Security' },
+    // Additional Feeds
     { url: 'https://disrupt-africa.com/feed/', name: 'Disrupt Africa', category: 'Culture' },
     { url: 'https://ventureburn.com/feed/', name: 'Ventureburn', category: 'Startups' },
     { url: 'https://techcabal.com/feed/', name: 'TechCabal', category: 'Culture' },
