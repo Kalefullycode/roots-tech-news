@@ -93,7 +93,7 @@ export default function VideoAggregationPage() {
         observer.unobserve(currentTarget);
       }
     };
-  }, [displayedVideos.length, videos.length, isLoadingMore]);
+  }, [displayedVideos.length, videos.length, isLoadingMore, videos]);
 
   const handleFiltersChange = useCallback((newFilters: Partial<VideoAggregationFilters>) => {
     setFilters((prev) => ({ ...prev, ...newFilters }));
