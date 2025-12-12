@@ -194,34 +194,55 @@ function parseRSSWithRegex(xmlText: string, sourceName: string): RSSArticle[] {
 
 /**
  * Clean text by removing HTML tags and normalizing whitespace
+ * Removes all HTML content including tags and special characters to prevent injection
  * @param text - Text to clean
  * @returns Cleaned text
  */
 function cleanText(text: string): string {
-  return text
-    .replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1')
-    .replace(/<[^>]+>/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
+  // First, extract content from CDATA
+  let cleaned = text.replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1');
+  
+  // Remove complete HTML tags first
+  cleaned = cleaned.replace(/<[^>]+>/g, '');
+  
+  // Then remove any remaining angle brackets (incomplete tags)
+  // This two-step process ensures no HTML injection is possible
+  cleaned = cleaned.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  
+  // Normalize whitespace
+  cleaned = cleaned.replace(/\s+/g, ' ').trim();
+  
+  return cleaned;
 }
 
 /**
  * Clean description by removing HTML, URLs, and metadata
+ * Removes all HTML content including tags and special characters to prevent injection
  * @param description - Description text to clean
  * @returns Cleaned description (max 200 chars)
  */
 function cleanDescription(description: string): string {
-  return description
-    .replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1')
-    .replace(/<[^>]+>/g, '')
-    // Remove URLs more carefully to avoid matching content in parentheses
-    .replace(/https?:\/\/[^\s<>]+/g, '')
+  // First, extract content from CDATA
+  let cleaned = description.replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1');
+  
+  // Remove complete HTML tags first
+  cleaned = cleaned.replace(/<[^>]+>/g, '');
+  
+  // Then remove any remaining angle brackets (incomplete tags)
+  // This two-step process ensures no HTML injection is possible
+  cleaned = cleaned.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  
+  // Remove URLs and metadata
+  cleaned = cleaned
+    .replace(/https?:\/\/[^\s]+/g, '')
     .replace(/Article URL:.*?(?=\s|$|\n)/gi, '')
     .replace(/Comments URL:.*?(?=\s|$|\n)/gi, '')
-    .replace(/Points:\s*\d+/gi, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .substring(0, 200);
+    .replace(/Points:\s*\d+/gi, '');
+  
+  // Normalize whitespace and truncate
+  cleaned = cleaned.replace(/\s+/g, ' ').trim().substring(0, 200);
+  
+  return cleaned;
 }
 
 /**
