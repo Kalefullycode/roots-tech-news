@@ -1,131 +1,77 @@
-import { useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Zap, Radio } from "lucide-react";
-import EnhancedRSSService from "@/services/EnhancedRSSService";
-import { NewsArticle } from "@/services/NewsService";
-
-// Fallback news items for when API calls fail
-const FALLBACK_NEWS: NewsArticle[] = [
-  {
-    id: 'ticker-fallback-1',
-    title: 'Welcome to RootsTechNews - Your Gateway to African Tech Innovation',
-    description: 'Exploring the intersection of technology and culture through an Afro-futuristic lens.',
-    url: '#',
-    urlToImage: '',
-    publishedAt: new Date().toISOString(),
-    source: { id: 'roots', name: 'RootsTechNews' },
-    category: 'Tech'
-  },
-  {
-    id: 'ticker-fallback-2',
-    title: 'Live Tech News Updates - Refreshing Every 5 Minutes',
-    description: 'Stay connected to the latest developments in AI, startups, and innovation.',
-    url: '#',
-    urlToImage: '',
-    publishedAt: new Date().toISOString(),
-    source: { id: 'roots', name: 'RootsTechNews' },
-    category: 'News'
-  },
-  {
-    id: 'ticker-fallback-3',
-    title: 'Experiencing Technical Difficulties - We\'ll Be Right Back',
-    description: 'Our team is working to restore full news feed functionality.',
-    url: '#',
-    urlToImage: '',
-    publishedAt: new Date().toISOString(),
-    source: { id: 'roots', name: 'RootsTechNews' },
-    category: 'Status'
-  }
-];
+import { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const RealTimeNewsTicker = () => {
-  const [news, setNews] = useState<NewsArticle[]>(FALLBACK_NEWS);
+  const [tickerItems, setTickerItems] = useState<string[]>([
+    "Apple announces new AI features in iOS 19",
+    "Microsoft to acquire AI startup for $2 billion",
+    "New study reveals impact of AI on job market",
+    "OpenAI announces GPT-5 with multimodal capabilities",
+    "Cybersecurity experts warn of new phishing campaign"
+  ]);
+
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    // Initial fetch
-    const fetchNews = async () => {
-      try {
-        const articles = await EnhancedRSSService.fetchAllRSSFeeds();
-        if (articles && articles.length > 0) {
-          setNews(articles.slice(0, 20)); // Get top 20 most recent
-        }
-      } catch (error) {
-        console.error("Failed to fetch ticker news:", error);
-        // Keep fallback news on error
-      }
-    };
-
-    fetchNews();
-
-    // Refresh every 5 minutes
-    const refreshInterval = setInterval(fetchNews, 5 * 60 * 1000);
-
-    return () => clearInterval(refreshInterval);
-  }, []);
-
-  useEffect(() => {
-    if (news.length === 0) return;
-
-    // Rotate news items every 5 seconds
-    const rotateInterval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % news.length);
+    if (isPaused) return;
+    
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % tickerItems.length);
     }, 5000);
 
-    return () => clearInterval(rotateInterval);
-  }, [news.length]);
+    return () => clearInterval(interval);
+  }, [isPaused, tickerItems.length]);
 
-  // Always show ticker (initialized with fallback news)
-  const currentNews = news[currentIndex];
+  const scrollLeft = () => {
+    setCurrentIndex((prev) => (prev - 1 + tickerItems.length) % tickerItems.length);
+  };
+
+  const scrollRight = () => {
+    setCurrentIndex((prev) => (prev + 1) % tickerItems.length);
+  };
+
+  if (tickerItems.length === 0) return null;
 
   return (
-    <div className="bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 border-y border-primary/30 py-3 overflow-hidden">
+    <div 
+      className="border-b border-gray-200 bg-white py-2"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       <div className="container mx-auto px-4">
-        <div className="flex items-center gap-4">
-          {/* Live Indicator */}
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <div className="relative">
-              <Radio className="h-5 w-5 text-red-500" />
-              <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full animate-ping" />
-            </div>
-            <Badge className="bg-red-500 text-white border-red-600 font-orbitron">
-              LIVE
-            </Badge>
-          </div>
-
-          {/* News Content */}
-          <div className="flex-1 flex items-center gap-3 overflow-hidden">
-            <Zap className="h-4 w-4 text-accent flex-shrink-0" />
-            <a
-              href={currentNews.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 hover:opacity-80 transition-opacity overflow-hidden"
+        <div className="flex items-center justify-between gap-4">
+          <button 
+            onClick={scrollLeft}
+            className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+            aria-label="Scroll left"
+          >
+            <ChevronLeft className="h-4 w-4 text-gray-600" />
+          </button>
+          
+          <div className="flex-1 overflow-hidden">
+            <div 
+              className="flex gap-8 transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
             >
-              <span className="font-orbitron text-sm font-semibold text-foreground whitespace-nowrap">
-                {typeof currentNews.source === 'string' 
-                  ? currentNews.source 
-                  : (currentNews.source?.name || 'Tech News')}:
-              </span>
-              <span className="text-sm text-muted-foreground truncate">
-                {currentNews.title}
-              </span>
-            </a>
+              {tickerItems.map((item, index) => (
+                <div 
+                  key={index} 
+                  className="flex-shrink-0 w-full text-center"
+                >
+                  <span className="text-sm text-gray-600">{item}</span>
+                </div>
+              ))}
+            </div>
           </div>
-
-          {/* Pagination Dots */}
-          <div className="flex items-center gap-1 flex-shrink-0">
-            {news.slice(0, 5).map((_, idx) => (
-              <div
-                key={idx}
-                className={`h-1.5 w-1.5 rounded-full transition-all ${
-                  idx === currentIndex % 5
-                    ? "bg-primary w-4"
-                    : "bg-muted-foreground/30"
-                }`}
-              />
-            ))}
-          </div>
+          
+          <button 
+            onClick={scrollRight}
+            className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+            aria-label="Scroll right"
+          >
+            <ChevronRight className="h-4 w-4 text-gray-600" />
+          </button>
         </div>
       </div>
     </div>
@@ -133,4 +79,3 @@ const RealTimeNewsTicker = () => {
 };
 
 export default RealTimeNewsTicker;
-

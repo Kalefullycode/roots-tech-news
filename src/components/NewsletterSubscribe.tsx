@@ -1,154 +1,112 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { Mail } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface NewsletterSubscribeProps {
-  variant?: 'hero' | 'compact';
-  className?: string;
+  variant?: "hero" | "compact" | "inline";
 }
 
-export default function NewsletterSubscribe({ 
-  variant = 'hero',
-  className = '' 
-}: NewsletterSubscribeProps) {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [message, setMessage] = useState('');
+const NewsletterSubscribe: React.FC<NewsletterSubscribeProps> = ({ variant = "hero" }) => {
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSubscribe = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus('loading');
-
-    try {
-      const response = await fetch('/api/newsletter/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setStatus('success');
-        setMessage('🎉 Successfully subscribed to Daily AI News!');
-        setEmail('');
-        
-        // Show success toast
-        toast.success('Successfully subscribed!', {
-          description: 'Check your email for confirmation.',
-          duration: 5000,
-        });
-        
-        // Redirect to newsletter hub after successful subscription
-        setTimeout(() => {
-          navigate('/newsletter-hub');
-        }, 2000);
-      } else {
-        const errorMsg = data.error || 'Failed to subscribe. Please try again.';
-        setStatus('error');
-        setMessage(errorMsg);
-        
-        // Show error toast
-        toast.error('Subscription failed', {
-          description: errorMsg,
-          duration: 5000,
-        });
-      }
-    } catch (error) {
-      const errorMsg = 'An error occurred. Please try again.';
-      setStatus('error');
-      setMessage(errorMsg);
-      
-      // Show error toast
-      toast.error('Subscription failed', {
-        description: errorMsg,
-        duration: 5000,
-      });
-    }
+    setIsSubmitting(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    setIsSubmitting(false);
+    setIsSuccess(true);
+    setEmail("");
+    
+    // Reset success message after 3 seconds
+    setTimeout(() => setIsSuccess(false), 3000);
   };
 
-  // Compact button for header
-  if (variant === 'compact') {
+  if (variant === "compact") {
     return (
-      <button
+      <Button 
+        variant="outline" 
+        size="sm"
+        className="text-sm font-medium"
         onClick={() => {
-          const heroSection = document.getElementById('newsletter-hero');
-          if (heroSection) {
-            heroSection.scrollIntoView({ behavior: 'smooth' });
-          }
+          // Open newsletter modal or scroll to newsletter section
+          const newsletterSection = document.querySelector("#newsletter-section");
+          newsletterSection?.scrollIntoView({ behavior: "smooth" });
         }}
-        className={`flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-yellow-400 text-white rounded-lg hover:opacity-90 transition-opacity font-medium ${className}`}
       >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
-        Subscribe to Daily AI News
-      </button>
+        <Mail className="h-4 w-4 mr-2" />
+        Subscribe
+      </Button>
     );
   }
 
-  // Hero section subscription form
-  return (
-    <div id="newsletter-hero" className={`bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 md:p-12 max-w-4xl mx-auto border border-purple-500/20 ${className}`}>
-      <div className="flex items-center gap-3 mb-4">
-        <span className="text-4xl">📧</span>
-        <h2 className="text-3xl md:text-4xl font-bold text-white">Never Miss an Update</h2>
-      </div>
-      
-      <p className="text-gray-300 text-lg mb-8">
-        Get daily AI & tech news, curated podcasts, and exclusive insights delivered to your inbox every morning.
-      </p>
-
-      <form onSubmit={handleSubscribe} className="mb-6">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <label htmlFor="newsletter-subscribe-email" className="sr-only">
-            Email address
-          </label>
-          <input
-            id="newsletter-subscribe-email"
-            name="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            required
-            disabled={status === 'loading'}
-            className="flex-1 px-6 py-4 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50 disabled:opacity-50"
-            aria-label="Email address for newsletter subscription"
-          />
-          <button
-            type="submit"
-            disabled={status === 'loading'}
-            className="px-8 py-4 bg-gradient-to-r from-purple-600 via-pink-500 to-yellow-400 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-            {status === 'loading' ? 'Subscribing...' : 'Subscribe to Daily AI News'}
-          </button>
-        </div>
-        
-        {message && (
-          <div className={`mt-4 p-4 rounded-lg ${
-            status === 'success' ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'
-          }`}>
-            {message}
-          </div>
-        )}
+  if (variant === "inline") {
+    return (
+      <form onSubmit={handleSubmit} className="flex gap-2">
+        <Input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="flex-1"
+          required
+        />
+        <Button type="submit" disabled={isSubmitting} className="btn btn-primary">
+          {isSubmitting ? "Subscribing..." : "Subscribe"}
+        </Button>
       </form>
+    );
+  }
 
-      <div className="flex items-center gap-4 text-gray-400 text-sm">
-        <div className="flex items-center gap-2">
-          <span>🤝</span>
-          <span>Join 50,000+ readers staying ahead in AI & tech</span>
-        </div>
-      </div>
-      
-      <div className="mt-3 text-gray-500 text-sm">
-        • Free forever • Unsubscribe anytime
+  // Hero variant
+  return (
+    <div id="newsletter-section" className="bg-primary text-white py-16 px-4">
+      <div className="container mx-auto text-center max-w-2xl">
+        <h2 className="font-playfair font-bold text-3xl md:text-4xl mb-4">
+          Stay Informed
+        </h2>
+        <p className="text-primary-foreground/80 mb-8">
+          Get the latest technology news and insights delivered to your inbox weekly.
+        </p>
+        
+        {isSuccess ? (
+          <div className="bg-green-500/20 border border-green-400 text-green-100 px-6 py-4 rounded-lg mb-4">
+            Thank you for subscribing! Check your email for confirmation.
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <div className="relative flex-1">
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-foreground/60" />
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="pl-12 bg-white/10 border border-white/20 text-white placeholder:text-white/60 focus:ring-2 focus:ring-white/50 focus:border-white/40"
+                required
+              />
+            </div>
+            <Button 
+              type="submit" 
+              disabled={isSubmitting} 
+              className="btn btn-secondary whitespace-nowrap"
+            >
+              {isSubmitting ? "Subscribing..." : "Subscribe"}
+            </Button>
+          </form>
+        )}
+        
+        <p className="text-xs text-primary-foreground/60 mt-4">
+          We respect your privacy. Unsubscribe at any time.
+        </p>
       </div>
     </div>
   );
-}
+};
 
+export default NewsletterSubscribe;

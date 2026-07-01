@@ -13,7 +13,6 @@ const LatestDiscoveries = lazy(() => import("@/components/LatestDiscoveries"));
 const TodaysTopStories = lazy(() => import("@/components/TodaysTopStories"));
 const AINewsSection = lazy(() => import("@/components/AINewsSection"));
 const NewsletterSubscribe = lazy(() => import("@/components/NewsletterSubscribe"));
-const AIToolsSidebar = lazy(() => import("@/components/AIToolsSidebar"));
 const Sidebar = lazy(() => import("@/components/Sidebar"));
 const Footer = lazy(() => import("@/components/Footer"));
 
@@ -82,7 +81,7 @@ const Index = () => {
 
       {/* HERO BANNER */}
       <Suspense fallback={
-        <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-starfield">
+        <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/40 to-background/80" />
           <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
             <div className="h-24 bg-muted/20 rounded-lg mb-6 animate-pulse-safe" />
@@ -98,50 +97,47 @@ const Index = () => {
       </Suspense>
       
       {/* Main Layout with Sidebar */}
-      <div className="flex">
-        {/* Main Content Area */}
-        <main id="main-content" className="flex-1 min-w-0">
-          {/* SECTION 1: BREAKING NEWS - Large Featured Story */}
-          <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
-            <FeaturedStory />
-          </Suspense>
-
-          {/* SECTION 2: LIVE TECH FEED - News Cards Grid */}
-          <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
-            <LatestDiscoveries />
-          </Suspense>
-
-          {/* SECTION 3: TODAY'S TOP STORIES - RSS Feed Articles */}
-          <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
-            <TodaysTopStories />
-          </Suspense>
-
-          {/* SECTION 4: AI NEWS */}
-          <Suspense fallback={<div className="h-96 bg-muted animate-pulse" />}>
-            <AINewsSection />
-          </Suspense>
-
-          {/* SECTION 5: NEWSLETTER SIGNUP */}
-          <section className="py-16 px-4">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Main Content Area */}
+          <main id="main-content" className="lg:col-span-3">
+            {/* SECTION 1: BREAKING NEWS - Large Featured Story */}
             <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg" />}>
-              <NewsletterSubscribe variant="hero" />
+              <FeaturedStory />
             </Suspense>
-          </section>
-        </main>
 
-        {/* AI Tools Sidebar - RIGHT SIDE (3 Featured Tools) */}
-        <Suspense fallback={<div className="w-80 bg-muted animate-pulse hidden lg:block" />}>
-          <AIToolsSidebar />
-        </Suspense>
+            {/* SECTION 2: LIVE TECH FEED - News Cards Grid */}
+            <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg" />}>
+              <LatestDiscoveries />
+            </Suspense>
+
+            {/* SECTION 3: TODAY'S TOP STORIES - RSS Feed Articles */}
+            <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg" />}>
+              <TodaysTopStories />
+            </Suspense>
+
+            {/* SECTION 4: AI NEWS */}
+            <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg" />}>
+              <AINewsSection />
+            </Suspense>
+
+            {/* SECTION 5: NEWSLETTER SIGNUP */}
+            <section className="py-8">
+              <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg" />}>
+                <NewsletterSubscribe variant="hero" />
+              </Suspense>
+            </section>
+          </main>
+
+          {/* Sidebar - RIGHT SIDE */}
+          <aside className="lg:col-span-1">
+            <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg" />}>
+              <Sidebar />
+            </Suspense>
+          </aside>
+        </div>
       </div>
 
-      {/* Traditional Sidebar for Mobile/Tablet (Newsletter + Trending) */}
-      <div className="lg:hidden container mx-auto px-4 mb-12">
-        <Suspense fallback={<div className="h-32 bg-muted animate-pulse rounded-lg" />}>
-          <Sidebar />
-        </Suspense>
-      </div>
-      
       {/* FOOTER */}
       <Suspense fallback={<div className="h-32 bg-muted animate-pulse" />}>
         <Footer />

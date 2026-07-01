@@ -1,139 +1,85 @@
-import { useState, useEffect } from "react";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
-import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowRight } from "lucide-react";
-import { cleanDescription } from "@/utils/cleanDescription";
-import { fetchArticles } from "@/utils/fetchArticles";
-import aiArticle from "@/assets/ai-article.webp";
+import { Link } from "react-router-dom";
+import { Calendar, Clock, Eye } from "lucide-react";
 
-const FeaturedStory = () => {
-  const { data: newsArticles, isLoading } = useQuery({
-    queryKey: ['featured-story'],
-    queryFn: fetchArticles,
-    refetchInterval: 86400000, // Refresh daily (24 hours)
-    staleTime: 3600000, // 1 hour
-    retry: 2
-  });
+interface FeaturedStoryProps {
+  title?: string;
+  excerpt?: string;
+  imageUrl?: string;
+  category?: string;
+  date?: string;
+  readTime?: string;
+  author?: string;
+  slug?: string;
+}
 
-  // Get featured story - highest engagement or first article
-  // In production, this would be determined by engagement metrics
-  const getFeaturedStory = () => {
-    if (!newsArticles || newsArticles.length === 0) {
-      return {
-        id: "fallback",
-        title: "Revolutionary AI Breakthrough in Quantum Neural Networks",
-        description: "Scientists at leading research institutions have developed a groundbreaking quantum-AI hybrid that could reshape machine learning as we know it. This futuristic approach combines traditional computing with quantum mechanics.",
-        url: "#",
-        image: aiArticle,
-        category: "AI",
-        publishedAt: new Date().toISOString()
-      };
-    }
-
-    // For now, use the first article as featured (in production, use engagement metrics)
-    const featured = newsArticles[0];
-    const rawDescription = featured.description || featured.contentSnippet || '';
-    const cleanedDescription = cleanDescription(rawDescription).substring(0, 200);
-    
-    return {
-      id: featured.id || "featured-1",
-      title: featured.title || "Featured Story",
-      description: cleanedDescription || "Read the full story to discover more about this exciting development.",
-      url: featured.url || "#",
-      image: featured.image || aiArticle,
-      category: featured.category || "Tech",
-      publishedAt: featured.publishedAt || new Date().toISOString()
-    };
-  };
-
-  const featured = getFeaturedStory();
-
-  if (isLoading) {
-    return (
-      <section className="py-8">
-        <div className="container mx-auto px-4">
-          <Skeleton className="h-8 w-48 mb-6" />
-          <Skeleton className="h-96 w-full rounded-lg" />
-        </div>
-      </section>
-    );
-  }
-
+const FeaturedStory: React.FC<FeaturedStoryProps> = ({
+  title = "Major AI Breakthrough: Quantum Neural Networks Achieve 99.9% Accuracy",
+  excerpt = "Revolutionary quantum neural networks demonstrate unprecedented accuracy in real-world testing, marking a significant milestone in artificial intelligence development.",
+  imageUrl = "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=600&fit=crop",
+  category = "Artificial Intelligence",
+  date = "August 31, 2025",
+  readTime = "8 min read",
+  author = "Dr. Amara Okafor",
+  slug = "/ai/quantum-neural-breakthrough"
+}) => {
   return (
-    <section className="py-8">
-      <div className="container mx-auto px-4">
-        <div className="mb-6">
-          <h2 className="font-orbitron text-3xl font-bold text-glow-primary">
-            BREAKING NEWS
-          </h2>
-        </div>
-
-        <Card 
-          className="relative overflow-hidden bg-card-modern border border-card-border/60 hover:border-primary/40 transition-all cursor-pointer group"
-          onClick={() => {
-            if (featured.url && featured.url !== '#') {
-              window.open(featured.url, '_blank', 'noopener,noreferrer');
-            }
-          }}
-        >
-          {/* Large Hero Image with Gradient Overlay */}
-          <div className="relative h-[500px] md:h-[600px] overflow-hidden">
-            <img
-              src={featured.image}
-              alt={featured.title}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = aiArticle;
-              }}
-            />
+    <section className="py-16 px-4">
+      <div className="container mx-auto">
+        <div className="featured-article">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            {/* Image */}
+            <div className="order-2 lg:order-1">
+              <img 
+                src={imageUrl}
+                alt={title}
+                className="featured-article-image rounded-lg object-cover w-full"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
             
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-            
-            {/* Featured Badge */}
-            <Badge className="absolute top-6 right-6 bg-accent/95 text-accent-foreground font-orbitron font-bold text-sm px-4 py-2 rounded-full border border-accent/20 shadow-lg backdrop-blur-sm z-10">
-              FEATURED
-            </Badge>
-
-            {/* Content Overlay */}
-            <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
-              <div className="max-w-3xl">
-                <Badge className="mb-4 bg-primary/95 text-primary-foreground font-orbitron font-semibold text-xs px-3 py-1.5 rounded-full border border-primary/20">
-                  {featured.category}
-                </Badge>
+            {/* Content */}
+            <div className="featured-article-content order-1 lg:order-2">
+              <div className="flex items-center gap-4 mb-4">
+                <span className="badge badge-primary">{category}</span>
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                  <Calendar className="h-4 w-4" />
+                  <span>{date}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                  <Clock className="h-4 w-4" />
+                  <span>{readTime}</span>
+                </div>
+              </div>
+              
+              <h2 className="featured-article-title">{title}</h2>
+              <p className="featured-article-excerpt">{excerpt}</p>
+              
+              <div className="flex items-center justify-between mt-6">
+                <div className="flex items-center gap-2">
+                  <img 
+                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${author}`}
+                    alt={author}
+                    className="h-10 w-10 rounded-full"
+                    loading="lazy"
+                  />
+                  <div>
+                    <p className="font-medium text-gray-900">{author}</p>
+                    <p className="text-sm text-gray-500">Senior Tech Correspondent</p>
+                  </div>
+                </div>
                 
-                <h3 className="font-orbitron text-3xl md:text-4xl lg:text-5xl font-black mb-4 text-foreground leading-tight">
-                  {featured.title}
-                </h3>
-                
-                <p className="font-roboto text-lg md:text-xl text-muted-foreground mb-6 line-clamp-2 leading-relaxed">
-                  {featured.description}
-                </p>
-
-                <Button
-                  size="lg"
-                  className="bg-gradient-hero hover:glow-primary font-orbitron font-bold text-lg px-8 py-6"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (featured.url && featured.url !== '#') {
-                      window.open(featured.url, '_blank', 'noopener,noreferrer');
-                    }
-                  }}
-                >
-                  Read More
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                <Button asChild className="btn btn-primary">
+                  <Link to={slug}>Read Full Story</Link>
                 </Button>
               </div>
             </div>
           </div>
-        </Card>
+        </div>
       </div>
     </section>
   );
 };
 
 export default FeaturedStory;
-

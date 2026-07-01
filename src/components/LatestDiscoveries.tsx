@@ -1,147 +1,64 @@
-import { useQuery } from "@tanstack/react-query";
-import { Skeleton } from "@/components/ui/skeleton";
-import { cleanDescription } from "@/utils/cleanDescription";
+import { Link } from "react-router-dom";
 import ArticleCard from "./ArticleCard";
-import { fetchArticles } from "@/utils/fetchArticles";
-import aiArticle from "@/assets/ai-article.webp";
-import startupArticle from "@/assets/startup-article.webp";
-import securityArticle from "@/assets/security-article.webp";
-import gadgetArticle from "@/assets/gadget-article.webp";
+import { Button } from "@/components/ui/button";
 
 const LatestDiscoveries = () => {
-  const { data: newsArticles, isLoading } = useQuery({
-    queryKey: ['latest-discoveries'],
-    queryFn: fetchArticles,
-    refetchInterval: 300000, // Refresh every 5 minutes
-    staleTime: 60000,
-    retry: 2
-  });
-
-  // Fallback articles with categories
-  const fallbackArticles = [
+  const articles = [
     {
-      id: "fallback-1",
-      title: "Revolutionary AI Breakthrough in Quantum Neural Networks",
-      description: "Scientists at the University of Cape Town have developed a groundbreaking quantum-AI hybrid that could reshape machine learning as we know it.",
-      category: "AI",
-      publishedAt: new Date().toISOString(),
-      urlToImage: aiArticle,
-      url: "#",
-      source: { id: "roots", name: "RootsTech" }
+      title: "Quantum Computing Breakthrough: Google Achieves Quantum Supremacy 2.0",
+      excerpt: "Google's latest quantum processor demonstrates error correction capabilities that could revolutionize computing.",
+      imageUrl: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=400&fit=crop",
+      category: "Quantum Computing",
+      date: "June 15, 2025",
+      readTime: "6 min read",
+      author: "Sarah Chen",
+      slug: "/quantum/google-supremacy-2"
     },
     {
-      id: "fallback-2", 
-      title: "Nigerian Startup Raises $50M for Solar-Powered Smart Cities",
-      description: "Lagos-based tech company unveils plans to build Africa's first fully solar-powered smart city infrastructure.",
+      title: "AI Startup Secures $100M Funding for Revolutionary Language Model",
+      excerpt: "The new model promises to understand context and nuance better than any existing AI system.",
+      imageUrl: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600&h=400&fit=crop",
       category: "Startups",
-      publishedAt: new Date(Date.now() - 14400000).toISOString(),
-      urlToImage: startupArticle,
-      url: "#",
-      source: { id: "roots", name: "RootsTech" }
+      date: "June 14, 2025",
+      readTime: "5 min read",
+      author: "Marcus Johnson",
+      slug: "/startups/ai-funding-round"
     },
     {
-      id: "fallback-3",
-      title: "Cybersecurity Threats in the Metaverse Era", 
-      description: "As virtual worlds become more integrated with our daily lives, new security challenges emerge requiring innovative solutions.",
+      title: "Cybersecurity Threats: New Vulnerability Discovered in Major Cloud Platforms",
+      excerpt: "Security researchers have identified a critical flaw that could affect millions of cloud users worldwide.",
+      imageUrl: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&h=400&fit=crop",
       category: "Security",
-      publishedAt: new Date(Date.now() - 21600000).toISOString(),
-      urlToImage: securityArticle,
-      url: "#",
-      source: { id: "roots", name: "RootsTech" }
-    },
-    {
-      id: "fallback-4",
-      title: "Revolutionary Holographic Display Technology",
-      description: "South African engineers develop first consumer-grade holographic displays for everyday use in homes and offices.",
-      category: "Gadgets", 
-      publishedAt: new Date(Date.now() - 28800000).toISOString(),
-      urlToImage: gadgetArticle,
-      url: "#",
-      source: { id: "roots", name: "RootsTech" }
+      date: "June 13, 2025",
+      readTime: "7 min read",
+      author: "Elena Rodriguez",
+      slug: "/security/cloud-vulnerability"
     }
   ];
 
-  // Use real news data if available, otherwise use fallback
-  const articles = (newsArticles && newsArticles.length > 0) ? newsArticles : fallbackArticles;
-  
-  // Format articles for ArticleCard component
-  interface ArticleInput {
-    title?: string;
-    description?: string;
-    contentSnippet?: string;
-    category?: string;
-    publishedAt?: string;
-    pubDate?: string;
-    image?: string;
-    urlToImage?: string;
-    media?: { thumbnail?: string };
-    url?: string;
-    link?: string;
-  }
-
-  const formatArticle = (article: ArticleInput, index: number) => {
-    // Map categories from real articles to our categories
-    const categoryMap: Record<string, string> = {
-      'AI': 'AI',
-      'Tech': 'Gadgets',
-      'Startups': 'Startups',
-      'Security': 'Security'
-    };
-
-    // Determine category from article or use fallback based on index
-    let category = article.category || categoryMap[article.category] || 'Tech';
-    if (!categoryMap[category]) {
-      // Assign categories based on index if not available
-      const categories = ['AI', 'Startups', 'Security', 'Gadgets'];
-      category = categories[index % categories.length];
-    }
-
-    const cleanedDesc = cleanDescription(article.description || article.contentSnippet || '');
-    return {
-      title: article.title || `Discovery ${index + 1}`,
-      excerpt: cleanedDesc.substring(0, 150) || "Click to read more about this exciting development in technology.",
-      category: category,
-      date: new Date(article.publishedAt || article.pubDate || new Date()).toLocaleString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        day: 'numeric',
-        month: 'short'
-      }),
-      imageUrl: article.image || article.urlToImage || article.media?.thumbnail || fallbackArticles[index % fallbackArticles.length].urlToImage,
-      url: article.url || article.link || "#"
-    };
-  };
-
-  // Get 4 articles for 2x2 grid
-  const discoveryArticles = articles.slice(0, 4).map((article: ArticleInput, index: number) => formatArticle(article, index));
-
-  if (isLoading) {
-    return (
-      <section className="py-8">
-        <div className="container mx-auto px-4">
-          <Skeleton className="h-8 w-64 mb-6" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[...Array(4)].map((_, i) => (
-              <Skeleton key={i} className="h-96 w-full" />
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   return (
-    <section className="py-8">
-      <div className="container mx-auto px-4">
-        <div className="mb-6">
-          <h2 className="font-orbitron text-3xl font-bold text-glow-accent">
-            LIVE TECH FEED
-          </h2>
+    <section className="py-16 px-4 bg-gray-50">
+      <div className="container mx-auto">
+        <div className="section-header">
+          <h2 className="section-title">Latest Discoveries</h2>
+          <Button asChild variant="outline" className="btn btn-outline">
+            <Link to="/category/technology">View All</Link>
+          </Button>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {discoveryArticles.map((article, index) => (
-            <ArticleCard key={`discovery-${index}`} {...article} />
+        
+        <div className="grid-articles">
+          {articles.map((article, index) => (
+            <ArticleCard 
+              key={index}
+              title={article.title}
+              excerpt={article.excerpt}
+              imageUrl={article.imageUrl}
+              category={article.category}
+              date={article.date}
+              readTime={article.readTime}
+              author={article.author}
+              slug={article.slug}
+            />
           ))}
         </div>
       </div>
@@ -150,4 +67,3 @@ const LatestDiscoveries = () => {
 };
 
 export default LatestDiscoveries;
-

@@ -1,417 +1,99 @@
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { TrendingUp, Mail, Play, ChevronLeft, ChevronRight, Pause, Loader2, CheckCircle2 } from "lucide-react";
-import { useTrendingNews } from "@/hooks/useNews";
-import { useState, useEffect, useCallback } from "react";
-import YouTubeService, { YouTubeVideo } from "@/services/YouTubeService";
-import NewsletterService from "@/services/NewsletterService";
-import { useToast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
+import { TrendingUp, Clock, Star, BookOpen } from "lucide-react";
+import NewsletterSubscribe from "./NewsletterSubscribe";
 
 const Sidebar = () => {
-  const { data: trendingArticles, isLoading: isTrendingLoading } = useTrendingNews();
-  const [aiVideos, setAiVideos] = useState<YouTubeVideo[]>([]);
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [isLoadingVideos, setIsLoadingVideos] = useState(true);
-  
-  // Newsletter state
-  const [email, setEmail] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const fetchAIVideos = async () => {
-      try {
-        const videos = await YouTubeService.fetchByCategory('AI');
-        if (videos.length > 0) {
-          // Get the latest 10 AI videos for rotation
-          setAiVideos(videos.slice(0, 10));
-        }
-      } catch (error) {
-        console.error('Failed to fetch AI videos:', error);
-      } finally {
-        setIsLoadingVideos(false);
-      }
-    };
-
-    fetchAIVideos();
-    
-    // Refresh videos every 30 minutes to get latest content
-    const refreshInterval = setInterval(fetchAIVideos, 30 * 60 * 1000);
-    
-    return () => clearInterval(refreshInterval);
-  }, []);
-
-  // Auto-rotate videos every 10 seconds
-  useEffect(() => {
-    if (!isAutoPlaying || aiVideos.length <= 1) return;
-
-    const rotationInterval = setInterval(() => {
-      setCurrentVideoIndex((prevIndex) => 
-        prevIndex === aiVideos.length - 1 ? 0 : prevIndex + 1
-      );
-    }, 10000); // Change video every 10 seconds
-
-    return () => clearInterval(rotationInterval);
-  }, [isAutoPlaying, aiVideos.length]);
-
-  const handlePrevious = useCallback(() => {
-    setCurrentVideoIndex((prevIndex) => 
-      prevIndex === 0 ? aiVideos.length - 1 : prevIndex - 1
-    );
-    setIsAutoPlaying(false); // Pause auto-play when user manually navigates
-  }, [aiVideos.length]);
-
-  const handleNext = useCallback(() => {
-    setCurrentVideoIndex((prevIndex) => 
-      prevIndex === aiVideos.length - 1 ? 0 : prevIndex + 1
-    );
-    setIsAutoPlaying(false); // Pause auto-play when user manually navigates
-  }, [aiVideos.length]);
-
-  const toggleAutoPlay = () => {
-    setIsAutoPlaying(!isAutoPlaying);
-  };
-
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!email || isSubmitting || isSubscribed) return;
-
-    setIsSubmitting(true);
-
-    try {
-      const result = await NewsletterService.subscribe(email, 'sidebar');
-
-      if (result.success) {
-        setIsSubscribed(true);
-        setEmail("");
-        toast({
-          title: "🎉 Subscription Successful!",
-          description: result.message,
-          duration: 5000,
-        });
-      } else {
-        toast({
-          title: "❌ Subscription Failed",
-          description: result.message,
-          variant: "destructive",
-          duration: 5000,
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "❌ Error",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive",
-        duration: 5000,
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const currentVideo = aiVideos[currentVideoIndex];
-  // Trending Now (mobile/tablet sidebar only)
-  const fallbackTrending = [
-    {
-      title: "AI Revolution in African Tech Startups",
-      urlToImage: "/placeholder.svg",
-      category: "AI",
-      url: "#"
-    },
-    {
-      title: "Quantum Computing Breakthrough",
-      urlToImage: "/placeholder.svg", 
-      category: "Science",
-      url: "#"
-    },
-    {
-      title: "Cybersecurity in the Metaverse",
-      urlToImage: "/placeholder.svg", 
-      category: "Security",
-      url: "#"
-    },
-    {
-      title: "Green Tech Innovations from Nigeria",
-      urlToImage: "/placeholder.svg",
-      category: "Startups",
-      url: "#"
-    }
+  const trendingTopics = [
+    { name: "Artificial Intelligence", href: "/category/ai", count: 42 },
+    { name: "Quantum Computing", href: "/category/quantum", count: 28 },
+    { name: "Cybersecurity", href: "/category/security", count: 35 },
+    { name: "Startups", href: "/category/startups", count: 22 },
+    { name: "Cloud Computing", href: "/category/cloud", count: 18 },
   ];
 
-  const trending = trendingArticles && trendingArticles.length > 0 
-    ? trendingArticles.slice(0, 4) 
-    : fallbackTrending;
-  // Trending removed entirely
+  const popularArticles = [
+    { title: "The Future of AI in 2025", href: "/ai/future-2025" },
+    { title: "How to Secure Your Data", href: "/security/data-protection" },
+    { title: "Top 10 Tech Startups to Watch", href: "/startups/top-10" },
+  ];
 
   return (
-    <aside className="space-y-6">
-      {/* Trending Section (Mobile/Tablet Sidebar) */}
-      <Card className="bg-gradient-card border-card-border p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <TrendingUp className="h-5 w-5 text-accent" />
-          <h3 className="font-orbitron font-bold text-lg text-glow-accent">
-            TRENDING NOW
-          </h3>
-        </div>
-        
-        {isTrendingLoading ? (
-          <div className="space-y-4">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="flex gap-3">
-                <Skeleton className="w-16 h-16 rounded-lg" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-3 w-16" />
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-3 w-3/4" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {trending.map((article, index) => (
-              <a 
-                key={index} 
-                href={article.url || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex gap-3 cursor-pointer group block"
-              >
-                <div className="w-16 h-16 bg-muted rounded-lg overflow-hidden flex-shrink-0">
-                  <img 
-                    src={article.urlToImage || "/placeholder.svg"} 
-                    alt={article.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <Badge className="text-xs mb-1 bg-primary/20 text-primary">
-                    {article.category}
-                  </Badge>
-                  <h4 className="font-roboto text-sm font-medium line-clamp-2 group-hover:text-primary transition-colors">
-                    {article.title}
-                  </h4>
-                </div>
-              </a>
-            ))}
-          </div>
-        )}
-      </Card>
-
+    <aside className="w-full lg:w-80">
       {/* Newsletter Signup */}
-      <Card className="bg-gradient-card border-card-border p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Mail className="h-5 w-5 text-neon-blue" />
-          <h3 className="font-orbitron font-bold text-lg text-glow-primary">
-            STAY ROOTED IN TECH
-          </h3>
-        </div>
-        
-        <p className="text-sm text-muted-foreground mb-4 font-roboto">
-          Get the latest in futuristic technology delivered to your inbox weekly.
-        </p>
-        
-        {isSubscribed ? (
-          <div className="text-center py-6">
-            <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto mb-3 animate-pulse" />
-            <p className="text-green-500 font-semibold mb-1">Successfully Subscribed!</p>
-            <p className="text-xs text-muted-foreground">Check your email for confirmation</p>
-          </div>
-        ) : (
-          <form onSubmit={handleNewsletterSubmit} className="space-y-3">
-            <label htmlFor="sidebar-newsletter-email" className="sr-only">
-              Email address
-            </label>
-            <Input 
-              id="sidebar-newsletter-email"
-              name="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email" 
-              className="bg-input border-border focus:border-neon-blue"
-              disabled={isSubmitting}
-              aria-label="Email address for newsletter subscription"
-              required
-            />
-            <Button 
-              type="submit"
-              className="w-full bg-gradient-hero glow-primary font-orbitron font-bold"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  SUBSCRIBING...
-                </>
-              ) : (
-                'SUBSCRIBE'
-              )}
-            </Button>
-          </form>
-        )}
-      </Card>
+      <div className="mb-8">
+        <NewsletterSubscribe variant="inline" />
+      </div>
 
-      {/* AI Video Rotation Module */}
-      <Card className="bg-gradient-card border-card-border p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Play className="h-5 w-5 text-red-500" />
-            <h3 className="font-orbitron font-bold text-lg text-glow-accent">
-              LIVE AI NEWS
-            </h3>
-          </div>
-          <div className="flex items-center gap-2">
-            <Badge className="bg-red-500/20 text-red-400 border-red-500/30 animate-pulse">
-              LIVE
-            </Badge>
-            {aiVideos.length > 1 && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={toggleAutoPlay}
-                className="h-8 w-8"
-                title={isAutoPlaying ? "Pause rotation" : "Resume rotation"}
+      {/* Trending Topics */}
+      <div className="card p-6 mb-8">
+        <h3 className="font-playfair font-bold text-xl mb-4 flex items-center gap-2">
+          <TrendingUp className="h-5 w-5 text-primary" />
+          Trending Topics
+        </h3>
+        <ul className="space-y-3">
+          {trendingTopics.map((topic, index) => (
+            <li key={index}>
+              <Link 
+                to={topic.href} 
+                className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                {isAutoPlaying ? (
-                  <Pause className="h-4 w-4 text-muted-foreground" />
-                ) : (
-                  <Play className="h-4 w-4 text-muted-foreground" />
-                )}
-              </Button>
-            )}
-          </div>
-        </div>
-        
-        {isLoadingVideos ? (
-          <Skeleton className="aspect-video rounded-lg" />
-        ) : currentVideo ? (
-          <div className="relative">
-            {/* Video Display */}
-            <div 
-              className="relative aspect-video bg-muted rounded-lg overflow-hidden cursor-pointer group"
-              onClick={() => window.open(currentVideo.url, '_blank')}
-            >
-              <img 
-                src={currentVideo.thumbnail}
-                alt={currentVideo.title}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/placeholder.svg';
-                }}
-              />
-              
-              {/* Play Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="bg-red-500 rounded-full p-4">
-                  <Play className="h-8 w-8 text-white fill-white" />
-                </div>
-              </div>
-              
-              {/* Video Info Overlay */}
-              <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/95 via-black/70 to-transparent">
-                <div className="flex items-center gap-2 mb-2">
-                  <Badge className="bg-red-500 text-white border-red-600 text-xs">
-                    {currentVideo.category}
-                  </Badge>
-                  <span className="text-xs text-gray-300">
-                    {new Date(currentVideo.publishedAt).toLocaleDateString()}
-                  </span>
-                </div>
-                <h4 className="font-roboto text-sm font-medium text-white line-clamp-2 mb-1">
-                  {currentVideo.title}
-                </h4>
-                <p className="text-xs text-gray-300">{currentVideo.channelName}</p>
-              </div>
-              
-              {/* Navigation Arrows */}
-              {aiVideos.length > 1 && (
-                <>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePrevious();
-                    }}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                    aria-label="Previous video"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleNext();
-                    }}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                    aria-label="Next video"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
-                </>
-              )}
-            </div>
-            
-            {/* Video Counter & Indicators */}
-            {aiVideos.length > 1 && (
-              <div className="mt-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-muted-foreground">
-                    {currentVideoIndex + 1} of {aiVideos.length}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {isAutoPlaying ? 'Auto-rotating' : 'Paused'}
-                  </span>
-                </div>
-                
-                {/* Dot Indicators */}
-                <div className="flex gap-1.5 justify-center">
-                  {aiVideos.slice(0, 10).map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => {
-                        setCurrentVideoIndex(index);
-                        setIsAutoPlaying(false);
-                      }}
-                      className={`h-1.5 rounded-full transition-all ${
-                        index === currentVideoIndex 
-                          ? 'bg-red-500 w-6' 
-                          : 'bg-muted-foreground/30 w-1.5 hover:bg-muted-foreground/50'
-                      }`}
-                      aria-label={`Go to video ${index + 1}`}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            {/* View All Link */}
-            <Button
-              variant="outline"
-              className="w-full mt-3 border-red-500/50 hover:bg-red-500/10 text-sm"
-              onClick={() => window.open('/videos', '_blank')}
-            >
-              View All AI Videos →
-            </Button>
-          </div>
-        ) : (
-          <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-              <div className="text-center">
-                <Play className="h-12 w-12 text-foreground mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground">
-                  Loading latest AI videos...
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-      </Card>
+                <span className="font-medium text-gray-900">{topic.name}</span>
+                <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{topic.count}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Popular Articles */}
+      <div className="card p-6 mb-8">
+        <h3 className="font-playfair font-bold text-xl mb-4 flex items-center gap-2">
+          <Star className="h-5 w-5 text-secondary" />
+          Popular Articles
+        </h3>
+        <ul className="space-y-3">
+          {popularArticles.map((article, index) => (
+            <li key={index}>
+              <Link 
+                to={article.href} 
+                className="block p-3 rounded-lg hover:bg-gray-50 transition-colors line-clamp-2"
+              >
+                <span className="text-gray-700">{article.title}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Quick Links */}
+      <div className="card p-6">
+        <h3 className="font-playfair font-bold text-xl mb-4 flex items-center gap-2">
+          <BookOpen className="h-5 w-5 text-accent" />
+          Quick Links
+        </h3>
+        <ul className="space-y-3">
+          <li>
+            <Link to="/about" className="text-gray-700 hover:text-primary transition-colors">
+              About Us
+            </Link>
+          </li>
+          <li>
+            <Link to="/contact" className="text-gray-700 hover:text-primary transition-colors">
+              Contact
+            </Link>
+          </li>
+          <li>
+            <Link to="/resources" className="text-gray-700 hover:text-primary transition-colors">
+              Resources
+            </Link>
+          </li>
+          <li>
+            <Link to="/newsletter" className="text-gray-700 hover:text-primary transition-colors">
+              Newsletter
+            </Link>
+          </li>
+        </ul>
+      </div>
     </aside>
   );
 };
