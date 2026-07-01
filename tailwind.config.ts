@@ -21,10 +21,10 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				orbitron: ['Orbitron', 'monospace'],
-				roboto: ['Roboto', 'sans-serif'],
-				display: ['Orbitron', 'sans-serif'],
-				body: ['Roboto', 'sans-serif'],
+				inter: ['Inter', 'sans-serif'],
+				playfair: ['Playfair Display', 'serif'],
+				display: ['Playfair Display', 'serif'],
+				body: ['Inter', 'sans-serif'],
 			},
 			colors: {
 				// CSS Variable colors (for shadcn/ui compatibility)
@@ -50,75 +50,77 @@ export default {
 					foreground: 'hsl(var(--card-foreground))',
 					border: 'hsl(var(--card-border))'
 				},
-				// New brand colors
+				// Professional brand colors
 				primary: {
-					50: '#fdf4ff',
-					100: '#fae8ff',
-					200: '#f5d0fe',
-					300: '#f0abfc',
-					400: '#e879f9',
-					500: '#E935FF', // Main brand purple
-					600: '#c026d3',
-					700: '#a21caf',
-					800: '#86198f',
-					900: '#701a75',
-					DEFAULT: '#E935FF',
+					50: '#f0f2ff',
+					100: '#d9dfff',
+					200: '#b3bfff',
+					300: '#8a99ff',
+					400: '#6273ff',
+					500: '#1A237E', // Deep Navy Blue
+					600: '#151b6d',
+					700: '#101456',
+					800: '#0a0c3d',
+					900: '#050629',
+					DEFAULT: '#1A237E',
 					foreground: 'hsl(var(--primary-foreground))',
-					glow: 'hsl(var(--primary-glow))'
+					light: '#4A5FBF',
+					dark: '#0A0C3D'
 				},
 				secondary: {
-					50: '#fff7ed',
-					100: '#ffedd5',
-					200: '#fed7aa',
-					300: '#fdba74',
-					400: '#fb923c',
-					500: '#FF8C00', // Main brand orange
-					600: '#ea580c',
-					700: '#c2410c',
-					800: '#9a3412',
-					900: '#7c2d12',
-					DEFAULT: '#FF8C00',
+					50: '#fff8f0',
+					100: '#ffe8d9',
+					200: '#ffd4b8',
+					300: '#ffbe8a',
+					400: '#ff984f',
+					500: '#FF6B35', // Warm Orange
+					600: '#e55a2b',
+					700: '#c4421f',
+					800: '#9e3319',
+					900: '#7f2715',
+					DEFAULT: '#FF6B35',
 					foreground: 'hsl(var(--secondary-foreground))',
-					glow: 'hsl(var(--secondary-glow))'
+					light: '#FF984F'
 				},
 				accent: {
-					DEFAULT: 'hsl(var(--accent))',
+					50: '#ffe0e0',
+					100: '#ffb3b3',
+					200: '#ff8080',
+					300: '#ff4d4d',
+					400: '#ff2626',
+					DEFAULT: '#E53935', // Clean Red
 					foreground: 'hsl(var(--accent-foreground))',
-					glow: 'hsl(var(--accent-glow))'
+					light: '#FF6B6B'
 				},
-				neon: {
-					green: '#00FF00',
-					pink: '#FF00FF',
-					blue: '#00D9FF',
-					yellow: '#FFD700',
-				},
-				'neon-blue': {
-					DEFAULT: 'hsl(var(--neon-blue))',
-					glow: 'hsl(var(--neon-blue-glow))'
-				},
-				'cyber-pink': {
-					DEFAULT: 'hsl(var(--cyber-pink))',
-					glow: 'hsl(var(--cyber-pink-glow))'
-				},
-				dark: {
-					900: '#000000',
-					800: '#0a0a0a',
-					700: '#1a1a1a',
-					600: '#2a2a2a',
-					500: '#3a3a3a',
+				// Neutral grays
+				gray: {
+					50: '#f9fafb',
+					100: '#f3f4f6',
+					200: '#e5e7eb',
+					300: '#d1d5db',
+					400: '#9ca3af',
+					500: '#6b7280',
+					600: '#4b5563',
+					700: '#374151',
+					800: '#1f2937',
+					900: '#111827',
 				}
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				sm: 'calc(var(--radius) - 4px)',
+				'2xl': '1rem',
+				'3xl': '1.5rem'
 			},
 			boxShadow: {
-				'glow-sm': '0 0 10px rgba(233, 53, 255, 0.3)',
-				'glow': '0 0 20px rgba(233, 53, 255, 0.5)',
-				'glow-lg': '0 0 30px rgba(233, 53, 255, 0.7)',
-				'neon-green': '0 0 20px rgba(0, 255, 0, 0.5)',
-				'neon-pink': '0 0 20px rgba(255, 0, 255, 0.5)',
+				'glow-sm': '0 0 10px rgba(26, 35, 126, 0.3)',
+				'glow': '0 0 20px rgba(26, 35, 126, 0.5)',
+				'glow-lg': '0 0 30px rgba(26, 35, 126, 0.7)',
+				'primary': '0 4px 14px 0 rgba(26, 35, 126, 0.15)',
+				'card': '0 0 0 1px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.05), 0 12px 24px rgba(0, 0, 0, 0.05)',
+				'card-hover': '0 0 0 1px rgba(0, 0, 0, 0.05), 0 4px 8px rgba(0, 0, 0, 0.05), 0 16px 32px rgba(0, 0, 0, 0.05)',
+				'elevated': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
 			},
 			keyframes: {
 				'accordion-down': {
@@ -154,11 +156,11 @@ export default {
 				'glow-pulse': {
 					'0%, 100%': {
 						opacity: '1',
-						boxShadow: '0 0 10px rgba(233, 53, 255, 0.7)',
+						boxShadow: '0 0 10px rgba(26, 35, 126, 0.7)',
 					},
 					'50%': {
 						opacity: '0.7',
-						boxShadow: '0 0 20px rgba(233, 53, 255, 1)',
+						boxShadow: '0 0 20px rgba(26, 35, 126, 1)',
 					},
 				},
 				float: {
