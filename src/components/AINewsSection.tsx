@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { Button } from "./components/ui/button";
-import { Robot, Brain, Code2, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Bot, Brain, Code2, Sparkles } from "lucide-react";
 
 interface AINewsItem {
   title: string;
@@ -30,7 +30,7 @@ const AINewsSection = () => {
       title: "AI in Healthcare: Transforming Patient Care",
       excerpt: "How artificial intelligence is revolutionizing diagnostics, treatment planning, and patient monitoring.",
       category: "Healthcare",
-      icon: <Robot className="h-5 w-5" />,
+      icon: <Bot className="h-5 w-5" />,
       slug: "/ai/healthcare-revolution"
     },
     {

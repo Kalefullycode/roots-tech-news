@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Mail } from "lucide-react";
-import { Button } from "./components/ui/button";
-import { Input } from "./components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface NewsletterSubscribeProps {
   variant?: "hero" | "compact" | "inline";

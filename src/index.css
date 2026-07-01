@@ -217,7 +217,7 @@
   }
 
   .btn-secondary {
-    @apply btn bg-secondary text-white hover:bg-secondary-dark;
+    @apply btn bg-secondary text-white hover:opacity-90;
   }
 
   .btn-outline {

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import ArticleCard from "./ArticleCard";
-import { Button } from "./components/ui/button";
+import { Button } from "@/components/ui/button";
 
 const LatestDiscoveries = () => {
   const articles = [
